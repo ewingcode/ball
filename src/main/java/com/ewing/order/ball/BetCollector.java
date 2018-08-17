@@ -70,9 +70,9 @@ public class BetCollector {
 
 	private final static long heartbeatTime = 30 * 1000;
 
-	private final static String LOGIN_USER = "cen2018";
+	private final static String LOGIN_USER = "tansonLAM38";
 
-	private final static String LOGIN_PWD = "sg1985";
+	private final static String LOGIN_PWD = "523123ZX";
 
 	public static void main(String[] args) {
 		System.out.println(CollectDataPool.toFix2Num("0.90"));
