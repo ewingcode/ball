@@ -1,9 +1,6 @@
 package com.ewing.busi.ball.data;
 
-import java.util.List;
-
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,10 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.ewing.order.Door;
-import com.ewing.order.busi.ball.dao.BetInfoDao;
-import com.ewing.order.busi.ball.dao.BetRollInfoDao;
-import com.ewing.order.busi.ball.ddl.BetInfo;
-import com.ewing.order.busi.ball.ddl.RollGameCompute;
+import com.ewing.order.busi.ball.service.BetRuleService;
 
 /**
  *
@@ -23,18 +17,15 @@ import com.ewing.order.busi.ball.ddl.RollGameCompute;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Door.class)
-public class BetInfoDaoTest {
+public class BetRuleDaoTest {
 	@Resource
-	private BetInfoDao betInfoDao;
-	@Resource
-	private BetRollInfoDao betRollInfoDao;
+	private BetRuleService betRuleService;
 
-	@Test
-	public void testQuery() {
+	@Test 
+	public void testupdate2Ineff() {
 
 		try {
-			RollGameCompute b = betRollInfoDao.computeMinAndMax("2582421");
-			System.out.println(b);
+			betRuleService.update2Success(3);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

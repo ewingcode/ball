@@ -7,7 +7,7 @@ public class BallEvent extends EventObject {
 	private static final long serialVersionUID = 1L;
 
 	private String gameId;
-	
+
 	public String getGameId() {
 		return gameId;
 	}
@@ -16,8 +16,9 @@ public class BallEvent extends EventObject {
 		this.gameId = gameId;
 	}
 
-	public BallEvent(Object source) {
+	public BallEvent(String gameId, Object source) {
 		super(source);
+		this.gameId = gameId;
 	}
 
 }

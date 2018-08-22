@@ -32,10 +32,7 @@ public class BallMemberTest {
 		try {
 
 			ballMember.login("tansonLAM83", "523123ZX");
-			//ballMember.addFtCurrentListener();
-			collectBetInfo.login("tansonLAM38", "523123ZX");
-			//collectBetInfo.startCollectFootballInfo();
-			collectBetInfo.startCollectBasketInfo(); 
+		 
 			TimeUnit.HOURS.sleep(24);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

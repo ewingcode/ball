@@ -24,7 +24,7 @@ public class BetLogDao {
 	}
 
 	public List<BetLog> findSucBet(String account, String gId) {
-		return baseDao.find("account='" + account + "' and gid='" + gId + "' and errormsg is null",
+		return baseDao.find("account='" + account + "' and gid='" + gId + "' and code = '560'",
 				BetLog.class);
 	}
 

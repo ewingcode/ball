@@ -1,4 +1,4 @@
-package com.ewing.order.ball.event;
+package com.ewing.order.ball.event.strategy;
 
 import java.util.List;
 import java.util.Map;
@@ -11,17 +11,13 @@ import com.ewing.order.ball.RequestTool;
 import com.ewing.order.ball.bk.bet.BkPreOrderViewResp;
 import com.ewing.order.ball.bk.bet.BetResp;
 import com.ewing.order.ball.bk.game.BkGame;
+import com.ewing.order.ball.event.BallEvent;
+import com.ewing.order.ball.event.BetStrategy;
 import com.ewing.order.ball.ft.game.FtGame;
 import com.ewing.order.busi.ball.ddl.BetLog;
 
-/**
- * 今日篮球投注基础策略，只买入让分
- *
- * @author tansonlam
- * @create 2018年7月31日
- */
-public class BKBasicBetStrategy extends BetStrategy {
-	private static Logger log = LoggerFactory.getLogger(BKBasicBetStrategy.class);
+public class BKRollBasicBetStrategy extends BetStrategy {
+	private static Logger log = LoggerFactory.getLogger(BKRollBasicBetStrategy.class);
 	private String gtype = "BK";
 	private String uid;
 	/**
@@ -49,26 +45,19 @@ public class BKBasicBetStrategy extends BetStrategy {
 		this.uid = uid;
 	}
 
-	@Override
-	public String gameId() {
-		return null;
-	}
+ 
 
 	@Override
 	public boolean isSatisfy(BallEvent ballEvent) {
 		if (ballEvent.getSource() != null && ballEvent.getSource() instanceof BkGame) {
 			BkGame bkGame = (BkGame) ballEvent.getSource();
-			return betCondition(bkGame.getGid(), bkGame.getSw_R(), bkGame.getRatio());
-		}
-		return false;
-	}
-
-	private boolean betCondition(String gId, String sw_R, String radio) {
-		// 是否有让球的投注
-		if (sw_R.equals("Y") && fixRadio(radio)
-				&& betTimeEachMatch(this.getBetStrategyContext().getAccount(), gId) <= MAXEACHMATCH
-				&& betTimeEachDay(this.getBetStrategyContext().getAccount()) <= MAXEACHDAY) {
-			return true;
+			// 是否有让球的投注
+			if (bkGame.getSw_R().equals("Y") && fixRadio(bkGame.getRatio())
+					&& betTimeEachMatch(this.getBetStrategyContext().getAccount(),
+							bkGame.getGid()) <= MAXEACHMATCH
+					&& betTimeEachDay(this.getBetStrategyContext().getAccount()) <= MAXEACHDAY) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -110,7 +99,7 @@ public class BKBasicBetStrategy extends BetStrategy {
 	@Override
 	public Object bet(BallEvent ballEvent) {
 		String gtype = "BK";// 篮球 
-		String wtype = "R";// 让球
+		String wtype = "RE";// 让球
 		String betMoney = MONEYEACHMATCH; // 下注金额
 		String side = ""; // 买小
 		BetResp ftBetResp = null;
@@ -123,7 +112,7 @@ public class BKBasicBetStrategy extends BetStrategy {
 						game.getGid(), gtype, wtype, side);
 				log.info("投注前信息：" + bkPreOrderViewResp);
 				// 下注前需要再次检查一下次条件
-				if (betCondition(game.getGid(), "Y", bkPreOrderViewResp.getSpread())) {
+				if (fixRadio(bkPreOrderViewResp.getSpread())) {
 					ftBetResp = RequestTool.bkbet(uid, game.getGid(), gtype, betMoney, wtype, side,
 							bkPreOrderViewResp);
 				}

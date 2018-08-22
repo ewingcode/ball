@@ -59,19 +59,19 @@ public class RequestTool {
 	 * 登陆接口
 	 */
 	public static LoginResp login(String user, String password) {
-		if(StringUtils.isEmpty(password)){
+		if (StringUtils.isEmpty(password)) {
 			throw new BusiException("密码不能为空！");
 		}
 		String url = ballDomain + "/app/login.php";
 		Map<String, String> data = new HashMap<String, String>();
-		
+
 		data.put("username", user);
 		data.put("password", password);
 		data.put("langx", "zh-cn");
 		data.put("app", "N");
 		data.put("auto", "FFCHCF");
 		data.put("blackbox", "");
-		log.info("login request:"+data);
+		log.info("login request:" + data);
 		String resp = httpRequest(url, "POST", data, getHeaders());
 		if (HttpUtils.isErrorResp(resp))
 			throw new BusiException("登陆出错！");
@@ -102,7 +102,8 @@ public class RequestTool {
 		Map<String, String> data = new HashMap<String, String>();
 		data.put("code", "get_login_domain");
 		data.put("uid", uid);
-		httpRequest(url, "POST", data, getHeaders());
+		String r = httpRequest(url, "POST", data, getHeaders());
+		log.info("heart resp:" + r);
 	}
 
 	/**
@@ -444,7 +445,7 @@ public class RequestTool {
 		DailyBillResp billResp = new DailyBillResp();
 		return billResp.fromResp(resp);
 	}
-	
+
 	/**
 	 * 获取今日投注记录
 	 * 
@@ -456,17 +457,17 @@ public class RequestTool {
 		Map<String, String> data = new HashMap<String, String>();
 		data.put("uid", uid);
 		data.put("langx", "zh-cn");
-		data.put("LS", "g"); 
+		data.put("LS", "g");
 		data.put("selGtype", "ALL");
-		data.put("chk_cw", "N"); 
+		data.put("chk_cw", "N");
 		String resp = httpRequest(url, "POST", data, getHeaders());
 		if (HttpUtils.isErrorResp(resp))
 			throw new BusiException("获取今日投注记录失败！");
 		log.info("getTodayWagers:" + resp);
 		TodayBillResp billResp = new TodayBillResp();
 		return billResp.fromResp(resp);
-	} 
-	
+	}
+
 	/**
 	 * 获取历史投注记录
 	 * 
@@ -477,14 +478,14 @@ public class RequestTool {
 		String url = ballDomain + "/app/member/get_history_data.php";
 		Map<String, String> data = new HashMap<String, String>();
 		data.put("uid", uid);
-		data.put("langx", "zh-cn"); 
+		data.put("langx", "zh-cn");
 		data.put("gtype", "ALL");
-		data.put("isAll", "N");   
+		data.put("isAll", "N");
 		String resp = httpRequest(url, "POST", data, getHeaders());
 		log.info("getHistoryData:" + resp);
 		if (HttpUtils.isErrorResp(resp))
-			throw new BusiException("获取历史投注记录失败！"); 
+			throw new BusiException("获取历史投注记录失败！");
 		HistoryBillResp billResp = new HistoryBillResp();
 		return billResp.fromResp(resp);
-	} 
+	}
 }

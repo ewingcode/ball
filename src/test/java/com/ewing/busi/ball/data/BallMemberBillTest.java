@@ -11,7 +11,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.ewing.order.Door;
 import com.ewing.order.ball.BallMember;
-import com.ewing.order.ball.BetCollector; 
+import com.ewing.order.ball.BetCollector;
+import com.ewing.order.ball.login.LoginResp; 
 
 /**
  *
@@ -31,9 +32,10 @@ public class BallMemberBillTest {
 
 		try {
 
-			ballMember.login("tansonLAM83", "523123ZX");
-			ballMember.collectBetBill();
-		 
+			LoginResp loginResp = ballMember.login("tansonLAM83", "523123ZX");
+			ballMember.addBkListener("tansonLAM83", loginResp.getUid());
+			collectBetInfo.login("tansonLAM48", "523123ZX");
+			collectBetInfo.startCollectBasketInfo();
 			TimeUnit.HOURS.sleep(24);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

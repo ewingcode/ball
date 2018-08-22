@@ -1,4 +1,4 @@
-package com.ewing.order.ball.event;
+package com.ewing.order.ball.event.strategy;
 
 import java.util.List;
 import java.util.Map;
@@ -10,6 +10,8 @@ import org.springframework.util.StringUtils;
 
 import com.ewing.order.ball.RequestTool;
 import com.ewing.order.ball.bk.bet.BkPreOrderViewResp;
+import com.ewing.order.ball.event.BallEvent;
+import com.ewing.order.ball.event.BetStrategy;
 import com.ewing.order.ball.bk.bet.BetResp;
 import com.ewing.order.ball.ft.game.FtGame;
 import com.ewing.order.busi.ball.ddl.BetLog;
@@ -78,11 +80,7 @@ public class FTBasicBetStrategy extends BetStrategy {
 	public void setUid(String uid) {
 		this.uid = uid;
 	}
-
-	@Override
-	public String gameId() {
-		return null;
-	}
+ 
 
 	@Override
 	public boolean isSatisfy(BallEvent ballEvent) {

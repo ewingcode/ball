@@ -16,6 +16,8 @@ import javax.persistence.Table;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.engine.query.spi.sql.NativeSQLQuerySpecification;
+import org.hibernate.engine.spi.QueryParameters;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +54,8 @@ public class JpaDaoImpl implements BaseDao {
 
 			if (isNew) {
 				if (createtime.get(entity) == null)
-					createtime.set(entity, new java.sql.Timestamp((new java.util.Date()).getTime()));
+					createtime.set(entity,
+							new java.sql.Timestamp((new java.util.Date()).getTime()));
 			} else {
 				if (oldentity != null) {
 					createtime = oldentity.getClass().getDeclaredField("createTime");
@@ -96,23 +99,29 @@ public class JpaDaoImpl implements BaseDao {
 	}
 
 	@Override
-	public int executeSql(String sql) {
-		/*
-		 * Session session = null; Connection conn = null; Statement stmt =
-		 * null; try { entityManager.cr session = this.getSession(); conn =
-		 * session.connection(); stmt = conn.createStatement(); return
-		 * stmt.executeUpdate(sql); } catch (Exception e) {
-		 * logger.error("fail to execute sql:" + sql, e); } finally {
-		 * this.releaseSession(session); }
-		 */
-		return 0;
+	public int executeUpdate(String sql, QueryParameters queryParameters) {
+		SessionImplementor session = null;
+		try {
+			session = getSession();
+			return session.executeNativeUpdate(new NativeSQLQuerySpecification(sql, null, null),
+					queryParameters);
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e);
+			throw new DaoException(e);
+		}
+	}
+
+	@Override
+	public int executeUpdate(String sql) {
+		return executeUpdate(sql, new QueryParameters());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> List<T> find(String condition, Class<T> entityClass) {
 		try {
-			Query query = entityManager.createNativeQuery(generateQuerySql(condition, entityClass), entityClass);
+			Query query = entityManager.createNativeQuery(generateQuerySql(condition, entityClass),
+					entityClass);
 			List<T> list = query.getResultList();
 			return list;
 		} catch (DataAccessException e) {
@@ -133,7 +142,8 @@ public class JpaDaoImpl implements BaseDao {
 	@Override
 	public <T> T findOne(String condition, Class<T> entityClass) {
 		try {
-			Query query = entityManager.createNativeQuery(generateQuerySql(condition, entityClass), entityClass);
+			Query query = entityManager.createNativeQuery(generateQuerySql(condition, entityClass),
+					entityClass);
 			List<T> list = query.getResultList();
 			if (!list.isEmpty())
 				return list.get(0);
@@ -187,17 +197,18 @@ public class JpaDaoImpl implements BaseDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> PageBean<T> pageQuery(final String condition, String orderBy, final Integer page, final Integer pageSize,
-			Class<T> entityClass) {
+	public <T> PageBean<T> pageQuery(final String condition, String orderBy, final Integer page,
+			final Integer pageSize, Class<T> entityClass) {
 
 		final Integer limit = PageUtil.getLimit(page, pageSize);
 		final Integer start = PageUtil.getOffset(page, pageSize);
 
-		Query rowCountQuery = entityManager.createNativeQuery(generateQuerySql(condition, entityClass), entityClass);
+		Query rowCountQuery = entityManager
+				.createNativeQuery(generateQuerySql(condition, entityClass), entityClass);
 		int totalCount = rowCountQuery.getResultList().size();
 		Query pageQuery = entityManager
-				.createNativeQuery(generateQuerySql(condition, orderBy, entityClass), entityClass).setMaxResults(limit)
-				.setFirstResult(start);
+				.createNativeQuery(generateQuerySql(condition, orderBy, entityClass), entityClass)
+				.setMaxResults(limit).setFirstResult(start);
 		PageBean<T> ps = new PageBean<T>(page, pageSize, totalCount, pageQuery.getResultList());
 		return (PageBean<T>) ps;
 	}
@@ -234,7 +245,8 @@ public class JpaDaoImpl implements BaseDao {
 		 */
 	}
 
-	public <T> PageBean<T> noMappedObjectPageQuery(String sql, Class<T> beanClass, Integer page, Integer pageSize) {
+	public <T> PageBean<T> noMappedObjectPageQuery(String sql, Class<T> beanClass, Integer page,
+			Integer pageSize) {
 		SessionImplementor session = null;
 		Connection connection = null;
 		Statement stmt = null;
@@ -297,12 +309,13 @@ public class JpaDaoImpl implements BaseDao {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} finally {
-			closeIO(session, connection, stmt, rs); 
+			closeIO(session, connection, stmt, rs);
 		}
 
 	}
 
-	private void closeIO(SessionImplementor session, Connection connection, Statement stmt, ResultSet rs) {
+	private void closeIO(SessionImplementor session, Connection connection, Statement stmt,
+			ResultSet rs) {
 		try {
 			if (stmt != null)
 				stmt.close();

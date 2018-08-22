@@ -21,10 +21,6 @@ public class BaseModelService {
 	@Resource
 	public BaseDao baseDao;
 
-	public void executeSql(String sql) throws DaoException {
-		baseDao.executeSql(sql);
-	}
-
 	@Transactional
 	public void save(Object entity) throws DaoException {
 		baseDao.save(entity);

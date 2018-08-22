@@ -28,6 +28,10 @@ public class BetRollInfoDao {
 				BetRollInfo.class);
 	}
 
+	public BetRollInfo findById(Integer id) {
+		return baseDao.findOne(" id=" + id, BetRollInfo.class);
+	}
+
 	@Transactional
 	public RollGameCompute computeMinAndMax(String gameId) {
 		String sql = "SELECT MAX( ratio_re_c) AS maxRatioR, " + "MIN( ratio_re_c) AS minRatioR , "

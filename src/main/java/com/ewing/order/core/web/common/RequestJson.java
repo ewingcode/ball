@@ -63,6 +63,7 @@ public class RequestJson {
 		if (data.get(key) instanceof String && data.get(key) != null)
 			return Integer.valueOf(data.get(key).toString());
 		return null;
+		
 	}
 
 	public String getString(String key) {

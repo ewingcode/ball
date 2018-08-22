@@ -30,7 +30,7 @@ public class BetRule implements java.io.Serializable {
 	@Id
 	@GeneratedValue
 	@Column(name = "id")
-	private String id;
+	private Integer id;
 	@Column(name = "account")
 	private String account;
 	@Column(name = "name")
@@ -39,6 +39,8 @@ public class BetRule implements java.io.Serializable {
 	private String gid;
 	@Column(name = "gtype")
 	private String gtype;
+	@Column(name = "ptype")
+	private String ptype;
 	@Column(name = "league")
 	private String league;
 	@Column(name = "team_h")
@@ -60,6 +62,14 @@ public class BetRule implements java.io.Serializable {
 	@Column(name = "lastUpdate")
 	private Timestamp lastUpdate;
 
+	public String getPtype() {
+		return ptype;
+	}
+
+	public void setPtype(String ptype) {
+		this.ptype = ptype;
+	}
+
 	@Override
 	public String toString() {
 		return "BetRule [id=" + id + ", account=" + account + ", name=" + name + ", gid=" + gid
@@ -77,11 +87,11 @@ public class BetRule implements java.io.Serializable {
 		this.level = level;
 	}
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

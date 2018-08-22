@@ -48,6 +48,11 @@ public class BetResp extends XMLBean implements Serializable {
 	private String score_h;
 	private String score_c;
 
+	public static BetResp debugBetResp(){
+		BetResp d = new BetResp();
+		d.setErrormsg("test bet.");
+		return d;
+	}
 	public String getScore_h() {
 		return score_h;
 	}

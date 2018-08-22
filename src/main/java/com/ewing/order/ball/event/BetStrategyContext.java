@@ -13,7 +13,29 @@ public class BetStrategyContext {
 
 	private String uid;
 
+	private String ptype;
+
+	private String gtype;
+
 	private boolean allowBet = false;
+
+	public String getGtype() {
+		return gtype;
+	}
+
+	public BetStrategyContext setGtype(String gtype) {
+		this.gtype = gtype;
+		return this;
+	}
+
+	public String getPtype() {
+		return ptype;
+	}
+
+	public BetStrategyContext setPtype(String ptype) {
+		this.ptype = ptype;
+		return this;
+	}
 
 	public boolean isAllowBet() {
 		return allowBet;

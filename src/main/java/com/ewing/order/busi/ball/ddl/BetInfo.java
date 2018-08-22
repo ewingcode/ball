@@ -55,12 +55,20 @@ public class BetInfo implements java.io.Serializable {
 	private String sw_R;
 	@Column(name = "ratio")
 	private String ratio;
+	@Column(name = "ratio_re_c")
+	private Float ratio_re_c;
+	@Column(name = "n_ratio_re_c")
+	private Float n_ratio_re_c;
 	@Column(name = "ior_RH")
 	private String ior_RH;
 	@Column(name = "ior_RC")
 	private String ior_RC;
 	@Column(name = "sw_OU")
 	private String sw_OU;
+	@Column(name = "ratio_rou_c")
+	private Float ratio_rou_c;
+	@Column(name = "n_ratio_rou_c")
+	private Float n_ratio_rou_c;
 	@Column(name = "ratio_o")
 	private String ratio_o;
 	@Column(name = "ratio_u")
@@ -149,6 +157,40 @@ public class BetInfo implements java.io.Serializable {
 	private String sc_OT_A;
 	@Column(name = "sc_OT_H")
 	private String sc_OT_H; 
+	
+	
+	public Float getN_ratio_re_c() {
+		return n_ratio_re_c;
+	}
+
+	public void setN_ratio_re_c(Float n_ratio_re_c) {
+		this.n_ratio_re_c = n_ratio_re_c;
+	}
+
+	public Float getN_ratio_rou_c() {
+		return n_ratio_rou_c;
+	}
+
+	public void setN_ratio_rou_c(Float n_ratio_rou_c) {
+		this.n_ratio_rou_c = n_ratio_rou_c;
+	}
+
+	public Float getRatio_re_c() {
+		return ratio_re_c;
+	}
+
+	public void setRatio_re_c(Float ratio_re_c) {
+		this.ratio_re_c = ratio_re_c;
+	}
+
+	public Float getRatio_rou_c() {
+		return ratio_rou_c;
+	}
+
+	public void setRatio_rou_c(Float ratio_rou_c) {
+		this.ratio_rou_c = ratio_rou_c;
+	}
+
 	public String getRe_time() {
 		return re_time;
 	}

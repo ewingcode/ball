@@ -4,11 +4,7 @@ import java.util.Map;
 
 public class BasicBetStrategy extends BetStrategy {
 
-	@Override
-	public String gameId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	 
 
 	 
 	@Override

@@ -4,6 +4,7 @@ import java.util.EventListener;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ public class BetInfoListener extends Thread implements EventListener {
 	}
 
 	public void startListener() {
-		workThreads = Executors.newFixedThreadPool(10);
+		workThreads = Executors.newFixedThreadPool(2);
 		this.start();
 	}
 
@@ -39,7 +40,12 @@ public class BetInfoListener extends Thread implements EventListener {
 	public void run() {
 		while (true) {
 			try {
-				final BallEvent ballEvent = eventQueue.take();
+				log.info("eventQueue:"+eventQueue.size());
+				if(eventQueue ==null){
+					TimeUnit.SECONDS.sleep(2l);
+					continue;
+				}
+				final BallEvent ballEvent = eventQueue.poll(5, TimeUnit.SECONDS);
 				workThreads.submit(new Runnable() {
 					@Override
 					public void run() {

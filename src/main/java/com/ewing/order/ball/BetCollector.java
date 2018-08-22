@@ -293,7 +293,7 @@ public class BetCollector {
 		List<BkGame> gameList = basketBalService.collectCurrentBasketball(uid);
 		BallSource ballSource = BallSource.getBKCurrent();
 		for (BkGame bkGame : gameList) {
-			ballSource.receiveBallEvent(new BallEvent(bkGame));
+			ballSource.receiveBallEvent(new BallEvent(bkGame.getGid(),bkGame));
 		}
 		List<BetInfo> entityList = BeanCopy.copy(gameList, BetInfo.class);
 		betInfoService.updateReadyBetInfo(entityList);
@@ -307,16 +307,22 @@ public class BetCollector {
 		CollectDataPool.bkRollList.add(betInfoDto);
 	}
 
+	private BetRollInfo addBkRollTestGame(Integer id) {
+		return betRollInfoService.findById(id);
+	}
+
 	public void collectRollingBasketball() {
 		// log.info("收集当天篮球滚球信息：");
 		List<BkRollGame> rollGameList = basketBalService.collectRollingBasketball(uid);
 		List<BetRollInfo> entityList = BeanCopy.copy(rollGameList, BetRollInfo.class);
 		List<BetInfo> betInfoList = betRollInfoService.updateByRoll(entityList);
 		CollectDataPool.bkRollList = betRollInfoService.fillMaxMinInfo(betInfoList);
-		/*
-		 * addTestGame("2584409"); addTestGame("2584388");
-		 * addTestGame("2584346");
-		 */
+		BallSource ballSource = BallSource.getBKRoll();
+		entityList.add(addBkRollTestGame(18583));
+		for (BetRollInfo betRollInfo : entityList) {
+			ballSource.receiveBallEvent(new BallEvent(betRollInfo.getGid(),betRollInfo));
+		}
+		 
 	}
 
 	public void collectCurrentFootball() {
@@ -324,7 +330,7 @@ public class BetCollector {
 		List<FtGame> gameList = footBallService.collectCurrentFootball(uid);
 		BallSource ballSource = BallSource.getFTCurrent();
 		for (FtGame ftGame : gameList) {
-			ballSource.receiveBallEvent(new BallEvent(ftGame));
+			ballSource.receiveBallEvent(new BallEvent(ftGame.getGid(),ftGame));
 		}
 		List<BetInfo> entityList = BeanCopy.copy(gameList, BetInfo.class);
 		betInfoService.updateReadyBetInfo(entityList);

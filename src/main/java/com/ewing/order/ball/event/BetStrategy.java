@@ -17,8 +17,45 @@ public abstract class BetStrategy {
 	private Integer level;
 
 	protected String uid;
-	
-	public abstract String gameId();
+
+	private String gId;
+
+	private Boolean iseff;
+
+	private Integer ruleId;
+
+	public String getgId() {
+		return gId;
+	}
+
+	public void setgId(String gId) {
+		this.gId = gId;
+	}
+
+	public Integer getRuleId() {
+		return ruleId;
+	}
+
+	public void setRuleId(Integer ruleId) {
+		this.ruleId = ruleId;
+	}
+
+	public String getUid() {
+		return uid;
+	}
+
+	public Boolean getIseff() {
+		return iseff;
+	}
+
+	public void setIseff(Boolean iseff) {
+		this.iseff = iseff;
+	}
+
+	public void set2Ineff() {
+		this.iseff = false;
+	}
+
 	/**
 	 * 
 	 * @param uid
@@ -26,6 +63,7 @@ public abstract class BetStrategy {
 	public void setUid(String uid) {
 		this.uid = uid;
 	}
+
 	public void setBetStrategyName(String strategyName) {
 		this.strategyName = strategyName;
 	}
@@ -33,8 +71,22 @@ public abstract class BetStrategy {
 	protected String getParamValue(Map<String, String> paramMap, String key) {
 		String value = paramMap.get(key);
 		if (StringUtils.isEmpty(value))
-			throw new IllegalArgumentException(key + " is null");
+			return null;
 		return value;
+	}
+
+	protected Integer getIntegerParamValue(Map<String, String> paramMap, String key) {
+		String value = paramMap.get(key);
+		if (StringUtils.isEmpty(value))
+			return null;
+		return Integer.valueOf(value);
+	}
+
+	protected Float getFloatParamValue(Map<String, String> paramMap, String key) {
+		String value = paramMap.get(key);
+		if (StringUtils.isEmpty(value))
+			return null;
+		return Float.valueOf(value);
 	}
 
 	/**

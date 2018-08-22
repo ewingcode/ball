@@ -25,6 +25,10 @@ public class BetRollInfoService {
 	@Resource
 	private BetInfoDao betInfoDao;
 
+	public BetRollInfo findById(Integer id) {
+		return betRollInfoDao.findById(id);
+	}
+
 	public List<BetInfoDto> fillMaxMinInfo(List<BetInfo> list) {
 		List<BetInfoDto> dtoList = BeanCopy.copy(list, BetInfoDto.class);
 		for (BetInfoDto betInfo : dtoList) {
@@ -78,9 +82,7 @@ public class BetRollInfoService {
 	 */
 	private BetInfo updateBetInfo(BetRollInfo betRollInfo) {
 		BetInfo yetBetInfo = betInfoDao.findByGameId(betRollInfo.getGid());
-		if (betRollInfo.getGid().equals("1047")) {
-			System.out.println();
-		}
+	 
 		boolean isExist = true;
 		if (yetBetInfo == null) {
 			isExist = false;
@@ -100,6 +102,8 @@ public class BetRollInfoService {
 			yetBetInfo.setSw_OU(betRollInfo.getSw_ROU());
 			yetBetInfo.setSw_R(betRollInfo.getSw_RE());
 		}
+		yetBetInfo.setN_ratio_re_c(betRollInfo.getRatio_re_c());
+		yetBetInfo.setN_ratio_rou_c(betRollInfo.getRatio_rou_c());
 		yetBetInfo.setRe_time(betRollInfo.getRe_time());
 		yetBetInfo.setSystime(betRollInfo.getSystime());
 		yetBetInfo.setSc_total(betRollInfo.getSc_total());
@@ -115,7 +119,7 @@ public class BetRollInfoService {
 		yetBetInfo.setSc_Q3_H(betRollInfo.getSc_Q3_H());
 		yetBetInfo.setSc_Q3_total(betRollInfo.getSc_Q3_total());
 		yetBetInfo.setSc_Q4_A(betRollInfo.getSc_Q4_A());
-		yetBetInfo.setSc_Q4_H(betRollInfo.getSc_Q4_A());
+		yetBetInfo.setSc_Q4_H(betRollInfo.getSc_Q4_H());
 		yetBetInfo.setSc_Q4_total(betRollInfo.getSc_Q4_total());
 		yetBetInfo.setN_strong(betRollInfo.getStrong());
 		if (!StringUtils.isEmpty(betRollInfo.getRatio_re()))

@@ -7,7 +7,7 @@ import javax.persistence.Column;
  * 
  * @author tanson lam
  * @create 2016年9月6日
- */ 
+ */
 public class BetInfoDto implements java.io.Serializable {
 
 	/**
@@ -18,7 +18,7 @@ public class BetInfoDto implements java.io.Serializable {
 	public BetInfoDto() {
 		super();
 	}
- 
+
 	@Column(name = "id")
 	private String id;
 	@Column(name = "gtype")
@@ -32,7 +32,7 @@ public class BetInfoDto implements java.io.Serializable {
 	@Column(name = "re_time")
 	private String re_time;
 	@Column(name = "datetime")
-	private String datetime; 
+	private String datetime;
 	private String matchtime;
 	@Column(name = "league")
 	private String league;
@@ -46,12 +46,20 @@ public class BetInfoDto implements java.io.Serializable {
 	private String sw_R;
 	@Column(name = "ratio")
 	private String ratio;
+	@Column(name = "ratio_re_c")
+	private Float ratio_re_c;
+	@Column(name = "n_ratio_re_c")
+	private Float n_ratio_re_c;
 	@Column(name = "ior_RH")
 	private String ior_RH;
 	@Column(name = "ior_RC")
 	private String ior_RC;
 	@Column(name = "sw_OU")
 	private String sw_OU;
+	@Column(name = "ratio_rou_c")
+	private Float ratio_rou_c;
+	@Column(name = "n_ratio_rou_c")
+	private Float n_ratio_rou_c;
 	@Column(name = "ratio_o")
 	private String ratio_o;
 	@Column(name = "ratio_u")
@@ -144,6 +152,50 @@ public class BetInfoDto implements java.io.Serializable {
 	private Float minRatioRou;
 	@Column(name = "maxRatioRou")
 	private Float maxRatioRou;
+	/**
+	 * 是否经过新的消息，默认是新的，经过计算后才变久
+	 */
+	private Boolean isNew = true;
+
+	public Float getRatio_re_c() {
+		return ratio_re_c;
+	}
+
+	public void setRatio_re_c(Float ratio_re_c) {
+		this.ratio_re_c = ratio_re_c;
+	}
+
+	public Float getN_ratio_re_c() {
+		return n_ratio_re_c;
+	}
+
+	public void setN_ratio_re_c(Float n_ratio_re_c) {
+		this.n_ratio_re_c = n_ratio_re_c;
+	}
+
+	public Float getRatio_rou_c() {
+		return ratio_rou_c;
+	}
+
+	public void setRatio_rou_c(Float ratio_rou_c) {
+		this.ratio_rou_c = ratio_rou_c;
+	}
+
+	public Float getN_ratio_rou_c() {
+		return n_ratio_rou_c;
+	}
+
+	public void setN_ratio_rou_c(Float n_ratio_rou_c) {
+		this.n_ratio_rou_c = n_ratio_rou_c;
+	}
+
+	public Boolean getIsNew() {
+		return isNew;
+	}
+
+	public void setIsNew(Boolean isNew) {
+		this.isNew = isNew;
+	}
 
 	public String getMatchtime() {
 		return matchtime;

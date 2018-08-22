@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 
 import com.ewing.order.busi.ball.ddl.BetRule;
 import com.ewing.order.busi.ball.service.BetRuleService;
+import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.common.exception.BusiException;
 import com.ewing.order.util.GsonUtil;
 import com.google.common.collect.Lists;
@@ -21,11 +22,16 @@ public class BetRuleParser {
 	private String uid;
 	private BetRuleService betRuleSerivce;
 	private long crc32RuleValue = 0l;
+	private String gtype;
+	private String ptype;
 
-	public BetRuleParser(String account, String uid, BetRuleService betRuleSerivce) {
+	public BetRuleParser(String account, String gtype, String ptype, String uid,
+			BetRuleService betRuleSerivce) {
 		this.uid = uid;
 		this.account = account;
 		this.betRuleSerivce = betRuleSerivce;
+		this.gtype = gtype;
+		this.ptype = ptype;
 	}
 
 	public List<BetStrategy> parserRule(List<BetRule> ruleList) {
@@ -45,14 +51,17 @@ public class BetRuleParser {
 			betStrategy.initParam(GsonUtil.getGson().fromJson(betRule.getParam(), HashMap.class));
 			betStrategy.setLevel(Integer.valueOf(betRule.getLevel()));
 			betStrategy.setBetStrategyName(betRule.getName());
+			betStrategy.setIseff(betRule.getIseff().equals(IsEff.EFFECTIVE));
+			betStrategy.setgId(betRule.getGid());
 			betStrategy.setUid(uid);
+			betStrategy.setRuleId(betRule.getId());
 			list.add(betStrategy);
 		}
 		return list;
 	}
 
 	public List<BetStrategy> hasNewBetStrategy() {
-		List<BetRule> ruleList = betRuleSerivce.findRule(account);
+		List<BetRule> ruleList = betRuleSerivce.findRule(account, gtype, ptype);
 		if (CollectionUtils.isEmpty(ruleList))
 			return null;
 		long tmpcrc32RuleValue = computeCrc32(ruleList);

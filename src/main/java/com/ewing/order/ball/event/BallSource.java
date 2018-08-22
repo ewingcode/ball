@@ -17,30 +17,31 @@ public class BallSource {
 	private static Logger log = LoggerFactory.getLogger(BetInfoListener.class);
 	private Map<String, BetInfoListener> listeners = Maps.newConcurrentMap();
 
-	private static Map<String, BallSource> ballSourceInstances = Maps.newConcurrentMap(); 
-	
-	
-	public static BallSource getBKCurrent(){
+	private static Map<String, BallSource> ballSourceInstances = Maps.newConcurrentMap();
+
+	public static BallSource getBKCurrent() {
 		return getInstance("BKCurrent");
 	}
-	
-	public static BallSource getBKRoll(){
+
+	public static BallSource getBKRoll() {
 		return getInstance("BKRoll");
 	}
-	
-	public static BallSource getFTCurrent(){
+
+	public static BallSource getFTCurrent() {
 		return getInstance("FTCurrent");
 	}
-	
-	public static BallSource getFTRoll(){
+
+	public static BallSource getFTRoll() {
 		return getInstance("FTRoll");
 	}
-	
+
 	private static BallSource getInstance(String gtype) {
 		BallSource instance = ballSourceInstances.get(gtype);
 		if (instance == null) {
 			instance = new BallSource();
-			ballSourceInstances.put(gtype, instance);
+			instance = ballSourceInstances.putIfAbsent(gtype, instance);
+			if (instance == null)
+				return ballSourceInstances.get(gtype);
 		}
 		return instance;
 	}
@@ -54,7 +55,7 @@ public class BallSource {
 	 * 
 	 * @param listener
 	 */
-	public void addBallListener(BetInfoListener eventListener) {
+	public synchronized void addBallListener(BetInfoListener eventListener) {
 		BetInfoListener existListener = listeners.get(eventListener.getAccount());
 		if (existListener != null) {
 			existListener.stopListener();
@@ -62,10 +63,18 @@ public class BallSource {
 		listeners.put(eventListener.getAccount(), eventListener);
 	}
 
+	public synchronized void stopBallListener(String account) {
+		BetInfoListener existListener = listeners.get(account);
+		if (existListener != null) {
+			existListener.stopListener();
+		}
+		listeners.remove(account);
+	}
+
 	/**
 	 * 当事件发生时，通知注册在事件源上的所有事件做出相应的反映
 	 */
-	private void notifyListener(BallEvent ballEvent) {
+	private synchronized void notifyListener(BallEvent ballEvent) {
 		for (String account : listeners.keySet()) {
 			try {
 				listeners.get(account).handleEvent(ballEvent);
@@ -75,7 +84,7 @@ public class BallSource {
 		}
 	}
 
-	public void receiveBallEvent(BallEvent e) { 
+	public void receiveBallEvent(BallEvent e) {
 		notifyListener(e);
 	}
 
