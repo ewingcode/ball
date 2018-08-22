@@ -1,5 +1,8 @@
 package com.ewing.order.ball.event;
 
+import java.util.List;
+
+import com.ewing.order.ball.dto.BetInfoDto;
 import com.ewing.order.busi.ball.service.BetLogService;
 import com.ewing.order.busi.ball.service.BetRuleService;
 
@@ -18,6 +21,17 @@ public class BetStrategyContext {
 	private String gtype;
 
 	private boolean allowBet = false;
+
+	private List<BetInfoDto> betInfoList;
+
+	public List<BetInfoDto> getBetInfoList() {
+		return betInfoList;
+	}
+
+	public BetStrategyContext setBetInfoList(List<BetInfoDto> betInfoList) {
+		this.betInfoList = betInfoList;
+		return this;
+	}
 
 	public String getGtype() {
 		return gtype;

@@ -1,5 +1,7 @@
 package com.ewing.order.ball.dto;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 
 /**
@@ -138,24 +140,24 @@ public class BetInfoDto implements java.io.Serializable {
 	private String status;
 	@Column(name = "sc_FT_A")
 	private String sc_FT_A;
-	@Column(name = "sc_FT_H")
 	private String sc_FT_H;
-	@Column(name = "sc_OT_A")
 	private String sc_OT_A;
-	@Column(name = "sc_OT_H")
 	private String sc_OT_H;
-	@Column(name = "minRatioR")
 	private Float minRatioR;
-	@Column(name = "maxRatioR")
 	private Float maxRatioR;
-	@Column(name = "minRatioRou")
 	private Float minRatioRou;
-	@Column(name = "maxRatioRou")
 	private Float maxRatioRou;
-	/**
-	 * 是否经过新的消息，默认是新的，经过计算后才变久
-	 */
-	private Boolean isNew = true;
+	@Column(name = "lastUpdate")
+	private Timestamp lastUpdate;
+	 
+
+	public Timestamp getLastUpdate() {
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(Timestamp lastUpdate) {
+		this.lastUpdate = lastUpdate;
+	}
 
 	public Float getRatio_re_c() {
 		return ratio_re_c;
@@ -187,14 +189,6 @@ public class BetInfoDto implements java.io.Serializable {
 
 	public void setN_ratio_rou_c(Float n_ratio_rou_c) {
 		this.n_ratio_rou_c = n_ratio_rou_c;
-	}
-
-	public Boolean getIsNew() {
-		return isNew;
-	}
-
-	public void setIsNew(Boolean isNew) {
-		this.isNew = isNew;
 	}
 
 	public String getMatchtime() {

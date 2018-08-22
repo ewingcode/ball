@@ -45,9 +45,11 @@ public class BetStrategyPool {
 
 	private AtomicBoolean isLoad = new AtomicBoolean(false);
 
+	
+
 	public BetStrategyPool() {
 
-	}
+	} 
 
 	public BetStrategyContext getBetStrategyContext() {
 		return betStrategyContext;
@@ -122,8 +124,8 @@ public class BetStrategyPool {
 		});
 	}
 
-	public void executeStratgeys(List<BetInfoDto> betInfoList){
-		 
+	public void executeStratgeys(List<BetInfoDto> betInfoList) {
+
 	}
 
 	public void runStratgeys(BallEvent ballEvent) {
