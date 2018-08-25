@@ -208,20 +208,35 @@ public class BetRollInfoService {
 			Float ratio_rou_c = Float.valueOf(betRollInfo.getRatio_rouo().replace("大", "").trim());
 			betRollInfo.setRatio_rou_c(ratio_rou_c);
 		}
-		betRollInfo.setSc_total(add(betRollInfo.getSc_FT_A(), betRollInfo.getSc_FT_H()).toString());
-		betRollInfo
-				.setRou_dis(subtract(betRollInfo.getRatio_rouu().replace(" ", "").replace("小", ""),
-						betRollInfo.getSc_total()).toString());
-		betRollInfo
-				.setRe_dis(subtract(betRollInfo.getSc_FT_A(), betRollInfo.getSc_FT_H()).toString());
-		betRollInfo
-				.setSc_Q4_total(add(betRollInfo.getSc_Q4_H(), betRollInfo.getSc_Q4_A()).toString());
-		betRollInfo
-				.setSc_Q3_total(add(betRollInfo.getSc_Q3_H(), betRollInfo.getSc_Q3_A()).toString());
-		betRollInfo
-				.setSc_Q2_total(add(betRollInfo.getSc_Q2_H(), betRollInfo.getSc_Q2_A()).toString());
-		betRollInfo
-				.setSc_Q1_total(add(betRollInfo.getSc_Q1_H(), betRollInfo.getSc_Q1_A()).toString());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_FT_A())
+				&& !StringUtils.isEmpty(betRollInfo.getSc_FT_H()))
+			betRollInfo.setSc_total(
+					add(betRollInfo.getSc_FT_A(), betRollInfo.getSc_FT_H()).toString());
+		if (!StringUtils.isEmpty(betRollInfo.getRatio_rouu())
+				&& !StringUtils.isEmpty(betRollInfo.getSc_total()))
+			betRollInfo.setRou_dis(
+					subtract(betRollInfo.getRatio_rouu().replace(" ", "").replace("小", ""),
+							betRollInfo.getSc_total()).toString());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_FT_A())
+				&& !StringUtils.isEmpty(betRollInfo.getSc_FT_H()))
+			betRollInfo.setRe_dis(
+					subtract(betRollInfo.getSc_FT_A(), betRollInfo.getSc_FT_H()).toString());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_Q4_H())
+				&& !StringUtils.isEmpty(betRollInfo.getSc_Q4_A()))
+			betRollInfo.setSc_Q4_total(
+					add(betRollInfo.getSc_Q4_H(), betRollInfo.getSc_Q4_A()).toString());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_Q3_H())
+				&& !StringUtils.isEmpty(betRollInfo.getSc_Q3_A()))
+			betRollInfo.setSc_Q3_total(
+					add(betRollInfo.getSc_Q3_H(), betRollInfo.getSc_Q3_A()).toString());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_Q2_H())
+				&& !StringUtils.isEmpty(betRollInfo.getSc_Q2_A()))
+			betRollInfo.setSc_Q2_total(
+					add(betRollInfo.getSc_Q2_H(), betRollInfo.getSc_Q2_A()).toString());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_Q1_H())
+				&& !StringUtils.isEmpty(betRollInfo.getSc_Q1_A()))
+			betRollInfo.setSc_Q1_total(
+					add(betRollInfo.getSc_Q1_H(), betRollInfo.getSc_Q1_A()).toString());
 
 	}
 

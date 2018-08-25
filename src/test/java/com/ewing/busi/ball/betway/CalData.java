@@ -39,7 +39,8 @@ public class CalData {
 		List<BetInfo> betInfoList = Lists.newArrayList();
 		for (BetInfo betInfo : entityList) {
 			if (StringUtils.isEmpty(betInfo.getRatio())
-					|| StringUtils.isEmpty(betInfo.getRatio_o())) {
+					|| StringUtils.isEmpty(betInfo.getRatio_o())
+					|| StringUtils.isEmpty(betInfo.getSc_total())) {
 				continue;
 			}
 			betInfoList.add(betInfo);
