@@ -22,14 +22,24 @@ public class BetRuleService {
 	private BetRuleDao betRuleDao;
 	@Resource
 	private BaseDao baseDao;
-
-	public List<BetRule> findRule(String account, String gtype, String ptype) {
-		return betRuleDao.findRule(account, gtype, ptype);
+ 
+	public List<BetRule> findRule(String account, String status, String gtype, String ptype) {
+		return betRuleDao.findRule(account, status, gtype, ptype);
 	}
 
 	@Transactional
-	public int update2Success(Integer ruleId) {
-		return betRuleDao.update2Success(ruleId);
+	public int update2Success(Integer ruleId, Integer betLogId) {
+		return betRuleDao.update2Success(ruleId, betLogId);
+	}
+
+	@Transactional
+	public int updateDesc(Integer ruleId, String msg) {
+		return betRuleDao.updateDesc(ruleId, msg);
+	}
+
+	@Transactional
+	public int update2Ineff(Integer ruleId) {
+		return betRuleDao.update2Ineff(ruleId);
 	}
 
 	@Transactional

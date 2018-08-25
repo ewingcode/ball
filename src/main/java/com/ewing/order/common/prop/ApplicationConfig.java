@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import com.ewing.order.core.redis.CacheConfig;
 
 @Configuration
-@EnableConfigurationProperties({ OAuthProp.class,CacheConfig.class })
+@EnableConfigurationProperties({BallmatchProp.class, OAuthProp.class,CacheConfig.class })
 public class ApplicationConfig {
 
 }

@@ -21,6 +21,7 @@ import com.ewing.order.ball.leaguelist.LeagueListResp;
 import com.ewing.order.ball.login.LoginResp;
 import com.ewing.order.ball.login.MemberResp;
 import com.ewing.order.common.exception.BusiException;
+import com.ewing.order.common.prop.BallmatchProp;
 import com.ewing.order.util.HttpUtils;
 
 /**
@@ -30,7 +31,7 @@ import com.ewing.order.util.HttpUtils;
  */
 public class RequestTool {
 	private static Logger log = LoggerFactory.getLogger(RequestTool.class);
-	private final static String ballDomain = "http://205.201.1.82/";
+	private final static String ballDomain = BallmatchProp.url;
 
 	private final static String userAgent = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/53";
 

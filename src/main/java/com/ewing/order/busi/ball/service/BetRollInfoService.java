@@ -82,7 +82,7 @@ public class BetRollInfoService {
 	 */
 	private BetInfo updateBetInfo(BetRollInfo betRollInfo) {
 		BetInfo yetBetInfo = betInfoDao.findByGameId(betRollInfo.getGid());
-	 
+
 		boolean isExist = true;
 		if (yetBetInfo == null) {
 			isExist = false;
@@ -102,26 +102,46 @@ public class BetRollInfoService {
 			yetBetInfo.setSw_OU(betRollInfo.getSw_ROU());
 			yetBetInfo.setSw_R(betRollInfo.getSw_RE());
 		}
-		yetBetInfo.setN_ratio_re_c(betRollInfo.getRatio_re_c());
-		yetBetInfo.setN_ratio_rou_c(betRollInfo.getRatio_rou_c());
-		yetBetInfo.setRe_time(betRollInfo.getRe_time());
-		yetBetInfo.setSystime(betRollInfo.getSystime());
-		yetBetInfo.setSc_total(betRollInfo.getSc_total());
-		yetBetInfo.setRou_dis(betRollInfo.getRou_dis());
-		yetBetInfo.setRe_dis(betRollInfo.getRe_dis());
-		yetBetInfo.setSc_Q1_A(betRollInfo.getSc_Q1_A());
-		yetBetInfo.setSc_Q1_H(betRollInfo.getSc_Q1_H());
-		yetBetInfo.setSc_Q1_total(betRollInfo.getSc_Q1_total());
-		yetBetInfo.setSc_Q2_A(betRollInfo.getSc_Q2_A());
-		yetBetInfo.setSc_Q2_H(betRollInfo.getSc_Q2_H());
-		yetBetInfo.setSc_Q2_total(betRollInfo.getSc_Q2_total());
-		yetBetInfo.setSc_Q3_A(betRollInfo.getSc_Q3_A());
-		yetBetInfo.setSc_Q3_H(betRollInfo.getSc_Q3_H());
-		yetBetInfo.setSc_Q3_total(betRollInfo.getSc_Q3_total());
-		yetBetInfo.setSc_Q4_A(betRollInfo.getSc_Q4_A());
-		yetBetInfo.setSc_Q4_H(betRollInfo.getSc_Q4_H());
-		yetBetInfo.setSc_Q4_total(betRollInfo.getSc_Q4_total());
-		yetBetInfo.setN_strong(betRollInfo.getStrong());
+		if (!StringUtils.isEmpty(betRollInfo.getRatio_re_c()))
+			yetBetInfo.setN_ratio_re_c(betRollInfo.getRatio_re_c());
+		if (!StringUtils.isEmpty(betRollInfo.getRatio_rou_c()))
+			yetBetInfo.setN_ratio_rou_c(betRollInfo.getRatio_rou_c());
+		if (!StringUtils.isEmpty(betRollInfo.getRe_time()))
+			yetBetInfo.setRe_time(betRollInfo.getRe_time());
+		if (!StringUtils.isEmpty(betRollInfo.getSystime()))
+			yetBetInfo.setSystime(betRollInfo.getSystime());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_total()))
+			yetBetInfo.setSc_total(betRollInfo.getSc_total());
+		if (!StringUtils.isEmpty(betRollInfo.getRou_dis()))
+			yetBetInfo.setRou_dis(betRollInfo.getRou_dis());
+		if (!StringUtils.isEmpty(betRollInfo.getRe_dis()))
+			yetBetInfo.setRe_dis(betRollInfo.getRe_dis());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_Q1_A()))
+			yetBetInfo.setSc_Q1_A(betRollInfo.getSc_Q1_A());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_Q1_H()))
+			yetBetInfo.setSc_Q1_H(betRollInfo.getSc_Q1_H());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_Q1_total()))
+			yetBetInfo.setSc_Q1_total(betRollInfo.getSc_Q1_total());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_Q2_A()))
+			yetBetInfo.setSc_Q2_A(betRollInfo.getSc_Q2_A());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_Q2_H()))
+			yetBetInfo.setSc_Q2_H(betRollInfo.getSc_Q2_H());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_Q2_total()))
+			yetBetInfo.setSc_Q2_total(betRollInfo.getSc_Q2_total());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_Q3_A()))
+			yetBetInfo.setSc_Q3_A(betRollInfo.getSc_Q3_A());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_Q3_H()))
+			yetBetInfo.setSc_Q3_H(betRollInfo.getSc_Q3_H());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_Q3_total()))
+			yetBetInfo.setSc_Q3_total(betRollInfo.getSc_Q3_total());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_Q4_A()))
+			yetBetInfo.setSc_Q4_A(betRollInfo.getSc_Q4_A());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_Q4_H()))
+			yetBetInfo.setSc_Q4_H(betRollInfo.getSc_Q4_H());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_Q4_total()))
+			yetBetInfo.setSc_Q4_total(betRollInfo.getSc_Q4_total());
+		if (!StringUtils.isEmpty(betRollInfo.getStrong()))
+			yetBetInfo.setN_strong(betRollInfo.getStrong());
 		if (!StringUtils.isEmpty(betRollInfo.getRatio_re()))
 			yetBetInfo.setN_ratio(betRollInfo.getRatio_re());
 		if (!StringUtils.isEmpty(betRollInfo.getIor_REC()))
@@ -136,22 +156,38 @@ public class BetRollInfoService {
 			yetBetInfo.setN_ior_OUC(betRollInfo.getIor_ROUC());
 		if (!StringUtils.isEmpty(betRollInfo.getIor_ROUH()))
 			yetBetInfo.setN_ior_OUH(betRollInfo.getIor_ROUH());
-		yetBetInfo.setN_sw_OU(betRollInfo.getSw_ROU());
-		yetBetInfo.setN_sw_R(betRollInfo.getSw_RE());
-		yetBetInfo.setSc_new(betRollInfo.getSc_new());
-		yetBetInfo.setSe_now(betRollInfo.getSe_now());
-		yetBetInfo.setT_count(betRollInfo.getT_count());
-		yetBetInfo.setT_status(betRollInfo.getT_status());
-		yetBetInfo.setScore_c(betRollInfo.getScore_c());
-		yetBetInfo.setScore_h(betRollInfo.getScore_h());
-		yetBetInfo.setPtype(betRollInfo.getPtype());
-		yetBetInfo.setSc_FT_A(betRollInfo.getSc_FT_A());
-		yetBetInfo.setSc_FT_H(betRollInfo.getSc_FT_H());
-		yetBetInfo.setSc_OT_A(betRollInfo.getSc_OT_A());
-		yetBetInfo.setSc_OT_H(betRollInfo.getSc_OT_H());
-		yetBetInfo.setSe_type(betRollInfo.getSe_type());
-		yetBetInfo.setSe_now(betRollInfo.getSe_now());
-		yetBetInfo.setT_count(betRollInfo.getT_count());
+		if (!StringUtils.isEmpty(betRollInfo.getSw_ROU()))
+			yetBetInfo.setN_sw_OU(betRollInfo.getSw_ROU());
+		if (!StringUtils.isEmpty(betRollInfo.getSw_RE()))
+			yetBetInfo.setN_sw_R(betRollInfo.getSw_RE());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_new()))
+			yetBetInfo.setSc_new(betRollInfo.getSc_new());
+		if (!StringUtils.isEmpty(betRollInfo.getSe_now()))
+			yetBetInfo.setSe_now(betRollInfo.getSe_now());
+		if (!StringUtils.isEmpty(betRollInfo.getT_count()))
+			yetBetInfo.setT_count(betRollInfo.getT_count());
+		if (!StringUtils.isEmpty(betRollInfo.getT_status()))
+			yetBetInfo.setT_status(betRollInfo.getT_status());
+		if (!StringUtils.isEmpty(betRollInfo.getScore_c()))
+			yetBetInfo.setScore_c(betRollInfo.getScore_c());
+		if (!StringUtils.isEmpty(betRollInfo.getScore_h()))
+			yetBetInfo.setScore_h(betRollInfo.getScore_h());
+		if (!StringUtils.isEmpty(betRollInfo.getPtype()))
+			yetBetInfo.setPtype(betRollInfo.getPtype());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_FT_A()))
+			yetBetInfo.setSc_FT_A(betRollInfo.getSc_FT_A());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_FT_H()))
+			yetBetInfo.setSc_FT_H(betRollInfo.getSc_FT_H());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_OT_A()))
+			yetBetInfo.setSc_OT_A(betRollInfo.getSc_OT_A());
+		if (!StringUtils.isEmpty(betRollInfo.getSc_OT_H()))
+			yetBetInfo.setSc_OT_H(betRollInfo.getSc_OT_H());
+		if (!StringUtils.isEmpty(betRollInfo.getSe_type()))
+			yetBetInfo.setSe_type(betRollInfo.getSe_type());
+		if (!StringUtils.isEmpty(betRollInfo.getSe_now()))
+			yetBetInfo.setSe_now(betRollInfo.getSe_now());
+		if (!StringUtils.isEmpty(betRollInfo.getT_count()))
+			yetBetInfo.setT_count(betRollInfo.getT_count());
 		if (isExist) {
 			yetBetInfo.setLastUpdate(new java.sql.Timestamp((new java.util.Date()).getTime()));
 			yetBetInfo.setStatus(GameStatus.RUNNING);

@@ -29,7 +29,9 @@ public class BetLog implements java.io.Serializable {
 	@Id
 	@GeneratedValue
 	@Column(name = "id")
-	private String id;
+	private Integer id;
+	@Column(name = "bet_rule_id")
+	private Integer bet_rule_id;
 	@Column(name = "account")
 	private String account;
 	@Column(name = "code")
@@ -105,6 +107,14 @@ public class BetLog implements java.io.Serializable {
 	@Column(name = "score_c")
 	private String score_c;
 
+	public Integer getBet_rule_id() {
+		return bet_rule_id;
+	}
+
+	public void setBet_rule_id(Integer bet_rule_id) {
+		this.bet_rule_id = bet_rule_id;
+	}
+
 	public String getScore_h() {
 		return score_h;
 	}
@@ -121,11 +131,11 @@ public class BetLog implements java.io.Serializable {
 		this.score_c = score_c;
 	}
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

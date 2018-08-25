@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import com.ewing.order.ball.shared.BetRuleStatus;
 import com.ewing.order.busi.ball.ddl.BetRule;
 import com.ewing.order.busi.ball.service.BetRuleService;
 import com.ewing.order.common.contant.IsEff;
@@ -61,19 +62,20 @@ public class BetRuleParser {
 	}
 
 	public List<BetStrategy> hasNewBetStrategy() {
-		List<BetRule> ruleList = betRuleSerivce.findRule(account, gtype, ptype);
-		if (CollectionUtils.isEmpty(ruleList))
-			return null;
-		long tmpcrc32RuleValue = computeCrc32(ruleList);
-		System.out.println(
-				"tmpcrc32RuleValue:" + tmpcrc32RuleValue + ",crc32RuleValue:" + crc32RuleValue);
+		List<BetRule> ruleList = betRuleSerivce.findRule(account, BetRuleStatus.NOTSUCCESS, gtype,
+				ptype);
+		if (CollectionUtils.isEmpty(ruleList)){
+			log.info("已经没有投注策略，账号:" + account);
+			return Lists.newArrayList();
+		}
+		long tmpcrc32RuleValue = computeCrc32(ruleList); 
 		if (crc32RuleValue == 0l || crc32RuleValue != tmpcrc32RuleValue) {
-			log.info("hasNewBetStrategy for account:" + account);
+			log.info("有新的投注策略，账号:" + account);
 			crc32RuleValue = tmpcrc32RuleValue;
 			return parserRule(ruleList);
+		} else { 
+			return null;
 		}
-		log.info("no betstrategy change for account:" + account);
-		return null;
 
 	}
 

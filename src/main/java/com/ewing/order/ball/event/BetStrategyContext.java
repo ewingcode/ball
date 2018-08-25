@@ -22,14 +22,14 @@ public class BetStrategyContext {
 
 	private boolean allowBet = false;
 
-	private List<BetInfoDto> betInfoList;
+	private WrapDataCallBack<List<BetInfoDto>> wrapDataCallBack;
 
 	public List<BetInfoDto> getBetInfoList() {
-		return betInfoList;
+		return wrapDataCallBack.getData();
 	}
 
-	public BetStrategyContext setBetInfoList(List<BetInfoDto> betInfoList) {
-		this.betInfoList = betInfoList;
+	public BetStrategyContext setBetInfoList(WrapDataCallBack<List<BetInfoDto>> wrapDataCallBack) {
+		this.wrapDataCallBack = wrapDataCallBack;
 		return this;
 	}
 

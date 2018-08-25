@@ -1,9 +1,7 @@
 package com.ewing.order.ball;
 
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,8 +31,9 @@ import com.ewing.order.busi.ball.ddl.BetInfo;
 import com.ewing.order.busi.ball.ddl.BetRollInfo;
 import com.ewing.order.busi.ball.service.BetInfoService;
 import com.ewing.order.busi.ball.service.BetRollInfoService;
+import com.ewing.order.common.prop.BallmatchProp;
+import com.ewing.order.common.prop.OAuthProp;
 import com.ewing.order.util.BeanCopy;
-import com.ewing.order.util.DateUtil;
 import com.ewing.order.util.DataFormat;
 import com.google.common.collect.Lists;
 
@@ -69,10 +68,6 @@ public class BetCollector {
 	private final static long rollDataCollectTime = 10 * 1000;
 
 	private final static long heartbeatTime = 30 * 1000;
-
-	private final static String LOGIN_USER = "tansonLAM38";
-
-	private final static String LOGIN_PWD = "523123ZX";
 
 	public static void main(String[] args) {
 		System.out.println(CollectDataPool.toFix2Num("0.90"));
@@ -155,10 +150,10 @@ public class BetCollector {
 	}
 
 	@Scheduled(cron = "*/10 * * * * * ")
-	public void init() {
-		if (istartCollect.getAndSet(true))
+	public void init() { 
+		if (istartCollect.getAndSet(true) || !BallmatchProp.allowcollect)
 			return;
-		if (login(LOGIN_USER, LOGIN_PWD)) {
+		if (login(BallmatchProp.getAccount(), BallmatchProp.getPwd())) {
 			// startCollectFootballInfo();
 			startCollectBasketInfo();
 		}
@@ -293,7 +288,7 @@ public class BetCollector {
 		List<BkGame> gameList = basketBalService.collectCurrentBasketball(uid);
 		BallSource ballSource = BallSource.getBKCurrent();
 		for (BkGame bkGame : gameList) {
-			ballSource.receiveBallEvent(new BallEvent(bkGame.getGid(),bkGame));
+			ballSource.receiveBallEvent(new BallEvent(bkGame.getGid(), bkGame));
 		}
 		List<BetInfo> entityList = BeanCopy.copy(gameList, BetInfo.class);
 		betInfoService.updateReadyBetInfo(entityList);
@@ -302,6 +297,8 @@ public class BetCollector {
 
 	private void addTestGame(String gid) {
 		BetInfo betInfo = betInfoService.findByGameId(gid);
+		if (betInfo == null)
+			return;
 		BetInfoDto betInfoDto = new BetInfoDto();
 		BeanCopy.copy(betInfoDto, betInfo, true);
 		CollectDataPool.bkRollList.add(betInfoDto);
@@ -317,12 +314,7 @@ public class BetCollector {
 		List<BetRollInfo> entityList = BeanCopy.copy(rollGameList, BetRollInfo.class);
 		List<BetInfo> betInfoList = betRollInfoService.updateByRoll(entityList);
 		CollectDataPool.bkRollList = betRollInfoService.fillMaxMinInfo(betInfoList);
-		BallSource ballSource = BallSource.getBKRoll();
-		entityList.add(addBkRollTestGame(18583));
-		for (BetRollInfo betRollInfo : entityList) {
-			ballSource.receiveBallEvent(new BallEvent(betRollInfo.getGid(),betRollInfo));
-		}
-		 
+		addTestGame("2590702");
 	}
 
 	public void collectCurrentFootball() {
@@ -330,7 +322,7 @@ public class BetCollector {
 		List<FtGame> gameList = footBallService.collectCurrentFootball(uid);
 		BallSource ballSource = BallSource.getFTCurrent();
 		for (FtGame ftGame : gameList) {
-			ballSource.receiveBallEvent(new BallEvent(ftGame.getGid(),ftGame));
+			ballSource.receiveBallEvent(new BallEvent(ftGame.getGid(), ftGame));
 		}
 		List<BetInfo> entityList = BeanCopy.copy(gameList, BetInfo.class);
 		betInfoService.updateReadyBetInfo(entityList);

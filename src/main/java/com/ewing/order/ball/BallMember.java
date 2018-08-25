@@ -1,5 +1,6 @@
 package com.ewing.order.ball;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -10,10 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import com.ewing.order.ball.dto.BetInfoDto;
 import com.ewing.order.ball.event.BallSource;
 import com.ewing.order.ball.event.BetInfoListener;
 import com.ewing.order.ball.event.BetStrategyPool;
-import com.ewing.order.ball.league.LeagueResp;
+import com.ewing.order.ball.event.WrapDataCallBack;
 import com.ewing.order.ball.login.LoginResp;
 import com.ewing.order.ball.shared.GtypeStatus;
 import com.ewing.order.ball.shared.PtypeStatus;
@@ -72,7 +74,13 @@ public class BallMember {
 		BetStrategyPool betStrategyPool = new BetStrategyPool();
 		betStrategyPool.getBetStrategyContext().setBetLogService(betLogService)
 				.setBetRuleService(betRuleService).setAccount(account).setUid(uid)
-				.setGtype(GtypeStatus.BK).setPtype(PtypeStatus.TODAY);
+				.setGtype(GtypeStatus.BK).setPtype(PtypeStatus.TODAY)
+				.setBetInfoList(new WrapDataCallBack<List<BetInfoDto>>() {
+					@Override
+					public List<BetInfoDto> getData() {
+						return BetCollector.CollectDataPool.getBkTodayList();
+					}
+				});
 		betStrategyPool.loadBetStrategyConf();
 		BetInfoListener betInfoListener = new BetInfoListener(account, betStrategyPool);
 		BallSource.getBKCurrent().addBallListener(betInfoListener);
@@ -85,7 +93,13 @@ public class BallMember {
 		BetStrategyPool betStrategyPool = new BetStrategyPool();
 		betStrategyPool.getBetStrategyContext().setBetLogService(betLogService)
 				.setBetRuleService(betRuleService).setAccount(account).setUid(uid)
-				.setGtype(GtypeStatus.BK).setPtype(PtypeStatus.ROLL);
+				.setGtype(GtypeStatus.BK).setPtype(PtypeStatus.ROLL)
+				.setBetInfoList(new WrapDataCallBack<List<BetInfoDto>>() {
+					@Override
+					public List<BetInfoDto> getData() {
+						return BetCollector.CollectDataPool.getBkRollList();
+					}
+				});
 		betStrategyPool.loadBetStrategyConf();
 		BetInfoListener betInfoListener = new BetInfoListener(account, betStrategyPool);
 		BallSource.getBKRoll().addBallListener(betInfoListener);
@@ -101,10 +115,10 @@ public class BallMember {
 				try {
 					log.info("timer:" + Thread.currentThread().getName());
 					RequestTool.getLeaguesCount(uid);
-				} catch (Exception e) {
-					log.error(e.getMessage(), e);
+				} catch (Exception e) { 
 					if (e != null && !StringUtils.isEmpty(e.getMessage())
 							&& e.getMessage().indexOf(RequestTool.ErrorCode.doubleLogin) > -1) {
+						log.error("stop listener for account:"+account, e);
 						BallSource.getBKRoll().stopBallListener(account);
 						BallSource.getBKCurrent().stopBallListener(account);
 						timer.cancel();
@@ -112,5 +126,5 @@ public class BallMember {
 				}
 			}
 		}, 1000, 20000);
-	} 
+	}
 }

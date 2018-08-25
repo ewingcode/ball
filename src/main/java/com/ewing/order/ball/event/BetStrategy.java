@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.util.StringUtils;
 
 import com.ewing.order.ball.bk.bet.BetResp;
+import com.ewing.order.busi.ball.ddl.BetRule;
 
 public abstract class BetStrategy {
 
@@ -56,6 +57,7 @@ public abstract class BetStrategy {
 		this.iseff = false;
 	}
 
+	
 	/**
 	 * 
 	 * @param uid
@@ -94,6 +96,12 @@ public abstract class BetStrategy {
 	 */
 	public abstract void initParam(Map<String, String> paramMap);
 
+	/**
+	 * 描述
+	 */
+	public String desc(BetRule betRule){
+		return "";
+	}
 	/**
 	 * 策略名称
 	 * 

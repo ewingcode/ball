@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "oauth")
 public class OAuthProp {
 
-	public static String oauthServer;
-
+	public static String oauthServer; 
+	
 	public static String getOauthServer() {
 		return oauthServer;
 	}

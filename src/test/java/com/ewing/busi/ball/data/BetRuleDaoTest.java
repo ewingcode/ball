@@ -25,7 +25,7 @@ public class BetRuleDaoTest {
 	public void testupdate2Ineff() {
 
 		try {
-			betRuleService.update2Success(3);
+			betRuleService.update2Ineff(3);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -35,6 +35,8 @@ public class BetRule implements java.io.Serializable {
 	private String account;
 	@Column(name = "name")
 	private String name;
+	@Column(name = "long_desc")
+	private String long_desc;
 	@Column(name = "gid")
 	private String gid;
 	@Column(name = "gtype")
@@ -51,16 +53,44 @@ public class BetRule implements java.io.Serializable {
 	private String param;
 	@Column(name = "impl_code")
 	private String impl_code;
-	@Column(name = "desc")
-	private String desc;
+	@Column(name = "comment")
+	private String comment;
 	@Column(name = "level")
 	private String level;
+	@Column(name = "bet_log_id")
+	private Integer bet_log_id;
+	@Column(name = "status")
+	private String status;
 	@Column(name = "iseff")
 	private String iseff;
 	@Column(name = "createTime")
 	private Timestamp createTime;
 	@Column(name = "lastUpdate")
 	private Timestamp lastUpdate;
+
+	public String getLong_desc() {
+		return long_desc;
+	}
+
+	public void setLong_desc(String long_desc) {
+		this.long_desc = long_desc;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Integer getBet_log_id() {
+		return bet_log_id;
+	}
+
+	public void setBet_log_id(Integer bet_log_id) {
+		this.bet_log_id = bet_log_id;
+	}
 
 	public String getPtype() {
 		return ptype;
@@ -74,7 +104,7 @@ public class BetRule implements java.io.Serializable {
 	public String toString() {
 		return "BetRule [id=" + id + ", account=" + account + ", name=" + name + ", gid=" + gid
 				+ ", gtype=" + gtype + ", league=" + league + ", team_h=" + team_h + ", team_c="
-				+ team_c + ", param=" + param + ", impl_code=" + impl_code + ", desc=" + desc
+				+ team_c + ", param=" + param + ", impl_code=" + impl_code + ", comment=" + comment
 				+ ", level=" + level + ", iseff=" + iseff + ", createTime=" + createTime
 				+ ", lastUpdate=" + lastUpdate + "]";
 	}
@@ -167,12 +197,12 @@ public class BetRule implements java.io.Serializable {
 		this.impl_code = impl_code;
 	}
 
-	public String getDesc() {
-		return desc;
+	public String getComment() {
+		return comment;
 	}
 
-	public void setDesc(String desc) {
-		this.desc = desc;
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 	public String getIseff() {

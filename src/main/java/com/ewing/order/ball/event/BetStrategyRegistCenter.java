@@ -30,6 +30,7 @@ public class BetStrategyRegistCenter {
 	public static void addBetStrategy(Class<? extends BetStrategy> clazz) {
 		betStrategies.put(clazz.getSimpleName(), clazz);
 	}
+	 
 
 	public static BetStrategy newBetStrategy(String betStrategyClazzName) {
 		Class<? extends BetStrategy> clazz = betStrategies.get(betStrategyClazzName);

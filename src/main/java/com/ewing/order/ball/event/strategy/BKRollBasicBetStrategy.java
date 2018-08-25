@@ -15,7 +15,13 @@ import com.ewing.order.ball.event.BallEvent;
 import com.ewing.order.ball.event.BetStrategy;
 import com.ewing.order.ball.ft.game.FtGame;
 import com.ewing.order.busi.ball.ddl.BetLog;
-
+/**
+ * 1、选择在第几节之前买入
+ * 2、选
+ *
+ * @author tansonlam
+ * @create 2018年8月24日
+ */
 public class BKRollBasicBetStrategy extends BetStrategy {
 	private static Logger log = LoggerFactory.getLogger(BKRollBasicBetStrategy.class);
 	private String gtype = "BK";
@@ -23,15 +29,19 @@ public class BKRollBasicBetStrategy extends BetStrategy {
 	/**
 	 * 每天下注场数
 	 */
-	private int MAXEACHDAY = 3;
+	private int MAXEACHDAY = 1;
 	/**
 	 * 每场比赛下注次数
 	 */
 	private int MAXEACHMATCH = 0;
 	/**
-	 * 买让球，最小的让球数
+	 * 买让球，初盘
 	 */
-	private int MINRADIOR = 30;
+	private int FIRST_RADIO_RE = 20;
+	/**
+	 * 伸缩多少比例买入
+	 */
+	private float RADIO_RE_SCALE = 0.5f;
 	/**
 	 * 每次买入金额
 	 */
@@ -69,7 +79,7 @@ public class BKRollBasicBetStrategy extends BetStrategy {
 	 * @return
 	 */
 	private Boolean fixRadio(String radio) {
-		return Float.valueOf(radio) > MINRADIOR;
+		return Float.valueOf(radio) > FIRST_RADIO_RE;
 	}
 
 	/**

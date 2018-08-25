@@ -1,28 +1,28 @@
 package com.ewing.order.ball.event.strategy;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 import com.ewing.order.ball.RequestTool;
 import com.ewing.order.ball.bk.bet.BetResp;
 import com.ewing.order.ball.bk.bet.BkPreOrderViewResp;
-import com.ewing.order.ball.bk.game.BkGame;
+import com.ewing.order.ball.dto.BetInfoDto;
 import com.ewing.order.ball.event.BallEvent;
 import com.ewing.order.ball.event.BetStrategy;
-import com.ewing.order.ball.ft.game.FtGame;
 import com.ewing.order.busi.ball.ddl.BetLog;
-import com.ewing.order.busi.ball.ddl.BetRollInfo;
+import com.ewing.order.busi.ball.ddl.BetRule;
+import com.ewing.order.common.exception.BusiException;
+import com.ewing.order.util.GsonUtil;
 import com.ewing.order.util.ScriptUtil;
-import com.fasterxml.jackson.databind.deser.DataFormatReaders.Match;
 
 public class BKRollSetReStrategy extends BetStrategy {
 	private static Logger log = LoggerFactory.getLogger(BKRollBasicBetStrategy.class);
-	private String gtype = "BK";
+
 	private String uid;
 
 	/**
@@ -52,13 +52,29 @@ public class BKRollSetReStrategy extends BetStrategy {
 	private Integer BEFORE_SE_NOW;
 
 	@Override
-	public void initParam(Map<String, String> paramMap) {
-		MAXEACHMATCH = getIntegerParamValue(paramMap, "MAXEACHMATCH");
+	public void initParam(Map<String, String> paramMap) { 
 		RADIO_RE = getFloatParamValue(paramMap, "RADIO_RE");
 		RADIO_RE_COMPARE = getParamValue(paramMap, "RADIO_RE_COMPARE");
 		MONEYEACHMATCH = getParamValue(paramMap, "MONEYEACHMATCH");
 		BUYSIDE = getParamValue(paramMap, "BUYSIDE");
 		BEFORE_SE_NOW = getIntegerParamValue(paramMap, "BEFORE_SE_NOW");
+	}
+
+	/**
+	 * 描述
+	 */
+	public String desc(BetRule betRule) {
+		Map<String, String> paramMap = GsonUtil.getGson().fromJson(betRule.getParam(),
+				HashMap.class);
+		this.initParam(paramMap);
+		StringBuffer sb = new StringBuffer();
+		sb.append("买入");
+		sb.append(BUYSIDE.equals("H") ? betRule.getTeam_h() : betRule.getTeam_c());
+		sb.append("让球");
+		sb.append(RADIO_RE_COMPARE);
+		sb.append(RADIO_RE);
+		sb.append(",金额").append(MONEYEACHMATCH);
+		return sb.toString();
 	}
 
 	/**
@@ -71,11 +87,11 @@ public class BKRollSetReStrategy extends BetStrategy {
 
 	@Override
 	public boolean isSatisfy(BallEvent ballEvent) {
-		if (ballEvent.getSource() != null && ballEvent.getSource() instanceof BetRollInfo) {
-			BetRollInfo betInfo = (BetRollInfo) ballEvent.getSource();
+		if (ballEvent.getSource() != null && ballEvent.getSource() instanceof BetInfoDto) {
+			BetInfoDto betInfo = (BetInfoDto) ballEvent.getSource();
 			// 是否有让球的投注
-			if (betCondition(betInfo.getGid(), betInfo.getSw_RE(), betInfo.getRatio_re_c(),
-					betInfo.getSe_now(), betInfo.getStrong())) {
+			if (betCondition(betInfo.getGid(), betInfo.getN_sw_R(), betInfo.getN_ratio_re_c(),
+					betInfo.getSe_now(), betInfo.getN_strong())) {
 				return true;
 			}
 		}
@@ -84,12 +100,25 @@ public class BKRollSetReStrategy extends BetStrategy {
 
 	private boolean betCondition(String gId, String sw_re, Object radiore, String seNow,
 			String strong) {
-		if (sw_re.equals("Y")
-				&& betTimeEachMatch(this.getBetStrategyContext().getAccount(), gId) < MAXEACHMATCH
-				&& fixRadioRe(radiore, strong) && fixSeTime(seNow)) {
-			return true;
+		if (!this.getgId().equals(gId)) {
+			throw new BusiException("不是匹配的gId:" + gId + " 规则gId:" + this.getgId());
 		}
-		return false;
+		if (!sw_re.equals("Y")) {
+			throw new BusiException("让球买入已经关闭");
+		}
+		/*
+		 * if (!(betTimeEachMatch(this.getBetStrategyContext().getAccount(),
+		 * gId) < MAXEACHMATCH)) { throw new BusiException("超过本场最大买入次数:" +
+		 * MAXEACHMATCH); }
+		 */
+		if (!fixRadioRe(radiore, strong)) {
+			throw new BusiException("不是理想让球分，目前:" + radiore + ",规则:" + RADIO_RE_COMPARE + RADIO_RE);
+		}
+		if (!fixSeTime(seNow)) {
+			throw new BusiException("不是小于第" + BEFORE_SE_NOW + "节时间，目前:" + seNow);
+		}
+
+		return true;
 	}
 
 	/**
@@ -120,8 +149,12 @@ public class BKRollSetReStrategy extends BetStrategy {
 			return true;
 		if (seNow == null)
 			return false;
-		String quart = seNow.substring(1);
-		return Integer.valueOf(quart) < BEFORE_SE_NOW;
+		try {
+			String quart = seNow.substring(1);
+			return Integer.valueOf(quart) < BEFORE_SE_NOW;
+		} catch (NumberFormatException e) {
+			return false;
+		}
 	}
 
 	/**
@@ -145,15 +178,15 @@ public class BKRollSetReStrategy extends BetStrategy {
 
 		BetResp ftBetResp = null;
 		log.info("===准备下注:" + ballEvent.getSource().toString());
-		if (ballEvent.getSource() != null && ballEvent.getSource() instanceof BetRollInfo) {
-			BetRollInfo betInfo = (BetRollInfo) ballEvent.getSource();
+		if (ballEvent.getSource() != null && ballEvent.getSource() instanceof BetInfoDto) {
+			BetInfoDto betInfo = (BetInfoDto) ballEvent.getSource();
 			try {
 				if (false) {
 					BkPreOrderViewResp bkPreOrderViewResp = RequestTool.getbkPreOrderView(uid,
 							betInfo.getGid(), gtype, wtype, BUYSIDE);
 					log.info("投注前信息：" + bkPreOrderViewResp);
 					// 下注前需要再次检查一下次条件
-					if (betCondition(betInfo.getGid(), betInfo.getSw_RE(),
+					if (betCondition(betInfo.getGid(), betInfo.getN_sw_R(),
 							bkPreOrderViewResp.getSpread(), betInfo.getSe_now(),
 							bkPreOrderViewResp.getStrong())) {
 						log.info(getStrategyName() + "准备下注:" + ballEvent.getSource().toString());
