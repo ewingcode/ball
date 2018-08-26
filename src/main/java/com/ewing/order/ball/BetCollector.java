@@ -314,7 +314,7 @@ public class BetCollector {
 		List<BetRollInfo> entityList = BeanCopy.copy(rollGameList, BetRollInfo.class);
 		List<BetInfo> betInfoList = betRollInfoService.updateByRoll(entityList);
 		CollectDataPool.bkRollList = betRollInfoService.fillMaxMinInfo(betInfoList);
-		addTestGame("2590702");
+		//addTestGame("2590702");
 	}
 
 	public void collectCurrentFootball() {
