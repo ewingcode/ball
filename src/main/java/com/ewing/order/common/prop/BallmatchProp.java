@@ -19,7 +19,17 @@ public class BallmatchProp {
 	/** 皇冠网URL **/
 	public static String url;
 	/** 是否允许收集球赛数据*/
-	public static Boolean allowcollect;
+	public static Boolean allowcollect; 
+	/** 是否允许自动下注*/
+	public static Boolean allowautobet;
+
+	public static Boolean getAllowautobet() {
+		return allowautobet;
+	}
+
+	public static void setAllowautobet(Boolean allowautobet) {
+		BallmatchProp.allowautobet = allowautobet;
+	}
 
 	public static Boolean getAllowcollect() {
 		return allowcollect;

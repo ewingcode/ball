@@ -5,11 +5,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -32,7 +37,6 @@ import com.ewing.order.busi.ball.ddl.BetRollInfo;
 import com.ewing.order.busi.ball.service.BetInfoService;
 import com.ewing.order.busi.ball.service.BetRollInfoService;
 import com.ewing.order.common.prop.BallmatchProp;
-import com.ewing.order.common.prop.OAuthProp;
 import com.ewing.order.util.BeanCopy;
 import com.ewing.order.util.DataFormat;
 import com.google.common.collect.Lists;
@@ -68,16 +72,38 @@ public class BetCollector {
 	private final static long rollDataCollectTime = 10 * 1000;
 
 	private final static long heartbeatTime = 30 * 1000;
-
-	public static void main(String[] args) {
-		System.out.println(CollectDataPool.toFix2Num("0.90"));
-	}
+	
+	private Lock uidLock = new ReentrantLock(); 
 
 	public static class CollectDataPool {
 		private static List<BetInfoDto> bkRollList = Lists.newArrayList();
 		private static List<BetInfoDto> bkTodayList = Lists.newArrayList();
 		private static List<BetInfoDto> ftRollList = Lists.newArrayList();
 		private static List<BetInfoDto> ftTodayList = Lists.newArrayList();
+		private static WeakHashMap<String, List<BetRollInfo>> bkRollDetailMap = new WeakHashMap<>();
+
+		public static void putRollDetail(BetRollInfo betRollInfo) {
+			List<BetRollInfo> list = bkRollDetailMap.get(betRollInfo.getGid());
+			if (CollectionUtils.isEmpty(list)) {
+				list = new CopyOnWriteArrayList<>();
+				List<BetRollInfo> exitsList = bkRollDetailMap.putIfAbsent(betRollInfo.getGid(),
+						list);
+				if (exitsList != null) {
+					list = exitsList;
+				}
+			}
+			list.add(betRollInfo);
+		}
+
+		public static List<BetRollInfo> getRollDetail(String gid, int len) {
+			List<BetRollInfo> result = Lists.newArrayList();
+			List<BetRollInfo> list = bkRollDetailMap.get(gid);
+			if (CollectionUtils.isEmpty(list))
+				return null;
+			len = list.size() < len ? list.size() : len;
+			result.addAll(list.subList(list.size() - len, list.size()));
+			return result;
+		}
 
 		private static String toFix2Num(String iorratio) {
 			if (StringUtils.isEmpty(iorratio)) {
@@ -150,9 +176,10 @@ public class BetCollector {
 	}
 
 	@Scheduled(cron = "*/10 * * * * * ")
-	public void init() { 
-		if (istartCollect.getAndSet(true) || !BallmatchProp.allowcollect)
+	public void init() {
+		if (istartCollect.get() || !BallmatchProp.allowcollect)
 			return;
+		istartCollect.set(true);
 		if (login(BallmatchProp.getAccount(), BallmatchProp.getPwd())) {
 			// startCollectFootballInfo();
 			startCollectBasketInfo();
@@ -314,7 +341,12 @@ public class BetCollector {
 		List<BetRollInfo> entityList = BeanCopy.copy(rollGameList, BetRollInfo.class);
 		List<BetInfo> betInfoList = betRollInfoService.updateByRoll(entityList);
 		CollectDataPool.bkRollList = betRollInfoService.fillMaxMinInfo(betInfoList);
-		//addTestGame("2590702");
+		for(BetRollInfo betRollInfo : entityList){
+			if(betRollInfo.getId()!=null){
+				CollectDataPool.putRollDetail(betRollInfo);
+			}
+		}
+		// addTestGame("2590702");
 	}
 
 	public void collectCurrentFootball() {

@@ -30,7 +30,7 @@ public class BetRollInfo implements java.io.Serializable {
 	@Id
 	@GeneratedValue
 	@Column(name = "id")
-	private String id;
+	private Integer id;
 	@Column(name = "gtype")
 	private String gtype;
 	@Column(name = "gid")
@@ -446,11 +446,11 @@ public class BetRollInfo implements java.io.Serializable {
 		HalfTime = halfTime;
 	}
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

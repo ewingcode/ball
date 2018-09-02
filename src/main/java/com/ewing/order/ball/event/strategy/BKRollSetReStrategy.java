@@ -21,7 +21,7 @@ import com.ewing.order.util.GsonUtil;
 import com.ewing.order.util.ScriptUtil;
 
 public class BKRollSetReStrategy extends BetStrategy {
-	private static Logger log = LoggerFactory.getLogger(BKRollBasicBetStrategy.class);
+	private static Logger log = LoggerFactory.getLogger(BKRollAutoSmallStrategy.class);
 
 	private String uid;
 

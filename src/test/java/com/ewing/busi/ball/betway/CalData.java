@@ -1,7 +1,9 @@
 package com.ewing.busi.ball.betway;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -21,6 +23,7 @@ import com.ewing.order.busi.ball.ddl.BetRollInfo;
 import com.ewing.order.busi.ball.service.BetRollInfoService;
 import com.ewing.order.core.jpa.BaseDao;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  *
@@ -39,12 +42,6 @@ public class CalData {
 	private BetRollInfoDao betRollInfoDao;
 	Integer rollSmall = 0;
 	Integer rollBig = 0;
-	Integer rollBig_5percent_suc = 0;
-	Integer rollBig_5percent_fail = 0;
-	Integer rollBig_10percent_suc = 0;
-	Integer rollBig_10percent_fail = 0;
-	Integer rollBig_15percent_suc = 0;
-	Integer rollBig_15percent_fail = 0;
 	Integer todaySmall = 0;
 	Integer todayBig = 0;
 	DecimalFormat fnum = new DecimalFormat("##0.00");
@@ -53,13 +50,103 @@ public class CalData {
 	float scoreEachSec = 0;
 	float ratio_rou = 0;
 	boolean showRollDetail = true;
+	boolean logDetail = false;
+	private Map<String, List<BetRollInfo>> rollMap = Maps.newConcurrentMap();
+
+	class BuyWay {
+		private float highScoreSec;
+		private int minHighScoreTime;
+		private int rollSmall_suc;
+		private int rollSmall_fail;
+		float smallWinMoney;
+		float smallBuyMoneyEach = 100f;
+		boolean showWinDetail = true;
+		List<StringBuffer> smallBuyList = Lists.newArrayList();
+
+		public BuyWay(float highScoreSec, int minHighScoreTime) {
+			this.highScoreSec = highScoreSec;
+			this.minHighScoreTime = minHighScoreTime;
+		}
+
+		public void compute(List<BetInfoDto> betInfoDtoList) {
+			for (BetInfoDto betInfo : betInfoDtoList) {
+				if (betInfo.getMinRatioRou() == null) {
+					continue;
+				}
+				checkBuy(betInfo);
+			}
+			printResult();
+		}
+
+		public void checkBuy(BetInfoDto betInfo) {
+			avg = Math.round(Float.valueOf(betInfo.getRatio_o().substring(1)) / 4);
+			scoreEachSec = avg / (600 * 1f);
+			BetRollInfo buySmall = null;
+			List<BetRollInfo> list = rollMap.get(betInfo.getGid());
+			int highScoreTIme = 0;
+
+			for (BetRollInfo betRollInfo : list) {
+				if (buySmall == null) {
+					float scoreEveryQuartz = computeScoreSec(betRollInfo);
+
+					if (scoreEveryQuartz >= highScoreSec) {
+						highScoreTIme++;
+					} else {
+						highScoreTIme = 0;
+					}
+					if (highScoreTIme == minHighScoreTime) {
+						buySmall = betRollInfo;
+						break;
+					}
+				}
+			}
+			if (buySmall != null && betInfo.getSc_total() != null
+					&& buySmall.getRatio_rou_c() != null) {
+				StringBuffer sb = new StringBuffer();
+				sb.append(" " + betInfo.getLeague());
+				sb.append(" " + betInfo.getTeam_h()).append(" vs ").append(betInfo.getTeam_c())
+						.append(" " + betInfo.getDatetime());
+				sb.append("买入小").append(",总分:").append(betInfo.getSc_total()).append(",分数:")
+						.append(buySmall.getRatio_rou_c()).append(",最大滚球分:")
+						.append(betInfo.getMaxRatioRou()).append(",最小滚球分:")
+						.append(betInfo.getMinRatioRou()).append(",初盘平均得分率:").append(scoreEachSec)
+						.append(",买入时滚球得分率:").append(fnum2.format(computeScoreSec(buySmall)));
+				float winMoney = Float.valueOf(buySmall.getIor_ROUH()) * smallBuyMoneyEach;
+				if (Float.valueOf(betInfo.getSc_total()) < buySmall.getRatio_rou_c()) {
+					sb.append(",结果：赢");
+					rollSmall_suc++;
+					smallWinMoney += winMoney;
+				} else {
+					sb.append(",结果：输");
+					rollSmall_fail++;
+					smallWinMoney -= winMoney;
+				}
+				smallBuyList.add(sb);
+			}
+		}
+
+		public void printResult() {
+			log.info("滚球买入小，得分率" + highScoreSec + "，场数：" + (rollSmall_suc + rollSmall_fail)
+					+ ",出现次数:" + minHighScoreTime);
+			log.info("滚球买入小，得分率" + highScoreSec + "，比率："
+					+ fnum.format((rollSmall_suc / ((rollSmall_suc + rollSmall_fail) * 1f)) * 100)
+					+ "%," + ",赢场次:" + rollSmall_suc + ",输场次" + rollSmall_fail + ",下注:"
+					+ (smallBuyMoneyEach * (rollSmall_suc + rollSmall_fail)) + ",金额:"
+					+ smallWinMoney);
+			if (showWinDetail) {
+				for (StringBuffer smallBuy : smallBuyList) {
+					log.info(smallBuy.toString());
+				}
+			}
+		}
+	}
 
 	@Test
 	public void testAllGame() {
 		List<BetInfo> entityList = baseDao.find(
-				"select * from bet_info where gtype='BK' and create_time>='2018-08-19' and create_time<='2018-08-29' "
+				"select * from bet_info where status=1 and gtype='BK' and create_time>='2018-08-19' and create_time<='2018-09-01' "
 						+ " and (league not like '%3X3%' and league not like '%美式足球%' and league not like '%篮网球%' and league not like '%测试%')"
-						+ " and ratio is not null and ratio_o is not null order by datetime",
+						+ " and ratio is not null and ratio_o is not null order by datetime desc ",
 				BetInfo.class);
 		List<BetInfo> betInfoList = Lists.newArrayList();
 		List<BetInfoDto> betInfoDtoList = Lists.newArrayList();
@@ -74,35 +161,36 @@ public class CalData {
 		}
 		betInfoDtoList = betRollInfoService.fillMaxMinInfo(betInfoList);
 		for (BetInfoDto betInfo : betInfoDtoList) {
+			if (betInfo.getMinRatioRou() == null) {
+				continue;
+			}
 			printGame(betInfo);
 			if (showRollDetail)
 				printRollDetail(betInfo);
 		}
+		for (int j = 10; j <= 10; j++) {
+			for (int i = 3; i <= 5; i++) {
+
+				BuyWay buyWay = new BuyWay(j / (100 * 1f), i);
+				buyWay.compute(betInfoDtoList);
+			}
+		}
+
 		Integer total = betInfoList.size();
 		log.info("滚球小比率：" + fnum.format((rollSmall / (total * 1f)) * 100) + "%");
 		log.info("滚球大比率：" + fnum.format((rollBig / (total * 1f)) * 100) + "%");
-		/*
-		 * log.info("滚球大，低于初盘5%,成功:" + rollBig_5percent_suc + ",失败：" +
-		 * rollBig_5percent_fail + ",比率:" + (rollBig_5percent_suc /
-		 * (rollBig_5percent_suc + rollBig_5percent_fail * 1f)) * 100 + "%");
-		 * log.info("滚球大，低于初盘10%,成功:" + rollBig_10percent_suc + ",失败：" +
-		 * rollBig_10percent_fail + ",比率:" + (rollBig_10percent_suc /
-		 * (rollBig_10percent_suc + rollBig_10percent_fail * 1f)) 100 + "%");
-		 * log.info("滚球大，低于初盘15%,成功:" + rollBig_15percent_suc + ",失败：" +
-		 * rollBig_15percent_fail + ",比率:" + (rollBig_15percent_suc /
-		 * (rollBig_15percent_suc + rollBig_15percent_fail * 1f)) 100 + "%");
-		 */
 		log.info("今日小比率：" + fnum.format((todaySmall / (total * 1f)) * 100) + "%");
 		log.info("今日大比率：" + fnum.format((todayBig / (total * 1f)) * 100) + "%");
+
 		log.info("球赛总数" + betInfoList.size());
 	}
 
 	public void printRollDetail(BetInfoDto betInfo) {
-
 		List<BetRollInfo> list = betRollInfoDao.find(betInfo.getGid());
-
+		rollMap.put(betInfo.getGid(), list);
 		for (BetRollInfo betRollInfo : list) {
-			StringBuffer sb = new StringBuffer(); 
+
+			StringBuffer sb = new StringBuffer();
 			sb.append(betRollInfo.getRatio_rou_c()).append(" 总分：")
 					.append(StringUtils.leftPad(betRollInfo.getSc_total(), 3, "  ")).append(",")
 					.append(betRollInfo.getSe_now())
@@ -121,7 +209,8 @@ public class CalData {
 					sb.append("--[Min]");
 				}
 			}
-			log.info(sb.toString());
+			if (logDetail)
+				log.info(sb.toString());
 		}
 	}
 
@@ -157,25 +246,7 @@ public class CalData {
 		Float maxAndBeginPercent = Math
 				.abs((betInfo.getRatio_rou_c() - Float.valueOf(betInfo.getMaxRatioRou()))
 						/ betInfo.getRatio_rou_c());
-		Float min5percentRatioRou = betInfo.getRatio_rou_c() * (1 - 0.05f);
-		Float min10percentRatioRou = betInfo.getRatio_rou_c() * (1 - 0.1f);
-		Float min15percentRatioRou = betInfo.getRatio_rou_c() * (1 - 0.15f);
-		/*
-		 * if (betInfo.getGid().equals("2595497")) { System.out.println(111); }
-		 * if (minAndBeginPercent >= 0.05) { sb.append(" 滚球大，低于初盘5%"); if
-		 * (min5percentRatioRou < Float.valueOf(betInfo.getSc_total())) {
-		 * rollBig_5percent_suc += 1; sb.append(" 【成功】"); } else {
-		 * rollBig_5percent_fail += 1; sb.append(" 【失败】"); }
-		 * 
-		 * } if (minAndBeginPercent >= 0.1) { sb.append(" 滚球大，低于初盘10%"); if
-		 * (min10percentRatioRou < Float.valueOf(betInfo.getSc_total())) {
-		 * rollBig_10percent_suc += 1; sb.append(" 【成功】"); } else {
-		 * rollBig_10percent_fail += 1; sb.append(" 【失败】"); } } if
-		 * (minAndBeginPercent >= 0.15) { sb.append(" 滚球大，低于初盘10%"); if
-		 * (min15percentRatioRou < Float.valueOf(betInfo.getSc_total())) {
-		 * rollBig_15percent_suc += 1; sb.append(" 【成功】"); } else {
-		 * rollBig_15percent_fail += 1; sb.append(" 【失败】"); } }
-		 */
+
 		String ratio_re = betInfo.getStrong().equals("H") ? betInfo.getRatio()
 				: "-" + betInfo.getRatio();
 
@@ -208,21 +279,32 @@ public class CalData {
 		common_sb.append(StringUtils
 				.rightPad("客场：" + numberPlus(betInfo.getSc_FT_A(), betInfo.getSc_OT_A()), 11, " "));
 		StringBuffer quartz_sb = new StringBuffer();
+		BetRollInfo Q1betRollInfo = betRollInfoDao.queryLastRollInfoByQuartz(betInfo.getGid(),
+				"Q1");
 		quartz_sb.append(" 【Q1】" + betInfo.getSc_Q1_total())
-				.append(" " + fnum.format(Q1float) + "%").append("(").append(betRollInfoDao
-						.queryLastRollInfoByQuartz(betInfo.getGid(), "Q1").getRatio_rou_c())
+				.append(" " + fnum.format(Q1float) + "%").append("(")
+				.append(Q1betRollInfo != null && Q1betRollInfo.getRatio_rou_c() != null
+						? Q1betRollInfo.getRatio_rou_c() : "")
 				.append(")");
+		BetRollInfo Q2betRollInfo = betRollInfoDao.queryLastRollInfoByQuartz(betInfo.getGid(),
+				"Q2");
 		quartz_sb.append(" 【Q2】" + betInfo.getSc_Q2_total())
-				.append(" " + fnum.format(Q2float) + "%").append("(").append(betRollInfoDao
-						.queryLastRollInfoByQuartz(betInfo.getGid(), "Q2").getRatio_rou_c())
+				.append(" " + fnum.format(Q2float) + "%").append("(")
+				.append(Q2betRollInfo != null && Q2betRollInfo.getRatio_rou_c() != null
+						? Q2betRollInfo.getRatio_rou_c() : "")
 				.append(")");
+		BetRollInfo Q3betRollInfo = betRollInfoDao.queryLastRollInfoByQuartz(betInfo.getGid(),
+				"Q3");
 		quartz_sb.append(" 【Q3】" + betInfo.getSc_Q3_total())
-				.append(" " + fnum.format(Q3float) + "%").append("(").append(betRollInfoDao
-						.queryLastRollInfoByQuartz(betInfo.getGid(), "Q3").getRatio_rou_c())
+				.append(" " + fnum.format(Q3float) + "%").append("(")
+				.append(Q3betRollInfo != null && Q3betRollInfo.getRatio_rou_c() != null
+						? Q3betRollInfo.getRatio_rou_c() : "")
 				.append(")");
-		quartz_sb.append(" 【Q4】" + betInfo.getSc_Q4_total())
-				.append(" ").append("(").append(betRollInfoDao
-						.queryLastRollInfoByQuartz(betInfo.getGid(), "Q4").getRatio_rou_c())
+		BetRollInfo Q4betRollInfo = betRollInfoDao.queryLastRollInfoByQuartz(betInfo.getGid(),
+				"Q4");
+		quartz_sb.append(" 【Q4】" + betInfo.getSc_Q4_total()).append(" ").append("(")
+				.append(Q4betRollInfo != null && Q4betRollInfo.getRatio_rou_c() != null
+						? Q4betRollInfo.getRatio_rou_c() : "")
 				.append(")");
 		log.info(sb.toString());
 		log.info(ratio_re_sb.toString());

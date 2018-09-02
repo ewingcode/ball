@@ -2,13 +2,15 @@ package com.ewing.order.ball.event;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import com.ewing.order.ball.bk.bet.BetResp;
 import com.ewing.order.busi.ball.ddl.BetRule;
 
 public abstract class BetStrategy {
-
+	private static Logger log = LoggerFactory.getLogger(BetStrategy.class);
 	private BetStrategyContext betStrategyContext;
 
 	protected final static Integer maxRetryBet = 3;
@@ -57,7 +59,9 @@ public abstract class BetStrategy {
 		this.iseff = false;
 	}
 
-	
+	public void log(String message){
+		log.info("strategyName:"+strategyName+",account:"+betStrategyContext.getAccount()+"-"+message);
+	}
 	/**
 	 * 
 	 * @param uid

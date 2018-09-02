@@ -20,7 +20,7 @@ public class BetStrategyContext {
 
 	private String gtype;
 
-	private boolean allowBet = false;
+	private boolean allowBet = true;
 
 	private WrapDataCallBack<List<BetInfoDto>> wrapDataCallBack;
 

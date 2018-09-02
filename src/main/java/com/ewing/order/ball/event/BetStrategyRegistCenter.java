@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ewing.order.ball.event.strategy.BKBasicBetStrategy;
+import com.ewing.order.ball.event.strategy.BKRollAutoSmallStrategy;
 import com.ewing.order.ball.event.strategy.BKRollSetReStrategy;
 import com.ewing.order.ball.event.strategy.FTBasicBetStrategy;
 import com.ewing.order.common.exception.BusiException;
@@ -25,6 +26,7 @@ public class BetStrategyRegistCenter {
 		addBetStrategy(FTBasicBetStrategy.class);
 		addBetStrategy(BKBasicBetStrategy.class);
 		addBetStrategy(BKRollSetReStrategy.class);
+		addBetStrategy(BKRollAutoSmallStrategy.class);
 	}
 
 	public static void addBetStrategy(Class<? extends BetStrategy> clazz) {

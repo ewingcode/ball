@@ -12,8 +12,9 @@ public class BetInfoListener extends Thread implements EventListener {
 	private ArrayBlockingQueue<BallEvent> eventQueue = new ArrayBlockingQueue<BallEvent>(100);
 	private String account;
 	private BetStrategyPool betStrategyPool;
-
-	public BetInfoListener(String account, BetStrategyPool betStrategyPool) {
+	private Boolean isAuto;
+	public BetInfoListener(Boolean isAuto,String account, BetStrategyPool betStrategyPool) {
+		this.isAuto = isAuto;
 		this.account = account;
 		this.betStrategyPool = betStrategyPool;
 		this.startListener();
@@ -36,7 +37,11 @@ public class BetInfoListener extends Thread implements EventListener {
 	public void run() {
 		while (true) {
 			try {
-				betStrategyPool.runHalfAutoStratgeys();
+				if(isAuto){
+					betStrategyPool.runAutoStratgeys();
+				}else{
+					betStrategyPool.runHalfAutoStratgeys();
+				}
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
 			}

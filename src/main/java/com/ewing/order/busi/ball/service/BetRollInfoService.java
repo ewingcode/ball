@@ -67,12 +67,14 @@ public class BetRollInfoService {
 	 * 
 	 * @param betRollInfo
 	 */
-	private void recordRollBetInfo(BetRollInfo betRollInfo) {
+	private BetRollInfo recordRollBetInfo(BetRollInfo betRollInfo) {
 		BetRollInfo yetRollBetInfo = betRollInfoDao.findLastInfo(betRollInfo.getGid());
 		if ((yetRollBetInfo == null)
 				|| (yetRollBetInfo != null && !yetRollBetInfo.isSame(betRollInfo))) {
 			betRollInfoDao.save(betRollInfo);
+			return betRollInfo;
 		}
+		return null;
 	}
 
 	/**

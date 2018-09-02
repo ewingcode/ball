@@ -22,6 +22,7 @@ import com.ewing.order.core.jpa.BaseDao;
 public class BetRollInfoDao {
 	@Resource
 	private BaseDao baseDao;
+  
 
 	public BetRollInfo findLastInfo(String gameId) {
 		return baseDao.findOne(" gid='" + gameId + "' order by create_time desc  ",
@@ -40,10 +41,11 @@ public class BetRollInfoDao {
 		List<RollGameCompute> list = baseDao.noMappedObjectQuery(sql, RollGameCompute.class);
 		return CollectionUtils.isEmpty(list) ? null : list.get(0);
 	}
-	
+
 	@Transactional
-	public BetRollInfo queryLastRollInfoByQuartz(String gameId,String se_now) {
-		String sql = "SELECT * from bet_roll_info where id =(select max(b.id) as id from bet_roll_info b where b.ratio_rou_c is not null and b.gid='"+gameId+"' and b.se_now='"+se_now+"' )";
+	public BetRollInfo queryLastRollInfoByQuartz(String gameId, String se_now) {
+		String sql = "SELECT * from bet_roll_info where id =(select max(b.id) as id from bet_roll_info b where b.ratio_rou_c is not null and b.gid='"
+				+ gameId + "' and b.se_now='" + se_now + "' )";
 		List<BetRollInfo> list = baseDao.noMappedObjectQuery(sql, BetRollInfo.class);
 		return CollectionUtils.isEmpty(list) ? null : list.get(0);
 	}
@@ -51,11 +53,13 @@ public class BetRollInfoDao {
 	public List<BetRollInfo> find(String gameId) {
 		return baseDao.find(" gid='" + gameId + "' ", BetRollInfo.class);
 	}
-	public List<BetRollInfo> find(String gameId,Float ratioRou) {
-		return baseDao.find(" gid='" + gameId + "' and ratio_rou_c='"+ratioRou+"' ", BetRollInfo.class);
+
+	public List<BetRollInfo> find(String gameId, Float ratioRou) {
+		return baseDao.find(" gid='" + gameId + "' and ratio_rou_c='" + ratioRou + "' ",
+				BetRollInfo.class);
 	}
 
-	public void save(BetRollInfo betInfo) {
+	public void save(BetRollInfo betInfo) { 
 		baseDao.save(betInfo);
 	}
 

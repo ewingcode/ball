@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ewing.order.ball.BallAutoBet;
 import com.ewing.order.ball.BallMember;
 import com.ewing.order.ball.RequestTool;
 import com.ewing.order.ball.login.LoginResp;
@@ -25,6 +26,8 @@ import com.ewing.order.core.web.common.RestResult;
 public class LoginRest extends BaseRest {
 	@Resource
 	private BallMember ballMember;
+	@Resource
+	private BallAutoBet ballAutoBet;
 
 	public interface InputParameter {
 		public final static String SHOPID = "shopId";
@@ -43,8 +46,13 @@ public class LoginRest extends BaseRest {
 		String pwd = requestJson.getString("pwd");
 		checkRequired(account, "账号");
 		checkRequired(pwd, "密码");
-		LoginResp loginResp = RequestTool.login(account, pwd);
-		//ballMember.addBkListener(account, loginResp.getUid());
+		LoginResp loginResp = null;
+		if (ballAutoBet.getLoginResp(account) != null)
+			loginResp = ballAutoBet.getLoginResp(account);
+		else {
+			loginResp = RequestTool.login(account, pwd);
+		}
+		// ballMember.addBkListener(account, loginResp.getUid());
 		loginResp.setAccount(account);
 		return RestResult.successResult(loginResp);
 	}

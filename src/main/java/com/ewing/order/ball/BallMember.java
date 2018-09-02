@@ -19,6 +19,7 @@ import com.ewing.order.ball.event.WrapDataCallBack;
 import com.ewing.order.ball.login.LoginResp;
 import com.ewing.order.ball.shared.GtypeStatus;
 import com.ewing.order.ball.shared.PtypeStatus;
+import com.ewing.order.busi.ball.service.BetAutoBuyService;
 import com.ewing.order.busi.ball.service.BetBillService;
 import com.ewing.order.busi.ball.service.BetLogService;
 import com.ewing.order.busi.ball.service.BetRuleService;
@@ -39,6 +40,8 @@ public class BallMember {
 	private BetLogService betLogService;
 	@Resource
 	private BetRuleService betRuleService;
+	@Resource
+	private BetAutoBuyService betAutoBuyService;
 
 	public LoginResp login(String account, String pwd) {
 		LoginResp loginResp = RequestTool.login(account, pwd);
@@ -46,31 +49,22 @@ public class BallMember {
 		return loginResp;
 	}
 
-	/**
-	 * 添加今日足球的监听器
-	 */
-	public void addFtCurrentListener(String account, String uid) {
-		BetStrategyPool betStrategyPool = new BetStrategyPool();
-
-		// betStrategyPool.addBetStrategy(fTBasicBetStrategy1());
-		// betStrategyPool.addBetStrategy(fTBasicBetStrategy2());
-		betStrategyPool.getBetStrategyContext().setBetLogService(betLogService)
-				.setBetRuleService(betRuleService).setAccount(account).setUid(uid);
-		betStrategyPool.loadBetStrategyConf();
-		BetInfoListener betInfoListener = new BetInfoListener(account, betStrategyPool);
-		BallSource.getFTCurrent().addBallListener(betInfoListener);
+	public void addBkListener(Boolean isAuto, String account, String pwd, String uid) {
+		this.addBkRollListener(isAuto, account, uid);
+		this.addBkTodayListener(isAuto, account, uid);
+		this.startHeartBeat(isAuto, account, pwd, uid);
 	}
-
-	public void addBkListener(String account, String uid) {
-		this.addBkRollListener(account, uid);
-		this.addBkTodayListener(account, uid);
-		this.startHeartBeat(account, uid);
+	
+	public void stopBkListener(String account){
+		BallSource.getBKRoll().stopBallListener(account);
+		BallSource.getBKCurrent().stopBallListener(account);
 	}
+ 
 
 	/**
 	 * 添加滚球篮球的监听器
 	 */
-	public void addBkTodayListener(String account, String uid) {
+	public void addBkTodayListener(Boolean isAuto, String account, String uid) {
 		BetStrategyPool betStrategyPool = new BetStrategyPool();
 		betStrategyPool.getBetStrategyContext().setBetLogService(betLogService)
 				.setBetRuleService(betRuleService).setAccount(account).setUid(uid)
@@ -82,14 +76,14 @@ public class BallMember {
 					}
 				});
 		betStrategyPool.loadBetStrategyConf();
-		BetInfoListener betInfoListener = new BetInfoListener(account, betStrategyPool);
+		BetInfoListener betInfoListener = new BetInfoListener(isAuto, account, betStrategyPool);
 		BallSource.getBKCurrent().addBallListener(betInfoListener);
 	}
 
 	/**
 	 * 添加滚球篮球的监听器
 	 */
-	public void addBkRollListener(String account, String uid) {
+	public void addBkRollListener(Boolean isAuto, String account, String uid) {
 		BetStrategyPool betStrategyPool = new BetStrategyPool();
 		betStrategyPool.getBetStrategyContext().setBetLogService(betLogService)
 				.setBetRuleService(betRuleService).setAccount(account).setUid(uid)
@@ -101,24 +95,26 @@ public class BallMember {
 					}
 				});
 		betStrategyPool.loadBetStrategyConf();
-		BetInfoListener betInfoListener = new BetInfoListener(account, betStrategyPool);
+		BetInfoListener betInfoListener = new BetInfoListener(isAuto, account, betStrategyPool);
 		BallSource.getBKRoll().addBallListener(betInfoListener);
 	}
 
 	/**
 	 * 登陆后的心跳，保持在线连接
 	 */
-	public void startHeartBeat(final String account, final String uid) {
+	public void startHeartBeat(final boolean isAuto, final String account, String pwd,
+			final String uid) {
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 			public void run() {
 				try {
 					log.info("timer:" + Thread.currentThread().getName());
 					RequestTool.getLeaguesCount(uid);
-				} catch (Exception e) { 
+				} catch (Exception e) {
 					if (e != null && !StringUtils.isEmpty(e.getMessage())
 							&& e.getMessage().indexOf(RequestTool.ErrorCode.doubleLogin) > -1) {
-						log.error("stop listener for account:"+account, e);
+						log.error("stop listener for account:" + account, e);
+						betAutoBuyService.updateLoginOut(account);
 						BallSource.getBKRoll().stopBallListener(account);
 						BallSource.getBKCurrent().stopBallListener(account);
 						timer.cancel();

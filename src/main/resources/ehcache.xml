@@ -5,5 +5,10 @@
            maxEntriesLocalHeap="200"
            timeToLiveSeconds="600">
     </cache>
+    
+      <cache name="rollGame"
+           maxEntriesLocalHeap="200"
+           timeToLiveSeconds="600">
+    </cache>
 
 </ehcache>

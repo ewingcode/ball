@@ -5,7 +5,7 @@
 		<Property name="LOG_EXCEPTION_CONVERSION_WORD">%xwEx</Property>
 		<Property name="LOG_LEVEL_PATTERN">%5p</Property>
 		<!-- <Property name="LOG_PATTERN">%-d{yyyy-MM-dd HH:mm:ss} - [ %p ] %l %m%n</Property> -->
-		<Property name="LOG_PATTERN">%m%n</Property>
+		<Property name="LOG_PATTERN">%-d{yyyy-MM-dd HH:mm:ss} - [ %p ] %m%n</Property>
 	</Properties>
 	
 	<Appenders>
