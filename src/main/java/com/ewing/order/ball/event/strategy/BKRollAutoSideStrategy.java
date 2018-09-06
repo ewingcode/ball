@@ -150,12 +150,18 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		if (CollectionUtils.isEmpty(list))
 			return false;
 		float inter = 0f;
+		BetRollInfo previousBetRollInfo=null;
 		for (BetRollInfo betRollInfo : list) {
 			if ((betRollInfo.getSe_now() == null)
 					|| (SQ_NOW != null && !SQ_NOW.equals(betRollInfo.getSe_now()))) {
 				log(gId + ",不符合指定场节：" + SQ_NOW + "，当前:" + betRollInfo.getSe_now());
 				break;
 			}
+			if (previousBetRollInfo != null
+					&& previousBetRollInfo.isSameRatioOU(betRollInfo)) {
+				continue;
+			}
+
 			float scoreEveryQuartz = CalUtil.computeScoreSec4Quartz(betRollInfo);
 			float scoreAllQuartz = CalUtil.computeScoreSec4Alltime(betRollInfo);
 			if (side.equalsIgnoreCase("H")) {

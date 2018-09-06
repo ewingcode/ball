@@ -289,11 +289,11 @@ public class CalData {
 			float inter = 0f;
 			for (BetRollInfo betRollInfo : list) {
 				if (buySmall == null) {
-					/*
-					 * if (previousBetRollInfo != null &&
-					 * previousBetRollInfo.isSameRatioOU(betRollInfo)) {
-					 * continue; }
-					 */
+					 
+					   if (previousBetRollInfo != null &&
+					  previousBetRollInfo.isSameRatioOU(betRollInfo)) {
+					   continue; }
+					 
 					if (seNow != null && !seNow.equals(betRollInfo.getSe_now())) {
 						continue;
 					}
