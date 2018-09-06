@@ -44,6 +44,12 @@ public class BetAutoBuy implements java.io.Serializable {
 	@Column(name = "lastUpdate")
 	private Timestamp lastUpdate;
 
+	@Override
+	public String toString() {
+		return "BetAutoBuy [id=" + id + ", account=" + account + ", pwd=" + pwd + ", is_login="
+				+ is_login + ", iseff=" + iseff +"]";
+	}
+
 	public String getIs_login() {
 		return is_login;
 	}

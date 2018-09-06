@@ -5,6 +5,7 @@ import java.util.List;
 import com.ewing.order.ball.dto.BetInfoDto;
 import com.ewing.order.busi.ball.service.BetLogService;
 import com.ewing.order.busi.ball.service.BetRuleService;
+import com.ewing.order.common.prop.BallmatchProp;
 
 public class BetStrategyContext {
 
@@ -20,7 +21,7 @@ public class BetStrategyContext {
 
 	private String gtype;
 
-	private boolean allowBet = true;
+	private boolean allowBet = BallmatchProp.allowautobet;
 
 	private WrapDataCallBack<List<BetInfoDto>> wrapDataCallBack;
 

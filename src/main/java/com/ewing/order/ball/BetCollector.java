@@ -32,6 +32,7 @@ import com.ewing.order.ball.ft.game.FtRollGame;
 import com.ewing.order.ball.league.LeagueResp;
 import com.ewing.order.ball.leaguelist.LeagueListResp;
 import com.ewing.order.ball.login.LoginResp;
+import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.busi.ball.ddl.BetInfo;
 import com.ewing.order.busi.ball.ddl.BetRollInfo;
 import com.ewing.order.busi.ball.service.BetInfoService;
@@ -187,10 +188,10 @@ public class BetCollector {
 	}
 
 	public Boolean login(String user, String pwd) {
-		log.info("login for user:" + user + " pwd:" + pwd);
-		loginResp = RequestTool.login(user, pwd);
+		log.info("login for user:" + user );
 		this.user = user;
 		this.pwd = pwd;
+		loginResp = RequestTool.login(user, pwd); 
 		this.uid = loginResp.getUid();
 		// memberResp = RequestTool.memberSet(loginResp.getUid());
 		if (StringUtils.isEmpty(uid)) {

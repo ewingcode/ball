@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ewing.order.ball.BallAutoBet;
 import com.ewing.order.ball.BallMember;
-import com.ewing.order.ball.RequestTool;
 import com.ewing.order.ball.login.LoginResp;
+import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.core.web.base.BaseRest;
 import com.ewing.order.core.web.common.RequestJson;
 import com.ewing.order.core.web.common.RestResult;

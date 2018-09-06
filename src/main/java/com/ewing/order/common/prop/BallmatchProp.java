@@ -20,8 +20,21 @@ public class BallmatchProp {
 	public static String url;
 	/** 是否允许收集球赛数据*/
 	public static Boolean allowcollect; 
+	/** 是否允许执行自动下注程序*/
+	public static Boolean allowrunautobet;
 	/** 是否允许自动下注*/
-	public static Boolean allowautobet;
+	public static Boolean allowautobet; 
+	/** 禁止下注的账号 */
+	public static String banaccounts;
+	
+	
+	public static String getBanaccounts() {
+		return banaccounts;
+	}
+
+	public static void setBanaccounts(String banaccounts) {
+		BallmatchProp.banaccounts = banaccounts;
+	}
 
 	public static Boolean getAllowautobet() {
 		return allowautobet;
@@ -29,6 +42,14 @@ public class BallmatchProp {
 
 	public static void setAllowautobet(Boolean allowautobet) {
 		BallmatchProp.allowautobet = allowautobet;
+	}
+
+	public static Boolean getAllowrunautobet() {
+		return allowrunautobet;
+	}
+
+	public static void setAllowrunautobet(Boolean allowrunautobet) {
+		BallmatchProp.allowrunautobet = allowrunautobet;
 	}
 
 	public static Boolean getAllowcollect() {

@@ -1,4 +1,4 @@
-package com.ewing.order.ball;
+package com.ewing.order.ball.util;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -104,7 +104,7 @@ public class RequestTool {
 		data.put("code", "get_login_domain");
 		data.put("uid", uid);
 		String r = httpRequest(url, "POST", data, getHeaders());
-		log.info("heart resp:" + r);
+		//log.info("heart resp:" + r);
 	}
 
 	/**

@@ -4,19 +4,21 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ewing.order.ball.BetCollector;
-import com.ewing.order.ball.RequestTool;
 import com.ewing.order.ball.bk.bet.BetResp;
 import com.ewing.order.ball.bk.bet.BkPreOrderViewResp;
 import com.ewing.order.ball.dto.BetInfoDto;
+import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.busi.ball.ddl.BetLog;
 import com.ewing.order.busi.ball.dto.BkBetRequest;
 import com.ewing.order.busi.ball.service.BetLogService;
+import com.ewing.order.common.prop.BallmatchProp;
 import com.ewing.order.core.web.base.BaseRest;
 import com.ewing.order.core.web.common.RequestJson;
 import com.ewing.order.core.web.common.RestResult;
@@ -104,6 +106,7 @@ public class BKGameRest extends BaseRest {
 	@ResponseBody
 	public RestResult<BetResp> bkbet() throws Exception {
 		BkBetRequest req = requestJson2Obj(BkBetRequest.class);
+		
 		checkRequired(req, "betRequest");
 		checkRequired(req.getGolds(), "golds");
 		checkRequired(req.getAccount(), "account");
@@ -116,6 +119,17 @@ public class BKGameRest extends BaseRest {
 		checkRequired(req.getCon(), "con");
 		checkRequired(req.getRatio(), "ratio");
 		checkRequired(req.getTimestamp2(), "timestamp2");
+		
+		String banAccounts = BallmatchProp.banaccounts;
+		if(banAccounts!=null){
+			String[] banaccounts = StringUtils.split(banAccounts,",");
+			for(String account : banaccounts){
+				if(req.getAccount().equals(account)){
+					BetResp betResp  = new BetResp(); 
+					return RestResult.successResult(betResp);
+				}
+			}
+		}
 		BkPreOrderViewResp bkPreOrderViewResp = new BkPreOrderViewResp();
 		bkPreOrderViewResp.setTs(req.getTimestamp2());
 		bkPreOrderViewResp.setRatio(req.getRatio());

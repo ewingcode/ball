@@ -7,13 +7,13 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ewing.order.ball.RequestTool;
 import com.ewing.order.ball.bk.bet.BkPreOrderViewResp;
 import com.ewing.order.ball.bk.bet.BetResp;
 import com.ewing.order.ball.bk.game.BkGame;
 import com.ewing.order.ball.event.BallEvent;
 import com.ewing.order.ball.event.BetStrategy;
 import com.ewing.order.ball.ft.game.FtGame;
+import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.busi.ball.ddl.BetLog;
 
 /**

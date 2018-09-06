@@ -1,6 +1,7 @@
 package com.ewing.order.ball;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -19,11 +20,13 @@ import com.ewing.order.ball.event.WrapDataCallBack;
 import com.ewing.order.ball.login.LoginResp;
 import com.ewing.order.ball.shared.GtypeStatus;
 import com.ewing.order.ball.shared.PtypeStatus;
+import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.busi.ball.service.BetAutoBuyService;
 import com.ewing.order.busi.ball.service.BetBillService;
 import com.ewing.order.busi.ball.service.BetLogService;
 import com.ewing.order.busi.ball.service.BetRuleService;
 import com.ewing.order.util.HttpUtils;
+import com.google.common.collect.Maps;
 
 /**
  *
@@ -42,6 +45,8 @@ public class BallMember {
 	private BetRuleService betRuleService;
 	@Resource
 	private BetAutoBuyService betAutoBuyService;
+	
+	private static Map<String,Timer> heartBeatTimers = Maps.newConcurrentMap();
 
 	public LoginResp login(String account, String pwd) {
 		LoginResp loginResp = RequestTool.login(account, pwd);
@@ -58,6 +63,9 @@ public class BallMember {
 	public void stopBkListener(String account){
 		BallSource.getBKRoll().stopBallListener(account);
 		BallSource.getBKCurrent().stopBallListener(account);
+		Timer timer = heartBeatTimers.get(account);
+		if(timer!=null)
+			timer.cancel();
 	}
  
 
@@ -105,10 +113,11 @@ public class BallMember {
 	public void startHeartBeat(final boolean isAuto, final String account, String pwd,
 			final String uid) {
 		Timer timer = new Timer();
+		heartBeatTimers.put(account, timer);
 		timer.schedule(new TimerTask() {
 			public void run() {
 				try {
-					log.info("timer:" + Thread.currentThread().getName());
+					log.info("startHeartBeat account:"+account+",timer:" + Thread.currentThread().getName());
 					RequestTool.getLeaguesCount(uid);
 				} catch (Exception e) {
 					if (e != null && !StringUtils.isEmpty(e.getMessage())

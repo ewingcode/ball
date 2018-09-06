@@ -17,6 +17,7 @@ import com.ewing.order.ball.ft.game.FtRollGame;
 import com.ewing.order.ball.ft.game.FtRollGameListResp;
 import com.ewing.order.ball.leaguelist.League;
 import com.ewing.order.ball.leaguelist.LeagueListResp;
+import com.ewing.order.ball.util.RequestTool;
 import com.google.common.collect.Lists;
 
 /**

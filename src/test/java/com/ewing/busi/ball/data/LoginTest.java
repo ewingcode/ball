@@ -1,10 +1,10 @@
 package com.ewing.busi.ball.data;
 
-import com.ewing.order.ball.RequestTool;
 import com.ewing.order.ball.bill.DailyBillResp;
 import com.ewing.order.ball.bill.HistoryBillResp;
 import com.ewing.order.ball.bill.TodayBillResp;
 import com.ewing.order.ball.login.LoginResp;
+import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.util.GsonUtil;
 
 public class LoginTest {

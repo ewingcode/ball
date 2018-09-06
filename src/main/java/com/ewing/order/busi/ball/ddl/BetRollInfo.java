@@ -766,5 +766,18 @@ public class BetRollInfo implements java.io.Serializable {
 				&& betRollInfo.getRatio_rouo().equals(this.getRatio_rouo())
 				&& betRollInfo.getRatio_rouu().equals(this.getRatio_rouu());
 	}
+	
+	public boolean isSameRatioOU(BetRollInfo betRollInfo) {
+		if(betRollInfo.getSc_total()==null || this.getSc_total()==null)
+				return false;
+		if(betRollInfo.getT_count()==null || this.getT_count()==null)
+			return false;
+		if(betRollInfo.getSe_now()==null || this.getSe_now()==null)
+			return false;
+		return betRollInfo.getSc_total().equals(this.getSc_total())
+				&& betRollInfo.getT_count().equals(this.getT_count())
+				&& betRollInfo.getSe_now().equals(this.getSe_now());
+				 
+	}
 
 }

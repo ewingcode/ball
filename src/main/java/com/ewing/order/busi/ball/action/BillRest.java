@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ewing.order.ball.RequestTool;
 import com.ewing.order.ball.bill.DailyBillResp;
 import com.ewing.order.ball.bill.HistoryBillResp;
 import com.ewing.order.ball.bill.TodayBillResp;
+import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.core.web.base.BaseRest;
 import com.ewing.order.core.web.common.RequestJson;
 import com.ewing.order.core.web.common.RestResult;

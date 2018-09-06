@@ -65,7 +65,7 @@ public class BetRuleParser {
 		List<BetRule> ruleList = betRuleSerivce.findRule(account, BetRuleStatus.NOTSUCCESS, gtype,
 				ptype);
 		if (CollectionUtils.isEmpty(ruleList)){
-			log.info("已经没有投注策略，账号:" + account);
+			//log.info("已经没有投注策略，账号:" + account);
 			return Lists.newArrayList();
 		}
 		long tmpcrc32RuleValue = computeCrc32(ruleList); 
