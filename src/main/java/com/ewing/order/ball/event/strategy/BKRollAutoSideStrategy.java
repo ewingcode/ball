@@ -68,6 +68,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 
 	private String side;
 
+	 
 	@Override
 	public void initParam(Map<String, String> paramMap) {
 		ALL_AND_QUARTZ_INTERVAL = getFloatParamValue(paramMap, "ALL_AND_QUARTZ_INTERVAL");
@@ -151,7 +152,9 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			return false;
 		float inter = 0f;
 		BetRollInfo previousBetRollInfo=null;
+		String tmpSide = "";
 		for (BetRollInfo betRollInfo : list) {
+			
 			if ((betRollInfo.getSe_now() == null)
 					|| (SQ_NOW != null && !SQ_NOW.equals(betRollInfo.getSe_now()))) {
 				log(gId + ",不符合指定场节：" + SQ_NOW + "，当前:" + betRollInfo.getSe_now());
@@ -164,6 +167,26 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 
 			float scoreEveryQuartz = CalUtil.computeScoreSec4Quartz(betRollInfo);
 			float scoreAllQuartz = CalUtil.computeScoreSec4Alltime(betRollInfo);
+			//首先计算下注方向
+			inter = Math.abs(scoreEveryQuartz - scoreAllQuartz);
+			if (isAutoBuy()) {
+				// 设置为反向买入
+				if (scoreEveryQuartz > scoreAllQuartz && inter >= ALL_AND_QUARTZ_INTERVAL) { 
+					tmpSide = "H";
+				} else if (scoreEveryQuartz < scoreAllQuartz && inter >= ALL_AND_QUARTZ_INTERVAL) { 
+					tmpSide = "C";
+				} else { 
+					tmpSide = "";
+				}
+			}
+			if(!StringUtils.isEmpty(tmpSide) && !StringUtils.isEmpty(side) && !tmpSide.equals(side)){
+				highScoreTime = 0;
+			}
+			
+			if(!StringUtils.isEmpty(tmpSide)){ 
+				side = tmpSide;
+			}
+			
 			if (side.equalsIgnoreCase("H")) {
 				if (scoreEveryQuartz - scoreAllQuartz >= ALL_AND_QUARTZ_INTERVAL) {
 					highScoreTime++;
@@ -177,17 +200,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 					highScoreTime = 0;
 				}
 			}
-			inter = Math.abs(scoreEveryQuartz - scoreAllQuartz);
-			if (isAutoBuy()) {
-				// 设置为反向买入
-				if (scoreEveryQuartz > scoreAllQuartz && inter >= ALL_AND_QUARTZ_INTERVAL) {
-					side = "H";
-				} else if (scoreEveryQuartz < scoreAllQuartz && inter >= ALL_AND_QUARTZ_INTERVAL) {
-					side = "C";
-				} else {
-					side = "";
-				}
-			}
+			
 			if (highScoreTime == MIN_TIME_HIGH_SCORE_EACHSEC) {
 				// 当大于最大值得时候，正向买入
 				if (ADDMAX_ALL_AND_QUARTZ_INTERVAL != null) {
@@ -203,6 +216,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			}
 
 		}
+		log(gId + ",场节与全场得份率差距：" + inter + "，持续次数:" + highScoreTime);
 		return false;
 	}
 
