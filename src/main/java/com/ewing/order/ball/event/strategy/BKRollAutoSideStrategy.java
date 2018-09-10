@@ -108,7 +108,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			maxInterval = ALL_AND_QUARTZ_INTERVAL + MAX_INTERVAL_PERCENT * ALL_AND_QUARTZ_INTERVAL;
 
 	}
-
+   
 	/**
 	 * 
 	 * @param uid
@@ -210,10 +210,10 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 					break;
 				}
 			}
+			//一旦下一次的买入方改变则跳出循环
 			if (!StringUtils.isEmpty(tmpSide) && !StringUtils.isEmpty(side)
 					&& !tmpSide.equals(side)) {
-				highScoreTime = 0;
-				tmpHighScoreCostTime = 0;
+				break;
 			}
 			if (!StringUtils.isEmpty(tmpSide)) {
 				if (!tmpSide.equals(side)) {
@@ -230,8 +230,8 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 					else
 						tmpHighScoreCostTime = Math
 								.abs(Integer.valueOf(beginBuyRollinfo.getT_count())
-										- Integer.valueOf(betRollInfo.getT_count()))
-								- tmpHighScoreCostTime;
+										- Integer.valueOf(betRollInfo.getT_count()));
+								 
 				} else {
 					highScoreTime = 0;
 					tmpHighScoreCostTime = 0;
@@ -245,8 +245,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 					else
 						tmpHighScoreCostTime = Math
 								.abs(Integer.valueOf(beginBuyRollinfo.getT_count())
-										- Integer.valueOf(betRollInfo.getT_count()))
-								- tmpHighScoreCostTime;
+										- Integer.valueOf(betRollInfo.getT_count())) ;
 				} else {
 					highScoreTime = 0;
 					beginBuyRollinfo = null;
