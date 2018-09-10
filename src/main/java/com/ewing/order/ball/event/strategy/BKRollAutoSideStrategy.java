@@ -269,9 +269,10 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 						ftBetResp.setGid(betInfo.getGid());
 						ftBetResp.setGold(betMoney);
 						ftBetResp.setGtype(gtype);
+						ftBetResp.setIoratio(bkPreOrderViewResp.getIoratio());
 						ftBetResp.setWtype(wtype);
 						ftBetResp.setSpread(bkPreOrderViewResp.getSpread());
-						ftBetResp.setType(BUYSIDE);
+						ftBetResp.setType(side);
 						ftBetResp.setCode("560");
 					}
 				}

@@ -166,6 +166,7 @@ public class BetCollector {
 		}
 
 	}
+ 
 
 	@Scheduled(cron = "0 */2 * * * * ")
 	public void changeUid() {
