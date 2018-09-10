@@ -106,6 +106,16 @@ public class BetLog implements java.io.Serializable {
 	private String score_h;
 	@Column(name = "score_c")
 	private String score_c;
+	@Column(name = "buy_desc")
+	private String buy_desc;
+
+	public String getBuy_desc() {
+		return buy_desc;
+	}
+
+	public void setBuy_desc(String buy_desc) {
+		this.buy_desc = buy_desc;
+	}
 
 	public Integer getBet_rule_id() {
 		return bet_rule_id;

@@ -1,5 +1,6 @@
 package com.ewing.order.ball.event.strategy;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.busi.ball.ddl.BetLog;
 import com.ewing.order.busi.ball.ddl.BetRollInfo;
 import com.ewing.order.util.BizGenerator;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -47,10 +49,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 	 * 全场平均得分率和某节得分率差值
 	 */
 	private Float ALL_AND_QUARTZ_INTERVAL;
-	/**
-	 * 全场平均得分率和某节得分率差值增加最大值
-	 */
-	private Float ADDMAX_ALL_AND_QUARTZ_INTERVAL;
+
 	/**
 	 * 买入方
 	 */
@@ -62,23 +61,52 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 	/**
 	 * 连续较高入球数的出现次数
 	 */
-	private int MIN_TIME_HIGH_SCORE_EACHSEC = 5;
+	private Integer MIN_HIGH_SCORE_TIME;
+	/**
+	 * 全场平均得分率和某节得分率差值增加最大百分比
+	 */
+	private Float MAX_INTERVAL_PERCENT;
+
+	/**
+	 * 买入方式 0:反向 1:正向
+	 */
+	private Integer BUY_WAY;
+
+	/**
+	 * 全场平均得分率和某节得分率差值持续时间
+	 */
+	private Integer HIGH_SCORE_COSTTIME;
 
 	private String EXCLUDE_LEAGUE = "";
-
+	/**
+	 * 实际买入方
+	 */
 	private String side;
+	/**
+	 * 最大得分率
+	 */
+	private Float maxInterval = null;
 
+	private DecimalFormat fnum2 = new DecimalFormat("##0.0000");
+	/**
+	 * 买入方式说明
+	 */
+	private String buyWayDesc = "";
 	 
 	@Override
 	public void initParam(Map<String, String> paramMap) {
 		ALL_AND_QUARTZ_INTERVAL = getFloatParamValue(paramMap, "ALL_AND_QUARTZ_INTERVAL");
-		ADDMAX_ALL_AND_QUARTZ_INTERVAL = getFloatParamValue(paramMap,
-				"ADDMAX_ALL_AND_QUARTZ_INTERVAL");
+		MAX_INTERVAL_PERCENT = getFloatParamValue(paramMap, "MAX_INTERVAL_PERCENT");
 		BUYSIDE = getParamValue(paramMap, "BUYSIDE");
 		SQ_NOW = getParamValue(paramMap, "SQ_NOW");
 		MONEYEACHMATCH = getParamValue(paramMap, "MONEYEACHMATCH");
-		MIN_TIME_HIGH_SCORE_EACHSEC = getIntegerParamValue(paramMap, "MIN_TIME_HIGH_SCORE_EACHSEC");
+		MIN_HIGH_SCORE_TIME = getIntegerParamValue(paramMap, "MIN_HIGH_SCORE_TIME");
+		HIGH_SCORE_COSTTIME = getIntegerParamValue(paramMap, "HIGH_SCORE_COSTTIME");
 		EXCLUDE_LEAGUE = getParamValue(paramMap, "EXCLUDE_LEAGUE");
+		BUY_WAY = getIntegerParamValue(paramMap, "BUY_WAY");
+		if (ALL_AND_QUARTZ_INTERVAL != null && MAX_INTERVAL_PERCENT != null)
+			maxInterval = ALL_AND_QUARTZ_INTERVAL + MAX_INTERVAL_PERCENT * ALL_AND_QUARTZ_INTERVAL;
+
 	}
 
 	/**
@@ -123,8 +151,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			return false;
 		}
 		if (!fixHighScore(gId)) {
-			log(gId + "不符合全场与某节的差值,差值：" + ALL_AND_QUARTZ_INTERVAL + ",出现次数:"
-					+ MIN_TIME_HIGH_SCORE_EACHSEC);
+			log(gId + "不符合全场与某节的差值,差值：" + ALL_AND_QUARTZ_INTERVAL + ",出现次数:" + MIN_HIGH_SCORE_TIME);
 			return false;
 		}
 		if (!(betTimeEachMatch(this.getBetStrategyContext().getAccount(), gId) < MAXEACHMATCH)) {
@@ -137,7 +164,6 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		}
 		return true;
 	}
- 
 
 	private Boolean isAutoBuy() {
 		return BUYSIDE.equals("AUTO");
@@ -146,76 +172,130 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 	public boolean fixHighScore(String gId) {
 		side = "";
 		List<BetRollInfo> list = BetCollector.CollectDataPool.getRollDetail(gId,
-				MIN_TIME_HIGH_SCORE_EACHSEC);
+				30);
+		if(CollectionUtils.isEmpty(list))
+			return false;
+		BetRollInfo lastBetRollInfo = list.get(list.size()-1);
 		int highScoreTime = 0;
+		int tmpHighScoreCostTime = 0;
+		BetRollInfo beginBuyRollinfo = null;
+		BetRollInfo buyRollInfo = null;
 		if (CollectionUtils.isEmpty(list))
 			return false;
 		float inter = 0f;
-		BetRollInfo previousBetRollInfo=null;
+		BetRollInfo previousBetRollInfo = null;
 		String tmpSide = "";
-		for (BetRollInfo betRollInfo : list) {
-			
+		for (int i = list.size() - 1; i > 0; i--) {
+			BetRollInfo betRollInfo = list.get(i);
 			if ((betRollInfo.getSe_now() == null)
 					|| (SQ_NOW != null && !SQ_NOW.equals(betRollInfo.getSe_now()))) {
 				log(gId + ",不符合指定场节：" + SQ_NOW + "，当前:" + betRollInfo.getSe_now());
 				break;
 			}
-			if (previousBetRollInfo != null
-					&& previousBetRollInfo.isSameRatioOU(betRollInfo)) {
+			if (previousBetRollInfo != null && previousBetRollInfo.isSameRatioOU(betRollInfo)) {
 				continue;
 			}
 
 			float scoreEveryQuartz = CalUtil.computeScoreSec4Quartz(betRollInfo);
 			float scoreAllQuartz = CalUtil.computeScoreSec4Alltime(betRollInfo);
-			//首先计算下注方向
+			if (scoreEveryQuartz == 0f || scoreAllQuartz == 0f)
+				continue;
 			inter = Math.abs(scoreEveryQuartz - scoreAllQuartz);
 			if (isAutoBuy()) {
-				// 设置为反向买入
-				if (scoreEveryQuartz > scoreAllQuartz && inter >= ALL_AND_QUARTZ_INTERVAL) { 
+				if (scoreEveryQuartz > scoreAllQuartz && inter >= ALL_AND_QUARTZ_INTERVAL) {
 					tmpSide = "H";
-				} else if (scoreEveryQuartz < scoreAllQuartz && inter >= ALL_AND_QUARTZ_INTERVAL) { 
+				} else if (scoreEveryQuartz < scoreAllQuartz && inter >= ALL_AND_QUARTZ_INTERVAL) {
 					tmpSide = "C";
-				} else { 
+				} else {
 					tmpSide = "";
 				}
 			}
-			if(!StringUtils.isEmpty(tmpSide) && !StringUtils.isEmpty(side) && !tmpSide.equals(side)){
+			if (!StringUtils.isEmpty(tmpSide) && !StringUtils.isEmpty(side)
+					&& !tmpSide.equals(side)) {
 				highScoreTime = 0;
+				tmpHighScoreCostTime = 0;
 			}
-			
-			if(!StringUtils.isEmpty(tmpSide)){ 
+			if (!StringUtils.isEmpty(tmpSide)) {
+				if (!tmpSide.equals(side)) {
+					highScoreTime = 0;
+				}
 				side = tmpSide;
 			}
-			
+
 			if (side.equalsIgnoreCase("H")) {
 				if (scoreEveryQuartz - scoreAllQuartz >= ALL_AND_QUARTZ_INTERVAL) {
 					highScoreTime++;
+					if (beginBuyRollinfo == null)
+						beginBuyRollinfo = betRollInfo;
+					else
+						tmpHighScoreCostTime = Math
+								.abs(Integer.valueOf(beginBuyRollinfo.getT_count())
+										- Integer.valueOf(betRollInfo.getT_count()))
+								- tmpHighScoreCostTime;
 				} else {
 					highScoreTime = 0;
+					tmpHighScoreCostTime = 0;
+					beginBuyRollinfo = null;
 				}
 			} else if (side.equalsIgnoreCase("C")) {
 				if (scoreAllQuartz - scoreEveryQuartz >= ALL_AND_QUARTZ_INTERVAL) {
 					highScoreTime++;
+					if (beginBuyRollinfo == null)
+						beginBuyRollinfo = betRollInfo;
+					else
+						tmpHighScoreCostTime = Math
+								.abs(Integer.valueOf(beginBuyRollinfo.getT_count())
+										- Integer.valueOf(betRollInfo.getT_count()))
+								- tmpHighScoreCostTime;
 				} else {
 					highScoreTime = 0;
+					beginBuyRollinfo = null;
+					tmpHighScoreCostTime = 0;
 				}
 			}
-			
-			if (highScoreTime == MIN_TIME_HIGH_SCORE_EACHSEC) {
-				// 当大于最大值得时候，正向买入
-				if (ADDMAX_ALL_AND_QUARTZ_INTERVAL != null) {
-					if (inter > ALL_AND_QUARTZ_INTERVAL + ADDMAX_ALL_AND_QUARTZ_INTERVAL) {
-						if (side.equals("H")) {
-							side = "C";
-						} else if (side.equals("C")) {
-							side = "H";
-						}
-					}
+			if (MIN_HIGH_SCORE_TIME != null && HIGH_SCORE_COSTTIME != null) {
+				if (highScoreTime >= MIN_HIGH_SCORE_TIME
+						&& tmpHighScoreCostTime >= HIGH_SCORE_COSTTIME) {
+					buyRollInfo = lastBetRollInfo;
+					break;
 				}
-				return true;
+			} else {
+
+				if (MIN_HIGH_SCORE_TIME != null && highScoreTime == MIN_HIGH_SCORE_TIME) {
+					buyRollInfo = lastBetRollInfo;
+					break;
+				}
+
+				if (HIGH_SCORE_COSTTIME != null && tmpHighScoreCostTime >= HIGH_SCORE_COSTTIME) {
+					buyRollInfo = lastBetRollInfo;
+					break;
+				}
+
 			}
+			previousBetRollInfo = betRollInfo;
 
 		}
+		String operateName = (BUY_WAY != null && BUY_WAY == 0) ? "反向操作" : "正向操作";
+		if ((BUY_WAY != null && BUY_WAY == 1) || (maxInterval != null && inter >= maxInterval)) {
+			operateName += (maxInterval != null && inter >= maxInterval)
+					? ",再反转大于阀值" + fnum2.format(maxInterval) : "";
+			if (side.equals("H")) {
+				side = "C";
+			} else if (side.equals("C")) {
+				side = "H";
+			}
+		}
+
+		if (buyRollInfo != null) { 
+			StringBuffer sb = new StringBuffer();
+			sb.append("滚球ID：").append(buyRollInfo.getId());
+			sb.append(",买入分率:").append(fnum2.format(CalUtil.computeScoreSec4Quartz(buyRollInfo)));
+			sb.append(",全场分率:").append(fnum2.format(CalUtil.computeScoreSec4Quartz(buyRollInfo)));
+			sb.append(",买入方式:").append(operateName);
+			buyWayDesc = sb.toString();
+			return true;
+		}
+
 		log(gId + ",场节与全场得份率差距：" + inter + "，持续次数:" + highScoreTime);
 		return false;
 	}
@@ -259,10 +339,13 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 				log.info("投注前信息：" + bkPreOrderViewResp);
 				// 下注前需要再次检查一下次条件
 				if (betCondition(betInfo.getGid(), betInfo.getLeague(), betInfo.getN_sw_OU())) {
-					log.info(getStrategyName() + "准备下注:" + ballEvent.getSource().toString());
+					log.info(getStrategyName() + "准备下注:" + ballEvent.getSource().toString()+",buyWayDesc:"+buyWayDesc);
 					if (getBetStrategyContext().isAllowBet()) {
 						ftBetResp = RequestTool.bkbet(uid, betInfo.getGid(), gtype, betMoney, wtype,
 								side, bkPreOrderViewResp);
+						if(ftBetResp!=null){
+							ftBetResp.setBuy_way(buyWayDesc);
+						}
 					} else {
 						ftBetResp = BetResp.debugBetResp();
 						ftBetResp.setTicket_id(BizGenerator.generateBizNum());
@@ -274,6 +357,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 						ftBetResp.setSpread(bkPreOrderViewResp.getSpread());
 						ftBetResp.setType(side);
 						ftBetResp.setCode("560");
+						ftBetResp.setBuy_way(buyWayDesc);
 					}
 				}
 
