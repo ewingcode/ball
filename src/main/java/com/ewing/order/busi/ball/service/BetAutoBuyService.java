@@ -28,6 +28,20 @@ public class BetAutoBuyService {
 		return betAutoBuyDao.findAll();
 	}
 
+	public BetAutoBuy find(String account) {
+		return betAutoBuyDao.find(account);
+	}
+
+	@Transactional
+	public void updateIsEff(String account, String isEff) {
+		BetAutoBuy betAutoBuy = betAutoBuyDao.find(account);
+		if (betAutoBuy != null) {
+			betAutoBuy.setIseff(isEff);
+			betAutoBuy.setIs_login(IsEff.INEFFECTIVE);
+			baseDao.update(betAutoBuy);
+		}
+	}
+
 	@Transactional
 	public void updateLoginOut(String account) {
 		BetAutoBuy betAutoBuy = betAutoBuyDao.find(account);

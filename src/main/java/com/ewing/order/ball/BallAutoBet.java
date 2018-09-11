@@ -2,6 +2,7 @@ package com.ewing.order.ball;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.CRC32;
 
 import javax.annotation.Resource;
@@ -41,7 +42,8 @@ public class BallAutoBet {
 	private long crc32RuleValue = 0l;
 	
 	private static Map<String,LoginResp> loginCache = Maps.newConcurrentMap();
-	
+	static int i=0;
+	 
 	@Scheduled(cron = "*/10 * * * * * ")
 	public void init() {
 		if (!BallmatchProp.allowrunautobet)
@@ -61,8 +63,9 @@ public class BallAutoBet {
 			}
 		}
 	}
-	public List<BetAutoBuy> hasNewBetAccount() {
+	public List<BetAutoBuy> hasNewBetAccount() { 
 		List<BetAutoBuy> list = betAutoBuyService.findAll();
+		log.info("hasNewBetAccount:"+list.size());
 		if (CollectionUtils.isEmpty(list)){ 
 			return Lists.newArrayList();
 		}

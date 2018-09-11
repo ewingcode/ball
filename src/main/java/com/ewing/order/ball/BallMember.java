@@ -45,8 +45,10 @@ public class BallMember {
 	private BetRuleService betRuleService;
 	@Resource
 	private BetAutoBuyService betAutoBuyService;
-	
-	private static Map<String,Timer> heartBeatTimers = Maps.newConcurrentMap();
+
+	private static Map<String, Timer> heartBeatTimers = Maps.newConcurrentMap();
+
+	private static Map<String, String> activeAccounts = Maps.newConcurrentMap();
 
 	public LoginResp login(String account, String pwd) {
 		LoginResp loginResp = RequestTool.login(account, pwd);
@@ -55,19 +57,24 @@ public class BallMember {
 	}
 
 	public void addBkListener(Boolean isAuto, String account, String pwd, String uid) {
+		activeAccounts.put(account, account);
 		this.addBkRollListener(isAuto, account, uid);
 		this.addBkTodayListener(isAuto, account, uid);
 		this.startHeartBeat(isAuto, account, pwd, uid);
 	}
-	
-	public void stopBkListener(String account){
+
+	public void stopBkListener(String account) {
+		activeAccounts.remove(account);
 		BallSource.getBKRoll().stopBallListener(account);
 		BallSource.getBKCurrent().stopBallListener(account);
 		Timer timer = heartBeatTimers.get(account);
-		if(timer!=null)
+		if (timer != null)
 			timer.cancel();
 	}
- 
+
+	public Boolean isActiveAccount(String account) {
+		return activeAccounts.containsKey(account);
+	}
 
 	/**
 	 * 添加滚球篮球的监听器
@@ -117,7 +124,8 @@ public class BallMember {
 		timer.schedule(new TimerTask() {
 			public void run() {
 				try {
-					log.info("startHeartBeat account:"+account+",timer:" + Thread.currentThread().getName());
+					log.info("startHeartBeat account:" + account + ",timer:"
+							+ Thread.currentThread().getName());
 					RequestTool.getLeaguesCount(uid);
 				} catch (Exception e) {
 					if (e != null && !StringUtils.isEmpty(e.getMessage())

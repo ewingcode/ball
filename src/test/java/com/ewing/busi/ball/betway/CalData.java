@@ -46,17 +46,18 @@ public class CalData {
 	Integer todayBig = 0;
 	DecimalFormat fnum = new DecimalFormat("##0.00");
 	DecimalFormat fnum2 = new DecimalFormat("##0.0000");
+	DecimalFormat fnum3 = new DecimalFormat("##0.000");
 	int avg = 0;
 	float scoreEachSec = 0;
 	float ratio_rou = 0;
-	boolean showRollDetail = true;
+	boolean showRollDetail = false;
 	boolean logDetail = true;
 	private Map<String, List<BetRollInfo>> rollMap = Maps.newConcurrentMap();
 
 	@Test
 	public void testAllGame() {
 		List<BetInfo> entityList = baseDao
-				.find("select * from bet_info where status=1 and gtype='BK' and create_time>='2018-09-01' and create_time<='2018-09-10' "
+				.find("select * from bet_info where status=1 and gtype='BK' and create_time>='2018-09-05' and create_time<='2018-09-11' "
 						+ " and (league not like '%3X3%' and league not like '%美式足球%' and league not like '%篮网球%' and league not like '%测试%')"
 						+ " and ratio is not null and ratio_o is not null "
 						// + " and gid in ('2600579')"
@@ -78,16 +79,21 @@ public class CalData {
 			if (betInfo.getMinRatioRou() == null) {
 				continue;
 			}
-			printGame(betInfo);
-			if (showRollDetail)
+			if (showRollDetail) {
+				printGame(betInfo);
 				printRollDetail(betInfo);
+			} else {
+				log.info("查询滚球信息"+betInfo.getGid());
+				List<BetRollInfo> list = betRollInfoDao.find(betInfo.getGid());
+				rollMap.put(betInfo.getGid(), list);
+			}
 
 		}
 		Float maxWinMoney = 0f;
 		BuyWay2 bestBuyWay2 = null;
 		for (int j = 20; j <= 30; j += 5) {
 			for (int i = 5; i <= 10; i++) {
-				for (int z = 30; z <= 110; z += 20) {
+				for (int z = 30; z <= 90; z += 20) {
 					BuyWay2 buyWay = new BuyWay2(j / (1000 * 1f), i, z, "AUTO", "Q4", true, 0.8f);
 					buyWay.compute(betInfoDtoList);
 					// if (buyWay.sucRate() > 0.7f) {
@@ -302,8 +308,7 @@ public class CalData {
 			Float beginRatioOu = null;
 			if (!StringUtils.isEmpty(betInfo.getRatio_o()))
 				beginRatioOu = Float.valueOf(betInfo.getRatio_o().substring(1));
-			avg = Math.round(Float.valueOf(betInfo.getRatio_o().substring(1)) / 4);
-			scoreEachSec = avg / (600 * 1f);
+
 			BetRollInfo buySmall = null;
 			BetRollInfo beginBuySmall = null;
 			List<BetRollInfo> list = rollMap.get(betInfo.getGid());
@@ -339,9 +344,10 @@ public class CalData {
 							tmpSide = "";
 						}
 					}
-					if(!StringUtils.isEmpty(tmpSide) && !StringUtils.isEmpty(side) && !tmpSide.equals(side)){
+					if (!StringUtils.isEmpty(tmpSide) && !StringUtils.isEmpty(side)
+							&& !tmpSide.equals(side)) {
 						highScoreTime = 0;
-						tmpHighScoreCostTime=0;
+						tmpHighScoreCostTime = 0;
 					}
 					if (!StringUtils.isEmpty(tmpSide)) {
 						if (!tmpSide.equals(side)) {
@@ -419,7 +425,21 @@ public class CalData {
 					side = "H";
 				}
 			}
-
+			if (buySmall!=null && buySmall.getId()==83557) {
+				System.out.println(1);
+			}
+			Float fullScoreRate = CalUtil.computeScoreSec4Alltime(buySmall);
+			avg = Math.round(Float.valueOf(betInfo.getRatio_o().substring(1)) / 4);
+			scoreEachSec = avg / (600 * 1f);
+			float rateInterval =  Float.valueOf(fnum3.format(fullScoreRate)) - Float.valueOf(fnum3.format(scoreEachSec));
+			if (false && Math.abs(rateInterval) >= 0.009f) {
+				operateName += "初盘与全场率差大于0.009";
+				if (rateInterval > 0) {
+					side = "C";
+				} else {
+					side = "H";
+				}
+			}
 			if (buySmall != null && betInfo.getSc_total() != null
 					&& buySmall.getRatio_rou_c() != null) {
 				StringBuffer sb = new StringBuffer();
