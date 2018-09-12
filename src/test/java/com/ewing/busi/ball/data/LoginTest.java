@@ -10,7 +10,7 @@ import com.ewing.order.util.GsonUtil;
 
 public class LoginTest {
 	public static void main(String[] args) {
-		BallmatchProp.url = "http://205.201.1.90/";
+		BallmatchProp.url = "http://199.26.97.192/";
 		while (true) {
 			LoginResp loginResp = RequestTool.login("tansonLAM83", "523123ZX");
 			System.out.println(GsonUtil.getGson().toJson(loginResp));
