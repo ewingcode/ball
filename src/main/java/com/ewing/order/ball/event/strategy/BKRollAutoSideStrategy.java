@@ -195,7 +195,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			if (previousBetRollInfo != null && previousBetRollInfo.isSameRatioOU(betRollInfo)) {
 				continue;
 			}
-
+			previousBetRollInfo = betRollInfo;
 			float scoreEveryQuartz = CalUtil.computeScoreSec4Quartz(betRollInfo);
 			float scoreAllQuartz = CalUtil.computeScoreSec4Alltime(betRollInfo);
 			if (scoreEveryQuartz == 0f || scoreAllQuartz == 0f)
@@ -271,7 +271,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 				}
 
 			}
-			previousBetRollInfo = betRollInfo;
+		
 
 		}
 		String operateName = (BUY_WAY != null && BUY_WAY == 0) ? "反向操作" : "正向操作";
@@ -287,6 +287,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 
 		if (buyRollInfo != null) {
 			StringBuffer sb = new StringBuffer();
+			sb.append("买入方:").append(side.equals("C")?"大":"小");
 			sb.append("滚球开始ID：")
 					.append(previousBetRollInfo != null ? previousBetRollInfo.getId() : 0);
 			sb.append("滚球ID：").append(buyRollInfo.getId());
