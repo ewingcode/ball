@@ -31,7 +31,7 @@ import com.google.common.collect.Lists;
 public class BKRollAutoSideStrategy extends BetStrategy {
 	private static Logger log = LoggerFactory.getLogger(BKRollAutoSideStrategy.class);
 	private String gtype = "BK";
-	private String uid;
+ 
 	/**
 	 * 每天下注场数
 	 */
@@ -94,7 +94,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 	private String buyWayDesc = "";
 
 	private BetRollInfo buyRollInfo;
-
+	 
 	@Override
 	public void initParam(Map<String, String> paramMap) {
 		ALL_AND_QUARTZ_INTERVAL = getFloatParamValue(paramMap, "ALL_AND_QUARTZ_INTERVAL");
@@ -111,13 +111,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 
 	}
 
-	/**
-	 * 
-	 * @param uid
-	 */
-	public void setUid(String uid) {
-		this.uid = uid;
-	}
+	 
 
 	@Override
 	public boolean isSatisfy(BallEvent ballEvent) {
@@ -342,14 +336,14 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		if (ballEvent.getSource() != null && ballEvent.getSource() instanceof BetInfoDto) {
 			BetInfoDto betInfo = (BetInfoDto) ballEvent.getSource();
 			try {
-				BkPreOrderViewResp bkPreOrderViewResp = RequestTool.getbkPreOrderView(uid,
+				BkPreOrderViewResp bkPreOrderViewResp = RequestTool.getbkPreOrderView(this.getBetStrategyContext().getUid(),
 						betInfo.getGid(), gtype, wtype, side);
 				log.info("投注前信息：" + bkPreOrderViewResp);
 				// 下注前需要再次检查一下次条件
 				if (betCondition(betInfo.getGid(), betInfo.getLeague(), betInfo.getN_sw_OU())) {
 					log.info(getStrategyName() + "准备下注:" + ballEvent.getSource().toString()+",buyWayDesc:"+buyWayDesc);
 					if (getBetStrategyContext().isAllowBet()) {
-						ftBetResp = RequestTool.bkbet(uid, betInfo.getGid(), gtype, betMoney, wtype,
+						ftBetResp = RequestTool.bkbet(this.getBetStrategyContext().getUid(), betInfo.getGid(), gtype, betMoney, wtype,
 								side, bkPreOrderViewResp);
 						if(ftBetResp!=null){
 							ftBetResp.setBuy_desc(buyWayDesc);

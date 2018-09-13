@@ -49,12 +49,12 @@ public class BetRuleParser {
 			}
 			BetStrategy betStrategy = BetStrategyRegistCenter
 					.newBetStrategy(betRule.getImpl_code());
+			betStrategy.setParamMap(GsonUtil.getGson().fromJson(betRule.getParam(), HashMap.class));
 			betStrategy.initParam(GsonUtil.getGson().fromJson(betRule.getParam(), HashMap.class));
 			betStrategy.setLevel(Integer.valueOf(betRule.getLevel()));
 			betStrategy.setBetStrategyName(betRule.getName());
 			betStrategy.setIseff(betRule.getIseff().equals(IsEff.EFFECTIVE));
-			betStrategy.setgId(betRule.getGid());
-			betStrategy.setUid(uid);
+			betStrategy.setgId(betRule.getGid()); 
 			betStrategy.setRuleId(betRule.getId());
 			list.add(betStrategy);
 		}

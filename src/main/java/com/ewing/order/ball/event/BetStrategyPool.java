@@ -3,6 +3,7 @@ package com.ewing.order.ball.event;
 import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,9 +17,11 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 
 import com.ewing.order.ball.dto.BetInfoDto;
 import com.ewing.order.busi.ball.ddl.BetLog;
+import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.common.exception.BusiException;
 import com.ewing.order.util.BeanCopy;
 import com.ewing.order.util.GsonUtil;
@@ -137,20 +140,30 @@ public class BetStrategyPool {
 		return gameMap.get(ruleId + "_" + gId) == null
 				|| gameMap.get(ruleId + "_" + gId).before(lastUpdate);
 	}
-	
+	 
 	/**
 	 * 执行全自动的下注策略，不针对某场比赛
 	 */
 	public void runAutoStratgeys() {
 		List<BetInfoDto> betList = this.getBetStrategyContext().getBetInfoList();
 		// 处理全局规则设置
-		for (BetStrategy betStrategy : betStrategys) {
+		for (BetStrategy betStrategyTemplate : betStrategys) {
+			BetStrategy betStrategy = BetStrategyRegistCenter
+					.newBetStrategy(betStrategyTemplate.getClass().getSimpleName()); 
+			betStrategy.initParam(betStrategyTemplate.getParamMap());
+			betStrategy.setLevel(betStrategyTemplate.getLevel());
+			betStrategy.setBetStrategyName(betStrategyTemplate.getStrategyName());
+			betStrategy.setIseff(betStrategyTemplate.getIseff());
+			betStrategy.setgId(betStrategyTemplate.getgId());
+			betStrategy.setUid(betStrategyTemplate.getUid());
+			betStrategy.setRuleId(betStrategyTemplate.getRuleId());
+			betStrategy.setBetStrategyContext(betStrategyContext);
 			if (betStrategy.getgId() != null)
 				continue;
 			if (!betStrategy.getIseff()) {
 				continue;
 			}
-			for (BetInfoDto betInfoDto : betList) {
+			for (BetInfoDto betInfoDto : betList) { 
 				BallEvent ballEvent = new BallEvent(betInfoDto.getGid(), betInfoDto);
 				if (!isNewBallEvent(betStrategy.getRuleId(), ballEvent.getGameId(),
 						betInfoDto.getLastUpdate())) {

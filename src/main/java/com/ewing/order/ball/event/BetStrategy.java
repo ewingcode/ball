@@ -27,6 +27,17 @@ public abstract class BetStrategy {
 
 	private Integer ruleId;
 
+	private Map<String,String> paramMap;
+	
+	
+	public Map<String, String> getParamMap() {
+		return paramMap;
+	}
+
+	public void setParamMap(Map<String, String> paramMap) {
+		this.paramMap = paramMap;
+	}
+
 	public String getgId() {
 		return gId;
 	}
@@ -100,6 +111,7 @@ public abstract class BetStrategy {
 	 */
 	public abstract void initParam(Map<String, String> paramMap);
 
+	 
 	/**
 	 * 描述
 	 */
@@ -129,8 +141,10 @@ public abstract class BetStrategy {
 	 * @return
 	 */
 	public abstract boolean isSatisfy(BallEvent ballEvent);
+	
+	 
 
-	public Object betNow(BallEvent ballEvent) {
+	public Object betNow(BallEvent ballEvent) { 
 		int retryTime = 0;
 		BetResp ftBetResp = null;
 		while (retryTime < maxRetryBet) {
