@@ -92,7 +92,9 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 	 * 买入方式说明
 	 */
 	private String buyWayDesc = "";
-	 
+
+	private BetRollInfo buyRollInfo;
+
 	@Override
 	public void initParam(Map<String, String> paramMap) {
 		ALL_AND_QUARTZ_INTERVAL = getFloatParamValue(paramMap, "ALL_AND_QUARTZ_INTERVAL");
@@ -108,7 +110,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			maxInterval = ALL_AND_QUARTZ_INTERVAL + MAX_INTERVAL_PERCENT * ALL_AND_QUARTZ_INTERVAL;
 
 	}
-   
+
 	/**
 	 * 
 	 * @param uid
@@ -171,15 +173,13 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 
 	public boolean fixHighScore(String gId) {
 		side = "";
-		List<BetRollInfo> list = BetCollector.CollectDataPool.getRollDetail(gId,
-				30);
-		if(CollectionUtils.isEmpty(list))
+		List<BetRollInfo> list = BetCollector.CollectDataPool.getRollDetail(gId, 30);
+		if (CollectionUtils.isEmpty(list))
 			return false;
-		BetRollInfo lastBetRollInfo = list.get(list.size()-1);
+		BetRollInfo lastBetRollInfo = list.get(list.size() - 1);
 		int highScoreTime = 0;
 		int tmpHighScoreCostTime = 0;
 		BetRollInfo beginBuyRollinfo = null;
-		BetRollInfo buyRollInfo = null;
 		if (CollectionUtils.isEmpty(list))
 			return false;
 		float inter = 0f;
@@ -206,11 +206,11 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 					tmpSide = "H";
 				} else if (scoreEveryQuartz < scoreAllQuartz && inter >= ALL_AND_QUARTZ_INTERVAL) {
 					tmpSide = "C";
-				} else { 
+				} else {
 					break;
 				}
 			}
-			//一旦下一次的买入方改变则跳出循环
+			// 一旦下一次的买入方改变则跳出循环
 			if (!StringUtils.isEmpty(tmpSide) && !StringUtils.isEmpty(side)
 					&& !tmpSide.equals(side)) {
 				break;
@@ -231,7 +231,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 						tmpHighScoreCostTime = Math
 								.abs(Integer.valueOf(beginBuyRollinfo.getT_count())
 										- Integer.valueOf(betRollInfo.getT_count()));
-								 
+
 				} else {
 					highScoreTime = 0;
 					tmpHighScoreCostTime = 0;
@@ -245,7 +245,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 					else
 						tmpHighScoreCostTime = Math
 								.abs(Integer.valueOf(beginBuyRollinfo.getT_count())
-										- Integer.valueOf(betRollInfo.getT_count())) ;
+										- Integer.valueOf(betRollInfo.getT_count()));
 				} else {
 					highScoreTime = 0;
 					beginBuyRollinfo = null;
@@ -285,12 +285,19 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			}
 		}
 
-		if (buyRollInfo != null) { 
+		if (buyRollInfo != null) {
 			StringBuffer sb = new StringBuffer();
-			sb.append("滚球开始ID：").append(previousBetRollInfo!=null?previousBetRollInfo.getId():0);
+			sb.append("滚球开始ID：")
+					.append(previousBetRollInfo != null ? previousBetRollInfo.getId() : 0);
 			sb.append("滚球ID：").append(buyRollInfo.getId());
+			sb.append(",买入分数:").append(buyRollInfo.getRatio_rou_c());
+			sb.append(",总分结果:").append(buyRollInfo.getSc_total());
+			sb.append(",Q4-全场得分:").append(fnum2.format(CalUtil.computeScoreSec4Quartz(buyRollInfo)
+					- CalUtil.computeScoreSec4Alltime(buyRollInfo)));
+			sb.append(",出现次数:").append(highScoreTime);
+			sb.append(",持续时间").append(tmpHighScoreCostTime);
 			sb.append(",买入分率:").append(fnum2.format(CalUtil.computeScoreSec4Quartz(buyRollInfo)));
-			sb.append(",全场分率:").append(fnum2.format(CalUtil.computeScoreSec4Quartz(buyRollInfo)));
+			sb.append(",全场分率:").append(fnum2.format(CalUtil.computeScoreSec4Alltime(buyRollInfo)));
 			sb.append(",买入方式:").append(operateName);
 			buyWayDesc = sb.toString();
 			return true;
@@ -344,20 +351,31 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 						ftBetResp = RequestTool.bkbet(uid, betInfo.getGid(), gtype, betMoney, wtype,
 								side, bkPreOrderViewResp);
 						if(ftBetResp!=null){
-							ftBetResp.setBuy_way(buyWayDesc);
+							ftBetResp.setBuy_desc(buyWayDesc);
 						}
 					} else {
+						String ioratio =null;
+						String spread=null;
+						if(bkPreOrderViewResp==null || !StringUtils.isEmpty(bkPreOrderViewResp.getErrormsg())){
+							  ioratio = side.equals("C")?buyRollInfo.getIor_ROUC():buyRollInfo.getIor_ROUH();
+							  spread = buyRollInfo.getRatio_rou_c().toString();
+							  buyWayDesc+="，执行历史数据回传率";
+						}else{
+							ioratio = bkPreOrderViewResp.getIoratio();
+							  spread = bkPreOrderViewResp.getSpread();
+						}
 						ftBetResp = BetResp.debugBetResp();
 						ftBetResp.setTicket_id(BizGenerator.generateBizNum());
 						ftBetResp.setGid(betInfo.getGid());
 						ftBetResp.setGold(betMoney);
 						ftBetResp.setGtype(gtype);
-						ftBetResp.setIoratio(bkPreOrderViewResp.getIoratio());
+						ftBetResp.setIoratio(ioratio);
 						ftBetResp.setWtype(wtype);
-						ftBetResp.setSpread(bkPreOrderViewResp.getSpread());
+						ftBetResp.setSpread(spread);
 						ftBetResp.setType(side);
 						ftBetResp.setCode("560");
-						ftBetResp.setBuy_way(buyWayDesc);
+						ftBetResp.setBuy_desc(buyWayDesc);
+						 
 					}
 				}
 

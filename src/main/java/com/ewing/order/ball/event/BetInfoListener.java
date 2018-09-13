@@ -46,7 +46,7 @@ public class BetInfoListener extends Thread implements EventListener {
 				log.error(e.getMessage(), e);
 			}
 			try {
-				TimeUnit.SECONDS.sleep(2);
+				TimeUnit.SECONDS.sleep(1);
 			} catch (InterruptedException e) {
 				log.error(e.getMessage(), e);
 			}

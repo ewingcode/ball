@@ -53,7 +53,7 @@ public class BallAutoBet {
 			return;
 		for (BetAutoBuy betAutoBuy : list) {
 			if (betAutoBuy.getIseff().equals(IsEff.EFFECTIVE)) {
-				if (betAutoBuy.getIs_login().equals(IsEff.INEFFECTIVE)) {
+				if (getLoginResp(betAutoBuy.getAccount())==null) {
 					log.info("start autoBuy for " + betAutoBuy.getAccount());
 					start(betAutoBuy.getAccount(), betAutoBuy.getPwd());
 				}

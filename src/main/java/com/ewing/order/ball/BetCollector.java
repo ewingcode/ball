@@ -77,7 +77,7 @@ public class BetCollector {
 	private Lock uidLock = new ReentrantLock(); 
 
 	public static class CollectDataPool {
-		private static List<BetInfoDto> bkRollList = Lists.newArrayList();
+		public static List<BetInfoDto> bkRollList = Lists.newArrayList();
 		private static List<BetInfoDto> bkTodayList = Lists.newArrayList();
 		private static List<BetInfoDto> ftRollList = Lists.newArrayList();
 		private static List<BetInfoDto> ftTodayList = Lists.newArrayList();

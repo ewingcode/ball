@@ -57,7 +57,7 @@ public class CalData {
 	@Test
 	public void testAllGame() {
 		List<BetInfo> entityList = baseDao
-				.find("select * from bet_info where status=1 and gtype='BK' and create_time>='2018-09-05' and create_time<='2018-09-11' "
+				.find("select * from bet_info where status=1 and gtype='BK' and create_time>='2018-09-01' and create_time<='2018-09-13' "
 						+ " and (league not like '%3X3%' and league not like '%美式足球%' and league not like '%篮网球%' and league not like '%测试%')"
 						+ " and ratio is not null and ratio_o is not null "
 						// + " and gid in ('2600579')"
