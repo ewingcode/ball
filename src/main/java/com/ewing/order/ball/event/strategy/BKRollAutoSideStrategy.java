@@ -171,6 +171,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		if (CollectionUtils.isEmpty(list))
 			return false;
 		BetRollInfo lastBetRollInfo = list.get(list.size() - 1);
+		 
 		int highScoreTime = 0;
 		int tmpHighScoreCostTime = 0;
 		BetRollInfo beginBuyRollinfo = null;
@@ -179,7 +180,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		float inter = 0f;
 		BetRollInfo previousBetRollInfo = null;
 		String tmpSide = "";
-		for (int i = list.size() - 1; i >= 0; i--) {
+		for (int i = list.size() - 1; i >= 0; i--) { 
 			BetRollInfo betRollInfo = list.get(i);
 			if ((betRollInfo.getSe_now() == null)
 					|| (SQ_NOW != null && !SQ_NOW.equals(betRollInfo.getSe_now()))) {
@@ -191,7 +192,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			}
 			previousBetRollInfo = betRollInfo;
 			float scoreEveryQuartz = CalUtil.computeScoreSec4Quartz(betRollInfo);
-			float scoreAllQuartz = CalUtil.computeScoreSec4Alltime(betRollInfo);
+			float scoreAllQuartz = CalUtil.computeScoreSec4Alltime(betRollInfo); 
 			if (scoreEveryQuartz == 0f || scoreAllQuartz == 0f)
 				continue;
 			inter = Math.abs(scoreEveryQuartz - scoreAllQuartz);
@@ -268,18 +269,23 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		
 
 		}
-		String operateName = (BUY_WAY != null && BUY_WAY == 0) ? "反向操作" : "正向操作";
-		if ((BUY_WAY != null && BUY_WAY == 1) || (maxInterval != null && inter >= maxInterval)) {
-			operateName += (maxInterval != null && inter >= maxInterval)
-					? ",再反转大于阀值" + fnum2.format(maxInterval) : "";
-			if (side.equals("H")) {
-				side = "C";
-			} else if (side.equals("C")) {
-				side = "H";
-			}
-		}
+		
+		
 
 		if (buyRollInfo != null) {
+			float scoreEveryQuartz = CalUtil.computeScoreSec4Quartz(buyRollInfo);
+			float scoreAllQuartz = CalUtil.computeScoreSec4Alltime(buyRollInfo);  
+			inter = Math.abs(scoreEveryQuartz - scoreAllQuartz);
+			String operateName = (BUY_WAY != null && BUY_WAY == 0) ? "反向操作" : "正向操作";
+			if ((BUY_WAY != null && BUY_WAY == 1) || (maxInterval != null && inter >= maxInterval)) {
+				operateName += (maxInterval != null && inter >= maxInterval)
+						? ",再反转大于阀值" + fnum2.format(maxInterval) : "";
+				if (side.equals("H")) {
+					side = "C";
+				} else if (side.equals("C")) {
+					side = "H";
+				}
+			}
 			StringBuffer sb = new StringBuffer();
 			sb.append("买入方:").append(side.equals("C")?"大":"小");
 			sb.append("滚球开始ID：")
