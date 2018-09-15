@@ -43,7 +43,7 @@ public class BallAutoBet {
 	public void init() {
 		if (!BallmatchProp.allowrunautobet)
 			return;
-		List<BetAutoBuy> list = hasNewBetAccount();
+		List<BetAutoBuy> list = betAutoBuyService.findAll();
 		if(list==null)
 			return;
 		for (BetAutoBuy betAutoBuy : list) {

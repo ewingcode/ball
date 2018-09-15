@@ -182,10 +182,15 @@ public class BetCollector {
 		if (istartCollect.get() || !BallmatchProp.allowcollect)
 			return;
 		istartCollect.set(true);
-		if (login(BallmatchProp.getAccount(), BallmatchProp.getPwd())) {
-			// startCollectFootballInfo();
-			startCollectBasketInfo();
-		}else{
+		try {
+			if (login(BallmatchProp.getAccount(), BallmatchProp.getPwd())) {
+				// startCollectFootballInfo();
+				startCollectBasketInfo();
+			}else{
+				istartCollect.set(false);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
 			istartCollect.set(false);
 		}
 	 
