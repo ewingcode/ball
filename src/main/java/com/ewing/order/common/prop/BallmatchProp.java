@@ -24,10 +24,22 @@ public class BallmatchProp {
 	public static Boolean allowrunautobet;
 	/** 是否允许自动下注*/
 	public static Boolean allowautobet; 
+	/** 是否允许短信通知*/
+	public static Boolean allownotify; 
 	/** 禁止下注的账号 */
 	public static String banaccounts;
 	
 	
+	
+	
+	public static Boolean getAllownotify() {
+		return allownotify;
+	}
+
+	public static void setAllownotify(Boolean allownotify) {
+		BallmatchProp.allownotify = allownotify;
+	}
+
 	public static String getBanaccounts() {
 		return banaccounts;
 	}

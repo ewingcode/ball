@@ -37,12 +37,22 @@ public class BetAutoBuy implements java.io.Serializable {
 	private String pwd;
 	@Column(name = "is_login")
 	private String is_login;
+	@Column(name = "phone")
+	private String phone;
 	@Column(name = "iseff")
 	private String iseff;
 	@Column(name = "createTime")
 	private Timestamp createTime;
 	@Column(name = "lastUpdate")
 	private Timestamp lastUpdate;
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
 	@Override
 	public String toString() {

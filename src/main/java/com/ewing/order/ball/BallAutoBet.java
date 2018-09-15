@@ -2,7 +2,6 @@ package com.ewing.order.ball;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.zip.CRC32;
 
 import javax.annotation.Resource;
@@ -12,16 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
-import com.ewing.order.ball.event.BetStrategy;
 import com.ewing.order.ball.login.LoginResp;
-import com.ewing.order.ball.shared.BetRuleStatus;
 import com.ewing.order.busi.ball.ddl.BetAutoBuy;
-import com.ewing.order.busi.ball.ddl.BetRule;
 import com.ewing.order.busi.ball.service.BetAutoBuyService;
 import com.ewing.order.common.contant.IsEff;
-import com.ewing.order.common.exception.BusiException;
 import com.ewing.order.common.prop.BallmatchProp;
 import com.ewing.order.util.HttpUtils;
 import com.google.common.collect.Lists;

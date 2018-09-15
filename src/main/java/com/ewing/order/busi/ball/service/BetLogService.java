@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import com.ewing.order.busi.ball.dao.BetLogDao;
 import com.ewing.order.busi.ball.ddl.BetLog;
+import com.ewing.order.common.contant.IsEff;
+import com.ewing.order.core.jpa.BaseDao;
 import com.ewing.order.util.DataFormat;
 
 /**
@@ -21,15 +23,29 @@ import com.ewing.order.util.DataFormat;
 public class BetLogService {
 	@Resource
 	private BetLogDao betLogDao;
+	@Resource
+	private BaseDao baseDao;
 
 	@Transactional(rollbackOn = { Exception.class })
 	public void save(String account, BetLog betLog) {
 		betLog.setAccount(account);
+		betLog.setIs_notify(IsEff.INEFFECTIVE);
 		betLogDao.save(betLog);
 	}
 
 	public List<BetLog> findSucBet(String account, String gId) {
 		return betLogDao.findSucBet(account, gId);
+	}
+
+	@Transactional(rollbackOn = { Exception.class })
+	public void update2Notify(Integer id) {
+		BetLog betLog = baseDao.findOne(id, BetLog.class);
+		betLog.setIs_notify(IsEff.EFFECTIVE);
+		baseDao.save(betLog);
+	}
+
+	public List<BetLog> findNotNofity(String account) {
+		return betLogDao.findNotNofity(account);
 	}
 
 	public List<BetLog> findEachDay(String account, String gtype) {

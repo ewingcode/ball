@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.ewing.order.busi.ball.ddl.BetLog;
+import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.core.jpa.BaseDao;
 
 /**
@@ -25,6 +26,11 @@ public class BetLogDao {
 
 	public List<BetLog> findSucBet(String account, String gId) {
 		return baseDao.find("account='" + account + "' and gid='" + gId + "' and code = '560'",
+				BetLog.class);
+	}
+	
+	public List<BetLog> findNotNofity(String account) {
+		return baseDao.find("account='" + account + "' and bet_rule_id is not null and  is_notify='" + IsEff.INEFFECTIVE + "'",
 				BetLog.class);
 	}
 

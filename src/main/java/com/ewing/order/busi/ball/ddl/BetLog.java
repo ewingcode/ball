@@ -107,7 +107,17 @@ public class BetLog implements java.io.Serializable {
 	@Column(name = "score_c")
 	private String score_c;
 	@Column(name = "buy_desc")
-	private String buy_desc;
+	private String buy_desc; 
+	@Column(name = "is_notify")
+	private String is_notify;
+
+	public String getIs_notify() {
+		return is_notify;
+	}
+
+	public void setIs_notify(String is_notify) {
+		this.is_notify = is_notify;
+	}
 
 	public String getBuy_desc() {
 		return buy_desc;
