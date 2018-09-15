@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.aliyuncs.utils.StringUtils;
 import com.ewing.order.ball.login.LoginResp;
 import com.ewing.order.busi.ball.ddl.BetAutoBuy;
 import com.ewing.order.busi.ball.service.BetAutoBuyService;
@@ -85,7 +86,7 @@ public class BallAutoBet {
 	
 	public void start(String account, String pwd) {
 		LoginResp loginResp = ballMember.login(account, pwd);
-		if (loginResp != null) {
+		if (loginResp != null && !StringUtils.isEmpty(loginResp.getUid())) {
 			loginCache.put(account, loginResp);
 			ballMember.addBkListener(true, account, pwd, loginResp.getUid());
 			betAutoBuyService.updateLoginIn(account);

@@ -185,7 +185,10 @@ public class BetCollector {
 		if (login(BallmatchProp.getAccount(), BallmatchProp.getPwd())) {
 			// startCollectFootballInfo();
 			startCollectBasketInfo();
+		}else{
+			istartCollect.set(false);
 		}
+	 
 	}
 
 	public Boolean login(String user, String pwd) {
