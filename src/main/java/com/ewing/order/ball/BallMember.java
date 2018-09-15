@@ -45,7 +45,8 @@ public class BallMember {
 	private BetRuleService betRuleService;
 	@Resource
 	private BetAutoBuyService betAutoBuyService;
-
+	@Resource
+	private BallAutoBet ballAutoBet;
 	private static Map<String, Timer> heartBeatTimers = Maps.newConcurrentMap();
 
 	private static Map<String, String> activeAccounts = Maps.newConcurrentMap();
@@ -131,10 +132,7 @@ public class BallMember {
 					if (e != null && !StringUtils.isEmpty(e.getMessage())
 							&& e.getMessage().indexOf(RequestTool.ErrorCode.doubleLogin) > -1) {
 						log.error("stop listener for account:" + account, e);
-						betAutoBuyService.updateLoginOut(account);
-						BallSource.getBKRoll().stopBallListener(account);
-						BallSource.getBKCurrent().stopBallListener(account);
-						timer.cancel();
+						ballAutoBet.stop(account);
 					}
 				}
 			}
