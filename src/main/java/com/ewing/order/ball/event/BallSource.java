@@ -54,7 +54,7 @@ public class BallSource {
 	 * 
 	 * @param listener
 	 */
-	public synchronized void addBallListener(BetInfoListener eventListener) {
+	public void addBallListener(BetInfoListener eventListener) {
 		BetInfoListener existListener = listeners.get(eventListener.getAccount());
 		if (existListener != null) {
 			existListener.stopListener();
@@ -62,7 +62,7 @@ public class BallSource {
 		listeners.put(eventListener.getAccount(), eventListener);
 	}
 
-	public synchronized void stopBallListener(String account) {
+	public void stopBallListener(String account) {
 		BetInfoListener existListener = listeners.get(account);
 		if (existListener != null) {
 			existListener.stopListener();
@@ -73,7 +73,7 @@ public class BallSource {
 	/**
 	 * 当事件发生时，通知注册在事件源上的所有事件做出相应的反映
 	 */
-	private synchronized void notifyListener(BallEvent ballEvent) {
+	private void notifyListener(BallEvent ballEvent) {
 		for (String account : listeners.keySet()) {
 			try {
 				listeners.get(account).handleEvent(ballEvent);
