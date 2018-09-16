@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.ewing.order.busi.ball.ddl.BetRollInfo;
 import com.ewing.order.busi.ball.ddl.RollGameCompute;
 import com.ewing.order.core.jpa.BaseDao;
+import com.ewing.order.util.SqlUtil;
 
 /**
  * 系统菜单DAO
@@ -35,11 +36,19 @@ public class BetRollInfoDao {
 
 	@Transactional
 	public RollGameCompute computeMinAndMax(String gameId) {
-		String sql = "SELECT MAX( ratio_re_c) AS maxRatioR, " + "MIN( ratio_re_c) AS minRatioR , "
+		String sql = "SELECT gid,MAX( ratio_re_c) AS maxRatioR, " + "MIN( ratio_re_c) AS minRatioR , "
 				+ "MAX( ratio_rou_c) AS maxRatioRou," + "MIN( ratio_rou_c) AS minRatioRou   "
-				+ "FROM  bet_roll_info  WHERE gid=" + gameId + " AND ratio_rou_c !=0 ";
+				+ "FROM  bet_roll_info  WHERE gid=" + gameId + " AND ratio_rou_c !=0 group by gid ";
 		List<RollGameCompute> list = baseDao.noMappedObjectQuery(sql, RollGameCompute.class);
 		return CollectionUtils.isEmpty(list) ? null : list.get(0);
+	}
+	
+	@Transactional
+	public List<RollGameCompute> findMinAndMax(List<String> gidList){
+		String sql = "SELECT gid,MAX( ratio_re_c) AS maxRatioR, " + "MIN( ratio_re_c) AS minRatioR , "
+				+ "MAX( ratio_rou_c) AS maxRatioRou," + "MIN( ratio_rou_c) AS minRatioRou   "
+				+ "FROM  bet_roll_info  WHERE gid in ("+SqlUtil.array2InCondition(gidList) + ") AND ratio_rou_c !=0 group by gid ";
+		return  baseDao.noMappedObjectQuery(sql, RollGameCompute.class);
 	}
 
 	@Transactional

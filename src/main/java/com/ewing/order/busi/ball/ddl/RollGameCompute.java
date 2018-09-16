@@ -3,6 +3,8 @@ package com.ewing.order.busi.ball.ddl;
 import javax.persistence.Column;
 
 public class RollGameCompute {
+	@Column(name="gid")
+	private String gid;
 	@Column(name="minRatioR")
 	private Float minRatioR;
 	@Column(name="maxRatioR")
@@ -11,6 +13,14 @@ public class RollGameCompute {
 	private Float minRatioRou;
 	@Column(name="maxRatioRou")
 	private Float maxRatioRou;
+
+	public String getGid() {
+		return gid;
+	}
+
+	public void setGid(String gid) {
+		this.gid = gid;
+	}
 
 	public Float getMinRatioR() {
 		return minRatioR;
