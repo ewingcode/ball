@@ -61,7 +61,7 @@ public class BallNotifyService {
 					String host = betInfo.getTeam_h();
 					String client = betInfo.getTeam_c();
 					Map<String, String> variables = Maps.newHashMap();
-					variables.put("side", side);
+					variables.put("side", side+" "+betLog.getSpread());
 					variables.put("leauge", league);
 					variables.put("host", host);
 					variables.put("client", client);
