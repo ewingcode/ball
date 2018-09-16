@@ -30,7 +30,7 @@ public class BetLogDao {
 	}
 	
 	public List<BetLog> findNotNofity(String account) {
-		return baseDao.find("account='" + account + "' and bet_rule_id is not null and  is_notify='" + IsEff.INEFFECTIVE + "'",
+		return baseDao.find(" code = '560' and account='" + account + "' and bet_rule_id is not null and  is_notify='" + IsEff.INEFFECTIVE + "'",
 				BetLog.class);
 	}
 

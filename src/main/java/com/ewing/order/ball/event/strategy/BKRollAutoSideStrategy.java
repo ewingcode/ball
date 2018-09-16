@@ -31,7 +31,7 @@ import com.google.common.collect.Lists;
 public class BKRollAutoSideStrategy extends BetStrategy {
 	private static Logger log = LoggerFactory.getLogger(BKRollAutoSideStrategy.class);
 	private String gtype = "BK";
- 
+
 	/**
 	 * 每天下注场数
 	 */
@@ -94,7 +94,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 	private String buyWayDesc = "";
 
 	private BetRollInfo buyRollInfo;
-	 
+
 	@Override
 	public void initParam(Map<String, String> paramMap) {
 		ALL_AND_QUARTZ_INTERVAL = getFloatParamValue(paramMap, "ALL_AND_QUARTZ_INTERVAL");
@@ -110,8 +110,6 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			maxInterval = ALL_AND_QUARTZ_INTERVAL + MAX_INTERVAL_PERCENT * ALL_AND_QUARTZ_INTERVAL;
 
 	}
-
-	 
 
 	@Override
 	public boolean isSatisfy(BallEvent ballEvent) {
@@ -171,7 +169,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		if (CollectionUtils.isEmpty(list))
 			return false;
 		BetRollInfo lastBetRollInfo = list.get(list.size() - 1);
-		 
+
 		int highScoreTime = 0;
 		int tmpHighScoreCostTime = 0;
 		BetRollInfo beginBuyRollinfo = null;
@@ -180,7 +178,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		float inter = 0f;
 		BetRollInfo previousBetRollInfo = null;
 		String tmpSide = "";
-		for (int i = list.size() - 1; i >= 0; i--) { 
+		for (int i = list.size() - 1; i >= 0; i--) {
 			BetRollInfo betRollInfo = list.get(i);
 			if ((betRollInfo.getSe_now() == null)
 					|| (SQ_NOW != null && !SQ_NOW.equals(betRollInfo.getSe_now()))) {
@@ -192,7 +190,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			}
 			previousBetRollInfo = betRollInfo;
 			float scoreEveryQuartz = CalUtil.computeScoreSec4Quartz(betRollInfo);
-			float scoreAllQuartz = CalUtil.computeScoreSec4Alltime(betRollInfo); 
+			float scoreAllQuartz = CalUtil.computeScoreSec4Alltime(betRollInfo);
 			if (scoreEveryQuartz == 0f || scoreAllQuartz == 0f)
 				continue;
 			inter = Math.abs(scoreEveryQuartz - scoreAllQuartz);
@@ -266,18 +264,16 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 				}
 
 			}
-		
 
 		}
-		
-		
 
 		if (buyRollInfo != null) {
 			float scoreEveryQuartz = CalUtil.computeScoreSec4Quartz(buyRollInfo);
-			float scoreAllQuartz = CalUtil.computeScoreSec4Alltime(buyRollInfo);  
+			float scoreAllQuartz = CalUtil.computeScoreSec4Alltime(buyRollInfo);
 			inter = Math.abs(scoreEveryQuartz - scoreAllQuartz);
 			String operateName = (BUY_WAY != null && BUY_WAY == 0) ? "反向操作" : "正向操作";
-			if ((BUY_WAY != null && BUY_WAY == 1) || (maxInterval != null && inter >= maxInterval)) {
+			if ((BUY_WAY != null && BUY_WAY == 1)
+					|| (maxInterval != null && inter >= maxInterval)) {
 				operateName += (maxInterval != null && inter >= maxInterval)
 						? ",再反转大于阀值" + fnum2.format(maxInterval) : "";
 				if (side.equals("H")) {
@@ -287,7 +283,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 				}
 			}
 			StringBuffer sb = new StringBuffer();
-			sb.append("买入方:").append(side.equals("C")?"大":"小");
+			sb.append("买入方:").append(side.equals("C") ? "大" : "小");
 			sb.append("滚球开始ID：")
 					.append(previousBetRollInfo != null ? previousBetRollInfo.getId() : 0);
 			sb.append("滚球ID：").append(buyRollInfo.getId());
@@ -332,6 +328,11 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		return CollectionUtils.isEmpty(histories) ? 0 : histories.size();
 	}
 
+	private Boolean isMatchSpread(BkPreOrderViewResp bkPreOrderViewResp) {
+		return buyRollInfo != null
+				&& buyRollInfo.getRatio_rou_c().toString().equals(bkPreOrderViewResp.getSpread());
+	}
+ 
 	@Override
 	public Object bet(BallEvent ballEvent) {
 		String gtype = "BK";// 篮球
@@ -348,12 +349,11 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 				// 下注前需要再次检查一下次条件
 				if (betCondition(betInfo.getGid(), betInfo.getLeague(), betInfo.getN_sw_OU())) {
 					log.info(getStrategyName() + "准备下注:" + ballEvent.getSource().toString()+",buyWayDesc:"+buyWayDesc);
-					if (getBetStrategyContext().isAllowBet()) {
+					if (getBetStrategyContext().isAllowBet() && isMatchSpread(bkPreOrderViewResp)) { 
 						ftBetResp = RequestTool.bkbet(this.getBetStrategyContext().getUid(), betInfo.getGid(), gtype, betMoney, wtype,
 								side, bkPreOrderViewResp);
-						if(ftBetResp!=null){
-							ftBetResp.setBuy_desc(buyWayDesc);
-						}
+						if(ftBetResp!=null) 
+							ftBetResp.setBuy_desc(buyWayDesc); 
 					} else {
 						String ioratio =null;
 						String spread=null;

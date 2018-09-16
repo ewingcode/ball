@@ -147,23 +147,23 @@ public class BetStrategyPool {
 	public void runAutoStratgeys() {
 		List<BetInfoDto> betList = this.getBetStrategyContext().getBetInfoList();
 		// 处理全局规则设置
-		for (BetStrategy betStrategyTemplate : betStrategys) {
-			BetStrategy betStrategy = BetStrategyRegistCenter
-					.newBetStrategy(betStrategyTemplate.getClass().getSimpleName()); 
-			betStrategy.initParam(betStrategyTemplate.getParamMap());
-			betStrategy.setLevel(betStrategyTemplate.getLevel());
-			betStrategy.setBetStrategyName(betStrategyTemplate.getStrategyName());
-			betStrategy.setIseff(betStrategyTemplate.getIseff());
-			betStrategy.setgId(betStrategyTemplate.getgId());
-			betStrategy.setUid(betStrategyTemplate.getUid());
-			betStrategy.setRuleId(betStrategyTemplate.getRuleId());
-			betStrategy.setBetStrategyContext(betStrategyContext);
-			if (betStrategy.getgId() != null)
+		for (BetStrategy betStrategyTemplate : betStrategys) { 
+			if (betStrategyTemplate.getgId() != null)
 				continue;
-			if (!betStrategy.getIseff()) {
+			if (!betStrategyTemplate.getIseff()) {
 				continue;
 			}
 			for (BetInfoDto betInfoDto : betList) { 
+				BetStrategy betStrategy = BetStrategyRegistCenter
+						.newBetStrategy(betStrategyTemplate.getClass().getSimpleName()); 
+				betStrategy.initParam(betStrategyTemplate.getParamMap());
+				betStrategy.setLevel(betStrategyTemplate.getLevel());
+				betStrategy.setBetStrategyName(betStrategyTemplate.getStrategyName());
+				betStrategy.setIseff(betStrategyTemplate.getIseff());
+				betStrategy.setgId(betStrategyTemplate.getgId());
+				betStrategy.setUid(betStrategyTemplate.getUid());
+				betStrategy.setRuleId(betStrategyTemplate.getRuleId());
+				betStrategy.setBetStrategyContext(betStrategyContext);
 				BallEvent ballEvent = new BallEvent(betInfoDto.getGid(), betInfoDto);
 				if (!isNewBallEvent(betStrategy.getRuleId(), ballEvent.getGameId(),
 						betInfoDto.getLastUpdate())) {
