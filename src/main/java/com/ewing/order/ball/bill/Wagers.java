@@ -37,9 +37,18 @@ public class Wagers {
 	private String push;
 	private String main_ball_act_class;
 	private String main_ball_act_ret;
+	private String cancel_apn;
 	@XStreamImplicit
 	@XStreamAlias("wagers_sub")
 	private List<WagersSub> wagers_sub;
+
+	public String getCancel_apn() {
+		return cancel_apn;
+	}
+
+	public void setCancel_apn(String cancel_apn) {
+		this.cancel_apn = cancel_apn;
+	}
 
 	public String getMain_ball_act_ret() {
 		return main_ball_act_ret;

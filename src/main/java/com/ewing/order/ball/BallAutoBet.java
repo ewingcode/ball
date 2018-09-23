@@ -94,6 +94,8 @@ public class BallAutoBet {
 	}
 
 	public void stop(String account) { 
+		if(getLoginResp(account)==null)
+			return;
 		loginCache.remove(account);
 		ballMember.stopBkListener(account);
 		betAutoBuyService.updateLoginOut(account);
