@@ -272,8 +272,15 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			float scoreAllQuartz = CalUtil.computeScoreSec4Alltime(buyRollInfo);
 			inter = Math.abs(scoreEveryQuartz - scoreAllQuartz);
 			String operateName = (BUY_WAY != null && BUY_WAY == 0) ? "反向操作" : "正向操作";
-			if ((BUY_WAY != null && BUY_WAY == 1)
-					|| (maxInterval != null && inter >= maxInterval)) {
+			if (BUY_WAY != null && BUY_WAY == 1 ) { 
+				if (side.equals("H")) {
+					side = "C";
+				} else if (side.equals("C")) {
+					side = "H";
+				}
+			}
+			
+			if (maxInterval != null && inter >= maxInterval) {
 				operateName += (maxInterval != null && inter >= maxInterval)
 						? ",再反转大于阀值" + fnum2.format(maxInterval) : "";
 				if (side.equals("H")) {
