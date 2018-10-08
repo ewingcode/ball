@@ -10,13 +10,15 @@ import com.ewing.order.busi.ball.ddl.BetRollInfo;
 public class CalUtil {
 	
 	private static final DecimalFormat fnum = new DecimalFormat("##0.0000"); 
+	private static final Integer quartsSec = 600;
+	private static final Integer nbaQuartsSec = 720;
 	public static void main(String[] args) {
 		System.out.println(fnum.format(0f));
 	}
 	public static Float computeScoreSec4Quartz(BetRollInfo betRollInfo) {
 		if (betRollInfo == null || StringUtils.isEmpty(betRollInfo.getT_count()))
 			return 0f;
-		Integer costTime = 600 - Integer.valueOf(betRollInfo.getT_count());
+		Integer costTime = getEachQuartz(betRollInfo) - Integer.valueOf(betRollInfo.getT_count());
 		Float rate = 0f;
 		if (betRollInfo.getSe_now().equals("Q1")) {
 			rate =  Float.valueOf(betRollInfo.getSc_Q1_total()) / costTime;
@@ -34,18 +36,26 @@ public class CalUtil {
 		} 
 	}
 
+	private static Boolean isNba(String league){
+		return !StringUtils.isEmpty(league)&&league.indexOf("NBA")>-1?true:false;
+	}
+	
+	private static Integer getEachQuartz(BetRollInfo betRollInfo){
+		return isNba(betRollInfo.getLeague())?nbaQuartsSec:quartsSec;
+	}
 	public static Float computeScoreSec4Alltime(BetRollInfo betRollInfo) {
+		Integer each = getEachQuartz(betRollInfo);
 		if (betRollInfo == null || StringUtils.isEmpty(betRollInfo.getT_count()))
 			return 0f;
 		Integer costTime = 0;
 		if (betRollInfo.getSe_now().equals("Q1")) {
-			costTime = +600;
+			costTime += each;
 		} else if (betRollInfo.getSe_now().equals("Q2")) {
-			costTime += 1200;
+			costTime += each*2;
 		} else if (betRollInfo.getSe_now().equals("Q3")) {
-			costTime += 1800;
+			costTime += each*3;
 		} else if (betRollInfo.getSe_now().equals("Q4")) {
-			costTime += 2400;
+			costTime += each*4;
 		}
 		costTime = costTime - Integer.valueOf(betRollInfo.getT_count());
 		if(costTime==0)
