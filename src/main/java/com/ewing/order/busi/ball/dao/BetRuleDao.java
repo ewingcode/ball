@@ -3,9 +3,7 @@ package com.ewing.order.busi.ball.dao;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 
-import org.hibernate.engine.spi.QueryParameters;
 import org.springframework.stereotype.Component;
 
 import com.ewing.order.ball.shared.BetRuleStatus;
@@ -23,6 +21,11 @@ public class BetRuleDao {
 	@Resource
 	private BaseDao baseDao;
 
+	
+	public BetRule findMainRule(String gtype,String ptype) {
+		return baseDao.findOne("is_main='1' and gtype='" + gtype + "' and ptype='"
+				+ ptype + "' and iseff='" + IsEff.EFFECTIVE + "'", BetRule.class);
+	}
 	public List<BetRule> findRule(String account, String status, String gtype, String ptype) {
 		return baseDao.find("account='" + account + "' and gtype='" + gtype + "' and ptype='"
 				+ ptype + "' and iseff='" + IsEff.EFFECTIVE + "'" + "  and status='" + status

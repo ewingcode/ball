@@ -1,16 +1,24 @@
 package com.ewing.order.busi.ball.action;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ewing.order.ball.BallMember;
+import com.ewing.order.ball.shared.BetRuleStatus;
+import com.ewing.order.ball.shared.GtypeStatus;
+import com.ewing.order.ball.shared.PtypeStatus;
 import com.ewing.order.busi.ball.ddl.BetAutoBuy;
+import com.ewing.order.busi.ball.ddl.BetRule;
 import com.ewing.order.busi.ball.dto.BetAutoBuyDto;
 import com.ewing.order.busi.ball.service.BetAutoBuyService;
+import com.ewing.order.busi.ball.service.BetRuleService;
 import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.core.web.base.BaseRest;
 import com.ewing.order.core.web.common.RequestJson;
@@ -28,7 +36,8 @@ public class BetaAutoRest extends BaseRest {
 	private BetAutoBuyService betAutoBuyService;
 	@Resource
 	private BallMember ballMember;
-
+	@Resource
+	private BetRuleService betRuleService;
 	/**
 	 * 更新自動投注賬戶狀態
 	 * 
@@ -39,10 +48,12 @@ public class BetaAutoRest extends BaseRest {
 	public RestResult<Boolean> updateStatus() throws Exception {
 		RequestJson requestJson = getRequestJson();
 		String account = requestJson.getString("account");
+		String phone = requestJson.getString("phone");
+		String money = requestJson.getString("money");
 		String iseff = requestJson.getString("iseff");
 		checkRequired(account, "account");
 		checkRequired(iseff, "iseff");
-		betAutoBuyService.updateIsEff(account, iseff);
+		betAutoBuyService.updateIsEff(account, iseff, phone, money);
 		return RestResult.successResult(true);
 	}
 
@@ -57,16 +68,19 @@ public class BetaAutoRest extends BaseRest {
 		RequestJson requestJson = getRequestJson();
 		String account = requestJson.getString("account");
 		checkRequired(account, "account");
-		BetAutoBuy betAutoBuy = betAutoBuyService.find(account);
+		BetAutoBuy betAutoBuy = betAutoBuyService.find(account); 
+		 List<BetRule> ruleList = betRuleService.findRule(account, BetRuleStatus.NOTSUCCESS, GtypeStatus.BK, PtypeStatus.ROLL);
 		if (betAutoBuy != null) {
 			BetAutoBuyDto dto = new BetAutoBuyDto();
 			BeanCopy.copy(dto, betAutoBuy, true);
+			if(CollectionUtils.isNotEmpty(ruleList)){
+				dto.setMoney(ruleList.get(0).getMoney());
+			}
 			// 如果不是活跃中的用户则设置为失效用户，让前台可以更新用户状态来激活自动下注
 			dto.setIseff(ballMember.isActiveAccount(account) ? IsEff.EFFECTIVE : IsEff.INEFFECTIVE);
 
 			return RestResult.successResult(dto);
 		}
 		return RestResult.successResult(null);
-	}
-
+	} 
 }

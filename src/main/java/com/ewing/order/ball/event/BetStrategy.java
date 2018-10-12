@@ -27,6 +27,8 @@ public abstract class BetStrategy {
 
 	private Integer ruleId;
 
+	private String money;
+	
 	private Map<String,String> paramMap;
 	
 	
@@ -36,6 +38,14 @@ public abstract class BetStrategy {
 
 	public void setParamMap(Map<String, String> paramMap) {
 		this.paramMap = paramMap;
+	}
+
+	public String getMoney() {
+		return money;
+	}
+
+	public void setMoney(String money) {
+		this.money = money;
 	}
 
 	public String getgId() {

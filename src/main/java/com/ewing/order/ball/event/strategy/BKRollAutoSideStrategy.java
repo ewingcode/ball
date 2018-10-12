@@ -86,6 +86,10 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 	 * 最大得分率
 	 */
 	private Float maxInterval = null;
+	/**
+	 * 小于多少剩余时间才允许买入
+	 */
+	private Integer LEFT_TIME = null;
 
 	private DecimalFormat fnum2 = new DecimalFormat("##0.0000");
 	/**
@@ -101,11 +105,12 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		MAX_INTERVAL_PERCENT = getFloatParamValue(paramMap, "MAX_INTERVAL_PERCENT");
 		BUYSIDE = getParamValue(paramMap, "BUYSIDE");
 		SQ_NOW = getParamValue(paramMap, "SQ_NOW");
-		MONEYEACHMATCH = getParamValue(paramMap, "MONEYEACHMATCH");
+		MONEYEACHMATCH = this.getMoney();
 		MIN_HIGH_SCORE_TIME = getIntegerParamValue(paramMap, "MIN_HIGH_SCORE_TIME");
 		HIGH_SCORE_COSTTIME = getIntegerParamValue(paramMap, "HIGH_SCORE_COSTTIME");
 		EXCLUDE_LEAGUE = getParamValue(paramMap, "EXCLUDE_LEAGUE");
 		BUY_WAY = getIntegerParamValue(paramMap, "BUY_WAY");
+		LEFT_TIME = getIntegerParamValue(paramMap, "LEFT_TIME");
 		if (ALL_AND_QUARTZ_INTERVAL != null && MAX_INTERVAL_PERCENT != null)
 			maxInterval = ALL_AND_QUARTZ_INTERVAL + MAX_INTERVAL_PERCENT * ALL_AND_QUARTZ_INTERVAL;
 
@@ -182,7 +187,11 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			BetRollInfo betRollInfo = list.get(i);
 			if ((betRollInfo.getSe_now() == null)
 					|| (SQ_NOW != null && !SQ_NOW.equals(betRollInfo.getSe_now()))) {
-				log(gId + ",不符合指定场节：" + SQ_NOW + "，当前:" + betRollInfo.getSe_now());
+				log(gId + ",不符合指定场节：" + SQ_NOW + "，当前场节:" + betRollInfo.getSe_now());
+				break;
+			}
+			if(LEFT_TIME!=null && Integer.valueOf(betRollInfo.getT_count()) >LEFT_TIME){
+				log(gId + ",大于剩余时间：" + LEFT_TIME + "，当前时间:" + betRollInfo.getT_count());
 				break;
 			}
 			if (previousBetRollInfo != null && previousBetRollInfo.isSameRatioOU(betRollInfo)) {

@@ -13,8 +13,26 @@ public class BetAutoBuyDto {
 	private String account;
 	private String is_login;
 	private String iseff;
+	private String money;
+	private String phone;
 	private Timestamp createTime;
 	private Timestamp lastUpdate;
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getMoney() {
+		return money;
+	}
+
+	public void setMoney(String money) {
+		this.money = money;
+	}
 
 	public Integer getId() {
 		return id;

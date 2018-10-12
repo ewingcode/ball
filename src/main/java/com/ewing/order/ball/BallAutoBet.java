@@ -37,8 +37,23 @@ public class BallAutoBet {
 	private long crc32RuleValue = 0l;
 	
 	private static Map<String,LoginResp> loginCache = Maps.newConcurrentMap();
+	
+	private static Map<String,String> loginPwdCache = Maps.newConcurrentMap();
 	static int i=0;
-	 
+	
+	/**
+	 * 保存登录密码
+	 */
+	public void updateLoginPwdCache(String account,String pwd){
+		loginPwdCache.put(account, pwd);
+	}
+	/**
+	 * 获取登录密码
+	 */
+	public String getPwd4Cache(String account){
+		return loginPwdCache.get(account);
+	}
+	
 	@Scheduled(cron = "*/10 * * * * * ")
 	public void init() {
 		if (!BallmatchProp.allowrunautobet)
@@ -52,8 +67,7 @@ public class BallAutoBet {
 					log.info("start autoBuy for " + betAutoBuy.getAccount());
 					start(betAutoBuy.getAccount(), betAutoBuy.getPwd());
 				}
-			} else {
-				log.info("stop autoBuy for " + betAutoBuy.getAccount());
+			} else { 
 				stop(betAutoBuy.getAccount());
 			}
 		}
@@ -96,6 +110,7 @@ public class BallAutoBet {
 	public void stop(String account) { 
 		if(getLoginResp(account)==null)
 			return;
+		log.info("stop autoBuy for " + account);
 		loginCache.remove(account);
 		ballMember.stopBkListener(account);
 		betAutoBuyService.updateLoginOut(account);

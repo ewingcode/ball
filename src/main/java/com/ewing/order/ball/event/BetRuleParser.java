@@ -53,6 +53,7 @@ public class BetRuleParser {
 			betStrategy.initParam(GsonUtil.getGson().fromJson(betRule.getParam(), HashMap.class));
 			betStrategy.setLevel(Integer.valueOf(betRule.getLevel()));
 			betStrategy.setBetStrategyName(betRule.getName());
+			betStrategy.setMoney(betRule.getMoney());
 			betStrategy.setIseff(betRule.getIseff().equals(IsEff.EFFECTIVE));
 			betStrategy.setgId(betRule.getGid()); 
 			betStrategy.setRuleId(betRule.getId());

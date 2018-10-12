@@ -67,6 +67,26 @@ public class BetRule implements java.io.Serializable {
 	private Timestamp createTime;
 	@Column(name = "lastUpdate")
 	private Timestamp lastUpdate;
+	@Column(name = "is_main")
+	private String is_main;
+	@Column(name = "money")
+	private String money;
+
+	public String getIs_main() {
+		return is_main;
+	}
+
+	public void setIs_main(String is_main) {
+		this.is_main = is_main;
+	}
+
+	public String getMoney() {
+		return money;
+	}
+
+	public void setMoney(String money) {
+		this.money = money;
+	}
 
 	public String getLong_desc() {
 		return long_desc;

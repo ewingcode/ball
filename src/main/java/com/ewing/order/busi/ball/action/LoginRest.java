@@ -50,8 +50,9 @@ public class LoginRest extends BaseRest {
 		if (ballAutoBet.getLoginResp(account) != null)
 			loginResp = ballAutoBet.getLoginResp(account);
 		else {
-			loginResp = RequestTool.login(account, pwd);
+			loginResp = RequestTool.login(account, pwd); 
 		}
+		ballAutoBet.updateLoginPwdCache(account, pwd);
 		// ballMember.addBkListener(account, loginResp.getUid());
 		loginResp.setAccount(account);
 		return RestResult.successResult(loginResp);
