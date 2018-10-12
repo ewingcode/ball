@@ -205,7 +205,7 @@ public class RequestTool {
 		data.put("date", "");
 		data.put("isP", "");
 		String resp = httpRequest(url, "POST", data, getHeaders());
-		 log.info("getBkRollGameList:" + resp);
+		 //log.info("getBkRollGameList:" + resp);
 		if (HttpUtils.isErrorResp(resp))
 			throw new BusiException("获取指定联赛的投注项目失败！");
 		BkRollGameListResp gameListResp = new BkRollGameListResp();
