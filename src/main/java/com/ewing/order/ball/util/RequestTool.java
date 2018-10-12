@@ -145,7 +145,7 @@ public class RequestTool {
 		data.put("date", "");
 		data.put("isP", "");
 		String resp = httpRequest(url, "POST", data, getHeaders());
-		log.info("getLeagueList:" + resp);
+		//log.info("getLeagueList:" + resp);
 		if (HttpUtils.isErrorResp(resp))
 			throw new BusiException("获取指定类型的联赛列表！");
 		LeagueListResp leagueListResp = new LeagueListResp();
