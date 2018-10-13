@@ -161,6 +161,7 @@ public class BetStrategyPool {
 				betStrategy.setBetStrategyName(betStrategyTemplate.getStrategyName());
 				betStrategy.setIseff(betStrategyTemplate.getIseff());
 				betStrategy.setgId(betStrategyTemplate.getgId());
+				betStrategy.setMoney(betStrategyTemplate.getMoney());
 				betStrategy.setUid(betStrategyTemplate.getUid());
 				betStrategy.setRuleId(betStrategyTemplate.getRuleId());
 				betStrategy.setBetStrategyContext(betStrategyContext);
