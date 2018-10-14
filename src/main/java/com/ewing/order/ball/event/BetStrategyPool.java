@@ -156,12 +156,12 @@ public class BetStrategyPool {
 			for (BetInfoDto betInfoDto : betList) { 
 				BetStrategy betStrategy = BetStrategyRegistCenter
 						.newBetStrategy(betStrategyTemplate.getClass().getSimpleName()); 
+				betStrategy.setMoney(betStrategyTemplate.getMoney());
 				betStrategy.initParam(betStrategyTemplate.getParamMap());
 				betStrategy.setLevel(betStrategyTemplate.getLevel());
 				betStrategy.setBetStrategyName(betStrategyTemplate.getStrategyName());
 				betStrategy.setIseff(betStrategyTemplate.getIseff());
-				betStrategy.setgId(betStrategyTemplate.getgId());
-				betStrategy.setMoney(betStrategyTemplate.getMoney());
+				betStrategy.setgId(betStrategyTemplate.getgId()); 
 				betStrategy.setUid(betStrategyTemplate.getUid());
 				betStrategy.setRuleId(betStrategyTemplate.getRuleId());
 				betStrategy.setBetStrategyContext(betStrategyContext);

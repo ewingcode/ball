@@ -105,7 +105,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		MAX_INTERVAL_PERCENT = getFloatParamValue(paramMap, "MAX_INTERVAL_PERCENT");
 		BUYSIDE = getParamValue(paramMap, "BUYSIDE");
 		SQ_NOW = getParamValue(paramMap, "SQ_NOW");
-		MONEYEACHMATCH =  getParamValue(paramMap, "MONEYEACHMATCH");
+		MONEYEACHMATCH= this.getMoney(); 
 		MIN_HIGH_SCORE_TIME = getIntegerParamValue(paramMap, "MIN_HIGH_SCORE_TIME");
 		HIGH_SCORE_COSTTIME = getIntegerParamValue(paramMap, "HIGH_SCORE_COSTTIME");
 		EXCLUDE_LEAGUE = getParamValue(paramMap, "EXCLUDE_LEAGUE");
