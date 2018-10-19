@@ -1,231 +1,38 @@
-uid:eh98u0dum19706631l365419
+uid:8kxi5ntjum19706631l196423
 langx:zh-cn
-LS:g
-selGtype:ALL
-chk_cw:N
+odd_f_type:H
+golds:50
+gid:2630518
+gtype:BK
+wtype:ROU
+rtype:ROUC
+chose_team:c
+ioratio:0.92
+con:158
+ratio:100
+autoOdd:
+timestamp:1539534304940
+timestamp2:46f920c576a4b86e9605c40d9a5b757c
+isRB:Y
 
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
+<serverrequest><code>570</code><ticket_id>10485036175</ticket_id>
+<active>m_delay</active><timestamp>a466425178ba07fe20e8e347ca051970</timestamp></serverrequest>
 
 
+uid:8kxi5ntjum19706631l196423
+gtype:BK
+gid:2630518
+ticket_id:10485036175
+active:m_delay
+langx:zh-cn
+timestamp:1539534310298
+timestamp2:a466425178ba07fe20e8e347ca051970
+wtype:ROU
+rtype:ROUC
+ 
 
-<serverresponse>
-  <code>todaywagers</code>
-  <amout_gold>450</amout_gold>
-  <wagers tid="OU10142346471">
-    <w_id>OU10142346471</w_id>
-    <addtime>09:19:08</addtime>
-    <oddf_type>(香港盘)</oddf_type>
-    <gtype>篮球</gtype>
-    <w_ms/>
-    <wtype>(滚球) 总分: 大 / 小</wtype>
-    <bet_wtype>ROU</bet_wtype>
-    <league>FIBA欧洲篮球锦标赛B组U16(在波斯尼亚和黑塞哥维那)</league>
-    <team_h_show>乌克兰U16</team_h_show>
-    <team_c_show>捷克U16</team_c_show>
-    <team_h_ratio/>
-    <team_c_ratio/>
-    <ratio/>
-    <org_score/>
-    <score/>
-    <result>大 157.5</result>
-    <pname/>
-    <ioratio>0.83</ioratio>
-    <ball_act_class/>
-    <ball_act_ret/>
-    <gold>50</gold>
-    <win_gold>41.5</win_gold>
-  </wagers>
-  <wagers tid="OU10142337470">
-    <w_id>OU10142337470</w_id>
-    <addtime>09:17:24</addtime>
-    <oddf_type>(香港盘)</oddf_type>
-    <gtype>篮球</gtype>
-    <w_ms/>
-    <wtype>(滚球) 让球</wtype>
-    <bet_wtype>RE</bet_wtype>
-    <league>FIBA欧洲篮球锦标赛B组U16(在波斯尼亚和黑塞哥维那)</league>
-    <team_h_show>乌克兰U16</team_h_show>
-    <team_c_show>捷克U16</team_c_show>
-    <team_h_ratio>13.5</team_h_ratio>
-    <team_c_ratio/>
-    <ratio/>
-    <org_score/>
-    <score/>
-    <result>捷克U16</result>
-    <pname/>
-    <ioratio>0.88</ioratio>
-    <ball_act_class/>
-    <ball_act_ret/>
-    <gold>50</gold>
-    <win_gold>44</win_gold>
-  </wagers>
-  <wagers tid="OU10142330552">
-    <w_id>OU10142330552</w_id>
-    <addtime>09:16:08</addtime>
-    <oddf_type>(香港盘)</oddf_type>
-    <gtype>篮球</gtype>
-    <w_ms/>
-    <wtype>(滚球) 让球</wtype>
-    <bet_wtype>RE</bet_wtype>
-    <league>FIBA欧洲篮球锦标赛B组U16(在波斯尼亚和黑塞哥维那)</league>
-    <team_h_show>瑞典U16</team_h_show>
-    <team_c_show>卢森堡U16</team_c_show>
-    <team_h_ratio>54.5</team_h_ratio>
-    <team_c_ratio/>
-    <ratio/>
-    <org_score/>
-    <score/>
-    <result>瑞典U16</result>
-    <pname/>
-    <ioratio>0.96</ioratio>
-    <ball_act_class/>
-    <ball_act_ret/>
-    <gold>50</gold>
-    <win_gold>48</win_gold>
-  </wagers>
-  <wagers tid="OU10142324082">
-    <w_id>OU10142324082</w_id>
-    <addtime>09:14:36</addtime>
-    <oddf_type>(香港盘)</oddf_type>
-    <gtype>篮球</gtype>
-    <w_ms/>
-    <wtype>(滚球) 让球</wtype>
-    <bet_wtype>RE</bet_wtype>
-    <league>FIBA欧洲篮球锦标赛B组U16(在波斯尼亚和黑塞哥维那)</league>
-    <team_h_show>瑞典U16</team_h_show>
-    <team_c_show>卢森堡U16</team_c_show>
-    <team_h_ratio>56.5</team_h_ratio>
-    <team_c_ratio/>
-    <ratio/>
-    <org_score/>
-    <score/>
-    <result>卢森堡U16</result>
-    <pname/>
-    <ioratio>0.88</ioratio>
-    <ball_act_class/>
-    <ball_act_ret/>
-    <gold>50</gold>
-    <win_gold>44</win_gold>
-  </wagers>
-  <wagers tid="OU10142223440">
-    <w_id>OU10142223440</w_id>
-    <addtime>08:54:07</addtime>
-    <oddf_type>(香港盘)</oddf_type>
-    <gtype>篮球</gtype>
-    <w_ms/>
-    <wtype>(滚球) 让球</wtype>
-    <bet_wtype>RE</bet_wtype>
-    <league>FIBA欧洲篮球锦标赛B组U16(在波斯尼亚和黑塞哥维那)</league>
-    <team_h_show>乌克兰U16</team_h_show>
-    <team_c_show>捷克U16</team_c_show>
-    <team_h_ratio>13.5</team_h_ratio>
-    <team_c_ratio/>
-    <ratio/>
-    <org_score/>
-    <score/>
-    <result>乌克兰U16</result>
-    <pname/>
-    <ioratio>0.88</ioratio>
-    <ball_act_class/>
-    <ball_act_ret/>
-    <gold>50</gold>
-    <win_gold>44</win_gold>
-  </wagers>
-  <wagers tid="OU10142211694">
-    <w_id>OU10142211694</w_id>
-    <addtime>08:51:16</addtime>
-    <oddf_type>(香港盘)</oddf_type>
-    <gtype>篮球</gtype>
-    <w_ms/>
-    <wtype>(滚球) 让球</wtype>
-    <bet_wtype>RE</bet_wtype>
-    <league>FIBA欧洲篮球锦标赛B组U16(在波斯尼亚和黑塞哥维那)</league>
-    <team_h_show>乌克兰U16</team_h_show>
-    <team_c_show>捷克U16</team_c_show>
-    <team_h_ratio>11.5</team_h_ratio>
-    <team_c_ratio/>
-    <ratio/>
-    <org_score/>
-    <score/>
-    <result>捷克U16</result>
-    <pname/>
-    <ioratio>0.88</ioratio>
-    <ball_act_class/>
-    <ball_act_ret/>
-    <gold>50</gold>
-    <win_gold>44</win_gold>
-  </wagers>
-  <wagers tid="OU10142181567">
-    <w_id>OU10142181567</w_id>
-    <addtime>08:43:20</addtime>
-    <oddf_type>(香港盘)</oddf_type>
-    <gtype>篮球</gtype>
-    <w_ms/>
-    <wtype>(滚球) 让球</wtype>
-    <bet_wtype>RE</bet_wtype>
-    <league>FIBA欧洲篮球锦标赛B组U16(在波斯尼亚和黑塞哥维那)</league>
-    <team_h_show>瑞典U16</team_h_show>
-    <team_c_show>卢森堡U16</team_c_show>
-    <team_h_ratio>55.5</team_h_ratio>
-    <team_c_ratio/>
-    <ratio/>
-    <org_score/>
-    <score/>
-    <result>卢森堡U16</result>
-    <pname/>
-    <ioratio>0.88</ioratio>
-    <ball_act_class/>
-    <ball_act_ret/>
-    <gold>50</gold>
-    <win_gold>44</win_gold>
-  </wagers>
-  <wagers tid="OU10142167794">
-    <w_id>OU10142167794</w_id>
-    <addtime>08:40:37</addtime>
-    <oddf_type>(香港盘)</oddf_type>
-    <gtype>篮球</gtype>
-    <w_ms/>
-    <wtype>(滚球) 让球</wtype>
-    <bet_wtype>RE</bet_wtype>
-    <league>FIBA欧洲篮球锦标赛B组U16(在波斯尼亚和黑塞哥维那)</league>
-    <team_h_show>乌克兰U16</team_h_show>
-    <team_c_show>捷克U16</team_c_show>
-    <team_h_ratio>5.5</team_h_ratio>
-    <team_c_ratio/>
-    <ratio/>
-    <org_score/>
-    <score/>
-    <result>捷克U16</result>
-    <pname/>
-    <ioratio>0.88</ioratio>
-    <ball_act_class/>
-    <ball_act_ret/>
-    <gold>50</gold>
-    <win_gold>44</win_gold>
-  </wagers>
-  <wagers tid="OU10142129542">
-    <w_id>OU10142129542</w_id>
-    <addtime>08:34:01</addtime>
-    <oddf_type>(香港盘)</oddf_type>
-    <gtype>篮球</gtype>
-    <w_ms/>
-    <wtype>(滚球) 让球</wtype>
-    <bet_wtype>RE</bet_wtype>
-    <league>FIBA欧洲篮球锦标赛B组U16(在波斯尼亚和黑塞哥维那)</league>
-    <team_h_show>瑞典U16</team_h_show>
-    <team_c_show>卢森堡U16</team_c_show>
-    <team_h_ratio>49.5</team_h_ratio>
-    <team_c_ratio/>
-    <ratio/>
-    <org_score/>
-    <score/>
-    <result>卢森堡U16</result>
-    <pname/>
-    <ioratio>0.88</ioratio>
-    <ball_act_class/>
-    <ball_act_ret/>
-    <gold>50</gold>
-    <win_gold>44</win_gold>
-  </wagers>
-  <count>9</count>
-</serverresponse>
+<?xml version="1.0" encoding="UTF-8" ?><serverrequest><code>560</code>
+<ticket_id>10485036955</ticket_id><gid>2630518</gid><gtype>BK</gtype>
+<wtype>ROU</wtype><rtype>ROUC</rtype><type>C</type><strong>N</strong>
+<ioratio>0.92</ioratio><gold>50</gold><concede>158</concede><ratio>100</ratio><spread>157.5</spread><date>2018-10-14</date><time>12:00:00</time><team_id_h>128300</team_id_h><team_id_c>123619</team_id_c><league_id>100810</league_id><maxcredit>9700</maxcredit><mid>19706631</mid><username>cdag6095</username><mtype>3</mtype><league>希腊篮球甲级联赛</league><team_c>奥林比亚高斯</team_c><team_h>基米</team_h><score_h></score_h><score_c></score_c><ms></ms><timestamp>1539534310298</timestamp></serverrequest>

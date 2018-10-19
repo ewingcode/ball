@@ -69,8 +69,8 @@ public class CalData {
 	@Test
 	public void testAllGame() {
 		long start = System.currentTimeMillis();
-		String startTime = "2018-10-01";
-		String endTime = "2018-11-01";
+		String startTime = "2018-10-10";
+		String endTime = "2018-10-17";
 		Integer minGid = 0;
 		List<BetInfo> entityList = baseDao
 				.find("select * from bet_info where status=1 and gtype='BK' and create_time>='"
@@ -202,7 +202,7 @@ public class CalData {
 		for (int j = 25; j <= 25; j += 5) {
 			for (int i = 5; i <= 5; i++) {
 				for (int z = 30; z <= 30; z += 20) {
-					for (int k = 14; k <= 14; k += 2) { 
+					for (int k = 12; k <= 12; k += 2) { 
 					//	for(int b = 450; b >= 400; b -= 10){
 						BuyWay2 buyWay = new BuyWay2(j / (1000 * 1f), i, z, "AUTO", seNow, desc,
 								k/10f, null, null);

@@ -36,6 +36,73 @@ public class HttpUtils {
 		return request(url, method, params, headerAttribute, null);
 	}
 
+	public static String request2(String url, String method, String params,
+			Map<String, String> headerAttribute, String charsetName) {
+
+		HttpURLConnection conn = null;
+		BufferedOutputStream bos = null;
+		InputStream is = null;
+
+		try {
+			conn = (HttpURLConnection) new URL(url).openConnection();
+			conn.setConnectTimeout(1000 * 60);
+			conn.setReadTimeout(1000 * 60);
+			conn.setDefaultUseCaches(false);
+
+			conn.setInstanceFollowRedirects(true);
+			conn.setRequestMethod(method);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+
+			if (null != headerAttribute) {
+				// 设置HttpRequest请求头的属性
+				for (Map.Entry<String, String> entry : headerAttribute.entrySet()) {
+					conn.addRequestProperty(entry.getKey(), entry.getValue());
+				}
+			}
+
+			if (null != params) {
+				// 构建请求参数列格式a=aaa&b=bbb&c=ccc
+				StringBuilder sb = new StringBuilder("");
+				 sb.append(params);
+				log.info("http request:"+params);
+				String body = sb.length() > 0 ? sb.substring(0, sb.length() - 1) : "";
+
+				bos = new BufferedOutputStream(conn.getOutputStream());
+				bos.write(body.getBytes());
+				bos.flush();
+				bos.close();
+			}
+
+			Integer responseCode = conn.getResponseCode();
+			log.debug("[code:" + responseCode + "] : request - > " + url);
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(),
+					null != charsetName ? charsetName : "utf8"));
+			String line = "";
+			String result = "";
+			while (null != (line = br.readLine())) {
+				result += line;
+			}
+
+			return result; 
+		} catch (Exception e) {
+			// 网络异常返回-1
+			log.error(e.getMessage(), e);
+			log.debug("request url[" + url + "] error, msg: " + e.getMessage());
+			return "-1";
+		} finally {
+			if (is != null)
+				try {
+					is.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			if (conn != null)
+				conn.disconnect();
+		}
+	}
 	/**
 	 * <pre>
 	 * Http请求调用处理
@@ -84,6 +151,7 @@ public class HttpUtils {
 				for (Map.Entry<String, String> entry : params.entrySet()) {
 					sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
 				}
+				log.info("http request:"+sb.toString());
 				String body = sb.length() > 0 ? sb.substring(0, sb.length() - 1) : "";
 
 				bos = new BufferedOutputStream(conn.getOutputStream());

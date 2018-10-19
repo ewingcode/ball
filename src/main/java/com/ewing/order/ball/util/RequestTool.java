@@ -1,7 +1,10 @@
 package com.ewing.order.ball.util;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -49,10 +52,31 @@ public class RequestTool {
 		}
 		return resp;
 	}
+	
+	private static String httpRequest(String url, String method, String params,
+			Map<String, String> headerAttribute) {
+		String resp = HttpUtils.request2(url, "POST", params, getHeaders(),null);
+		if (resp != null) {
+			if (resp.indexOf(ErrorCode.doubleLogin) > -1) {
+				throw new BusiException(ErrorCode.doubleLogin);
+			}
+		}
+		return resp;
+	}
 
 	private static Map<String, String> getHeaders() {
 		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("User-Agent", userAgent);
+		headers.put("User-Agent", userAgent); 
+		headers.put("Content-type", "application/x-www-form-urlencoded");
+		headers.put("Cookie", "OUTFOX_SEARCH_USER_ID_NCOO=946313589.0114888; _ga=GA1.1.1246637889.1533712119; _gid=GA1.1.650524102.1539590053; _gat=1");
+		/*Content-type:application/x-www-form-urlencoded
+		Cookie:OUTFOX_SEARCH_USER_ID_NCOO=946313589.0114888; _ga=GA1.1.1246637889.1533712119; _gid=GA1.1.650524102.1539590053; _gat=1
+		Host:205.201.1.182
+		Origin:http://205.201.1.182
+		Referer:http://205.201.1.182/
+*/	 	headers.put("Host", "205.201.1.182");
+		headers.put("Origin", "http://205.201.1.182");
+		headers.put("Referer", "http://205.201.1.182");  
 		return headers;
 	}
 
@@ -270,11 +294,27 @@ public class RequestTool {
 
 	/**
 	 * 足球下注
-	 * 
+	 * uid:wa9oqpjcbm19706631l235121
+		langx:zh-cn
+		odd_f_type:H
+		golds:50
+		gid:2632366
+		gtype:BK
+		wtype:ROU
+		rtype:ROUC
+		chose_team:c
+		ioratio:0.8
+		con:147
+		ratio:100
+		autoOdd:
+		timestamp:1539736553768
+		timestamp2:0f0673b570c20c96d77f465d42dfcf1d
+		isRB:Y
 	 */
 	public static BetResp bkbet(String uid, String gid, String gtype, String golds, String wtype,
 			String side, BkPreOrderViewResp bkPreOrderViewResp) {
 		String url = ballDomain + "/bk/bk_bet.php";
+		String timestamp = String.valueOf(System.currentTimeMillis());
 		Map<String, String> data = new HashMap<String, String>();
 		data.put("uid", uid);
 		data.put("langx", "zh-cn");
@@ -289,11 +329,103 @@ public class RequestTool {
 		data.put("con", bkPreOrderViewResp.getCon());
 		data.put("ratio", bkPreOrderViewResp.getRatio());
 		data.put("autoOdd", "");
-		data.put("timestamp", String.valueOf(System.currentTimeMillis()));
+		data.put("timestamp", timestamp);
 		data.put("timestamp2", bkPreOrderViewResp.getTs());
-		data.put("isRB", "N");
-		String resp = httpRequest(url, "POST", data, getHeaders());
+		data.put("isRB", "Y");
+		StringBuffer params = new StringBuffer();
+		params.append("uid="+ uid);
+		params.append("&langx=zh-cn");
+		params.append("&odd_f_type=H");
+		params.append("&golds="+golds);
+		params.append("&gid="+gid);
+		params.append("&gtype="+gtype);
+		params.append("&wtype="+wtype);
+		params.append("&rtype="+wtype + "" + side);
+		params.append("&chose_team="+side.toLowerCase());
+		params.append("&ioratio="+bkPreOrderViewResp.getIoratio());
+		params.append("&con="+bkPreOrderViewResp.getCon());
+		params.append("&ratio="+bkPreOrderViewResp.getRatio());
+		params.append("&autoOdd="+"");
+		params.append("&timestamp="+timestamp);
+		params.append("&timestamp2="+bkPreOrderViewResp.getTs());
+		params.append("&isRB=Y");
+		
+		log.info("betRequest:" + data);
+		String resp = httpRequest(url, "POST", params.toString(), getHeaders());
 		log.info("betResp:" + resp);
+		if (HttpUtils.isErrorResp(resp))
+			throw new BusiException("下注失败！"); 
+		BetResp ftBetResp = new BetResp();
+		ftBetResp = ftBetResp.fromResp(resp);
+		//返回是延迟下注
+		int errMaxTime = 3;
+		while(ftBetResp.getCode().equals("570")&& --errMaxTime>0){
+			try {
+				TimeUnit.SECONDS.sleep(4);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			String ticketId =ftBetResp.getTicket_id();
+			String active = ftBetResp.getActive();
+			String timestamps2 = ftBetResp.getTimestamp();
+			
+			ftBetResp = delayBkbet(uid, gid, gtype, wtype,ticketId, active, side, golds, timestamp,timestamps2);
+			 
+		}
+		
+		if (!StringUtils.isEmpty(ftBetResp.getErrormsg())) {
+			ftBetResp.setGid(gid);
+			ftBetResp.setGtype(gtype);
+			ftBetResp.setWtype(wtype);
+			ftBetResp.setRtype(wtype + "" + side);
+			ftBetResp.setIoratio(bkPreOrderViewResp.getIoratio());
+			ftBetResp.setRatio(bkPreOrderViewResp.getRatio());
+			ftBetResp.setGold(golds);
+		}
+		return ftBetResp;
+	}
+	
+	public static Long add6Sec(long timestamp){ 
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(timestamp);
+		cal.add(Calendar.SECOND, 6);
+		return cal.getTimeInMillis();
+	}
+	/**
+	 * 足球下注
+	 * 
+	 */
+	public static BetResp delayBkbet(String uid, String gid, String gtype, String wtype, String ticket_id, String active,
+			String side, String golds,String timestamp,String timestamp2) {
+		String url = ballDomain + "/bk/bk_bet.php";
+		Map<String, String> data = new HashMap<String, String>(); 
+//		 
+//		data.put("uid", uid);
+//		data.put("gtype", gtype);
+//		data.put("gid", gid);
+//		data.put("ticket_id", ticket_id);
+//		data.put("active", "m_delay");
+//		data.put("langx", "zh-cn"); 
+//		data.put("timestamp", String.valueOf(add6Sec(Long.valueOf(timestamp))));
+//		data.put("timestamp2", timestamp2);
+//		data.put("wtype", wtype);
+//		data.put("rtype", wtype + "" + side); 
+//		log.info("betRequest:" + data);
+		
+		String params = "uid="+uid;
+			params += "&gtype="+gtype;
+			params += "&gid="+gid;
+			params += "&ticket_id="+ticket_id;
+			params +="&active=m_delay";
+			params +="&langx=zh-cn";
+			params +="&timestamp="+String.valueOf(System.currentTimeMillis());
+			params +="&timestamp2="+timestamp2;
+			params +="&wtype="+wtype;
+			params +="&rtype="+wtype + "" + side;
+		log.info("delayBkbet request:" + params);
+		String resp = httpRequest(url, "POST", params, getHeaders());
+		log.info("delayBkbet resp:" + resp);
 		if (HttpUtils.isErrorResp(resp))
 			throw new BusiException("下注失败！");
 		BetResp ftBetResp = new BetResp();
@@ -303,8 +435,8 @@ public class RequestTool {
 			ftBetResp.setGtype(gtype);
 			ftBetResp.setWtype(wtype);
 			ftBetResp.setRtype(wtype + "" + side);
-			ftBetResp.setIoratio(bkPreOrderViewResp.getIoratio());
-			ftBetResp.setRatio(bkPreOrderViewResp.getRatio());
+			ftBetResp.setIoratio(ftBetResp.getIoratio());
+			ftBetResp.setRatio(ftBetResp.getRatio());
 			ftBetResp.setGold(golds);
 		}
 		return ftBetResp;

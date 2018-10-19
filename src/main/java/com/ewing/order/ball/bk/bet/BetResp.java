@@ -49,8 +49,14 @@ public class BetResp extends XMLBean implements Serializable {
 	private String score_c;
 	//增加字段
 	private String buy_desc;
-
+	private String active;
 	 
+	public String getActive() {
+		return active;
+	}
+	public void setActive(String active) {
+		this.active = active;
+	}
 	public String getBuy_desc() {
 		return buy_desc;
 	}

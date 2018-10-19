@@ -16,7 +16,7 @@ public class QiuTanData {
 		map.put("Accept", "*/*");
 		map.put("Content-Type", "text/xml");
 		map.put("Accept", "*/*");
-		String r2=HttpUtils.request("http://lq3.win007.com/NBA/today2.xml?t=1533259802000", "GET", null, map,"gbk");
-		System.out.println(r2);
+	//	String r2=HttpUtils.request("http://lq3.win007.com/NBA/today2.xml?t=1533259802000", "GET", null, map,"gbk");
+		//System.out.println(r2);
 	}
 }
