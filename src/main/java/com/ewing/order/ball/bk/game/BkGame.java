@@ -55,7 +55,24 @@ public class BkGame {
 	private String hot;
 	private String center_tv;
 	private String mt;
+	private String mtid; 
+	private String mtgtype;
 	
+	public String getMtgtype() {
+		return mtgtype;
+	}
+
+	public void setMtgtype(String mtgtype) {
+		this.mtgtype = mtgtype;
+	}
+
+	public String getMtid() {
+		return mtid;
+	}
+
+	public void setMtid(String mtid) {
+		this.mtid = mtid;
+	}
 
 	public String getMt() {
 		return mt;

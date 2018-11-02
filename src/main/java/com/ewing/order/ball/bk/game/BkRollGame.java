@@ -75,6 +75,34 @@ public class BkRollGame {
 	private String eventid_phone;
 	private String hot;
 	private String center_tv;
+	private String mt;
+	private String mtid;
+	private String mtgtype;
+	
+	public String getMtgtype() {
+		return mtgtype;
+	}
+
+	public void setMtgtype(String mtgtype) {
+		this.mtgtype = mtgtype;
+	}
+	
+
+	public String getMtid() {
+		return mtid;
+	}
+
+	public void setMtid(String mtid) {
+		this.mtid = mtid;
+	}
+
+	public String getMt() {
+		return mt;
+	}
+
+	public void setMt(String mt) {
+		this.mt = mt;
+	}
 
 	public String getSystime() {
 		return systime;
