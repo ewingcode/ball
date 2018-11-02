@@ -69,8 +69,8 @@ public class CalData {
 	@Test
 	public void testAllGame() {
 		long start = System.currentTimeMillis();
-		String startTime = "2018-10-10";
-		String endTime = "2018-10-17";
+		String startTime = "2018-10-01";
+		String endTime = "2018-10-23";
 		Integer minGid = 0;
 		List<BetInfo> entityList = baseDao
 				.find("select * from bet_info where status=1 and gtype='BK' and create_time>='"
@@ -177,12 +177,13 @@ public class CalData {
 //		  }
 		 
 
-		batchBuy(betInfoDtoList,"Q4",true);
-		batchBuy(betInfoDtoList,"Q4",false);
-		batchBuy2(betInfoDtoList,0.02f, 12, 110, "AUTO", "Q4", true,
-				0.8f, null, null);
-		batchBuy2(betInfoDtoList,0.02f, 12, 110, "AUTO", "Q4", false,
-				0.8f, null, null);
+		 batchBuy(betInfoDtoList,"Q4",true);
+		 batchBuy(betInfoDtoList,"Q4",false);
+		//0.03,得分率差比例:null,最大阀值比例:0.5,场数：8,出现次数:7,持续时间:30
+		batchBuy2(betInfoDtoList,0.03f, 7, 30, "AUTO", "Q4", true,
+				0.5f, null, null);
+		batchBuy2(betInfoDtoList,0.03f, 7, 30, "AUTO", "Q4", false,
+				0.5f, null, null);
 		Integer total = betInfoList.size();
 		log.info("滚球小比率：" + fnum.format((rollSmall / (total * 1f)) * 100) + "%");
 		log.info("滚球大比率：" + fnum.format((rollBig / (total * 1f)) * 100) + "%");
@@ -199,10 +200,10 @@ public class CalData {
 		Integer winNum = 0;
 		Integer totalNum = 0;
 		List<BuyWay2> buyWay2List = Lists.newArrayList();
-		for (int j = 25; j <= 25; j += 5) {
-			for (int i = 5; i <= 5; i++) {
-				for (int z = 30; z <= 30; z += 20) {
-					for (int k = 12; k <= 12; k += 2) { 
+		for (int j = 20; j <= 30; j += 5) {
+			for (int i = 5; i <= 15; i++) {
+				for (int z = 30; z <= 120; z += 20) {
+					for (int k = 5; k <= 12; k += 2) { 
 					//	for(int b = 450; b >= 400; b -= 10){
 						BuyWay2 buyWay = new BuyWay2(j / (1000 * 1f), i, z, "AUTO", seNow, desc,
 								k/10f, null, null);

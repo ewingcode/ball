@@ -151,7 +151,7 @@ public class HttpUtils {
 				for (Map.Entry<String, String> entry : params.entrySet()) {
 					sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
 				}
-				log.info("http request:"+sb.toString());
+				//log.info("http request:"+sb.toString());
 				String body = sb.length() > 0 ? sb.substring(0, sb.length() - 1) : "";
 
 				bos = new BufferedOutputStream(conn.getOutputStream());
@@ -161,7 +161,7 @@ public class HttpUtils {
 			}
 
 			Integer responseCode = conn.getResponseCode();
-			log.debug("[code:" + responseCode + "] : request - > " + url);
+			//log.debug("[code:" + responseCode + "] : request - > " + url);
 
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(),
 					null != charsetName ? charsetName : "utf8"));

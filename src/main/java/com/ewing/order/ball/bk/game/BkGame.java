@@ -54,6 +54,16 @@ public class BkGame {
 	private String eventid_phone;
 	private String hot;
 	private String center_tv;
+	private String mt;
+	
+
+	public String getMt() {
+		return mt;
+	}
+
+	public void setMt(String mt) {
+		this.mt = mt;
+	}
 
 	public String getSystime() {
 		return systime;

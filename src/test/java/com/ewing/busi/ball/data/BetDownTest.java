@@ -11,9 +11,9 @@ import com.ewing.order.util.GsonUtil;
 
 public class BetDownTest {
 	public static void main(String[] args) {
-		BallmatchProp.url = "http://199.26.97.186/";
+		BallmatchProp.url = "http://m.hga030.com/";
 		while (true) {
-			LoginResp loginResp = RequestTool.login("tansonLAM83", "523123ZX");
+			LoginResp loginResp = RequestTool.login("tansonLAM48", "123QAZwsx");
 			System.out.println(GsonUtil.getGson().toJson(loginResp));
 			final String gtype = "BK";// 篮球
 			final String showTyp = "FT";// 未开始的比赛
