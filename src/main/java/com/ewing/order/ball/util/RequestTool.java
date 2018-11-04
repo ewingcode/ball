@@ -538,15 +538,7 @@ public class RequestTool {
 	 */
 	public static BkPreOrderViewResp getbkPreOrderView(String uid, String gid, String gtype,
 			String wtype, String side) {
-		String url = ballDomain + "/bk/bk_order_view.php";
-		Map<String, String> data = new HashMap<String, String>(); 
-		data.put("uid", uid);
-		data.put("langx", "zh-cn");
-		data.put("odd_f_type", "H");
-		data.put("gid", gid);
-		data.put("gtype", gtype);
-		data.put("wtype", wtype.toLowerCase());
-		data.put("chose_team", side.toLowerCase());
+		String url = ballDomain + "/bk/bk_order_view.php"; 
 		StringBuffer sb = new StringBuffer();
 		
 		sb.append("uid="+uid);
@@ -557,7 +549,7 @@ public class RequestTool {
 		sb.append("&wtype="+wtype.toLowerCase());
 		sb.append("&chose_team="+side.toLowerCase());
 
-		String resp = httpRequest(url, "POST", sb.toString(), getHeaders());
+		String resp = httpRequest(url+"?"+sb.toString(), "POST", "", getHeaders());
 		if (HttpUtils.isErrorResp(resp))
 			throw new BusiException("获取指定比赛的投注信息！");
 		BkPreOrderViewResp bkPreOrderViewResp = new BkPreOrderViewResp();

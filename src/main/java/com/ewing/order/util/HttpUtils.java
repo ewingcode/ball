@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+ 
 
 /**
  * 
@@ -44,6 +45,7 @@ public class HttpUtils {
 		InputStream is = null;
 
 		try {
+			 
 			conn = (HttpURLConnection) new URL(url).openConnection();
 			conn.setConnectTimeout(1000 * 60);
 			conn.setReadTimeout(1000 * 60);
@@ -61,7 +63,7 @@ public class HttpUtils {
 				}
 			}
 
-			if (null != params) {
+			 if (!org.apache.commons.lang.StringUtils.isEmpty(params)) {
 				// 构建请求参数列格式a=aaa&b=bbb&c=ccc
 				StringBuilder sb = new StringBuilder("");
 				 sb.append(params);
@@ -72,7 +74,7 @@ public class HttpUtils {
 				bos.write(body.getBytes());
 				bos.flush();
 				bos.close();
-			}
+			} 
 
 			Integer responseCode = conn.getResponseCode();
 			log.debug("[code:" + responseCode + "] : request - > " + url);
