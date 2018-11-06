@@ -66,6 +66,7 @@ public class BallAutoBet {
 				if (getLoginResp(betAutoBuy.getAccount())==null) {
 					log.info("start autoBuy for " + betAutoBuy.getAccount());
 					start(betAutoBuy.getAccount(), betAutoBuy.getPwd());
+					
 				}
 			} else { 
 				stop(betAutoBuy.getAccount());
@@ -102,6 +103,7 @@ public class BallAutoBet {
 		LoginResp loginResp = ballMember.login(account, pwd);
 		if (loginResp != null && !StringUtils.isEmpty(loginResp.getUid())) {
 			loginCache.put(account, loginResp);
+			updateLoginPwdCache(account,pwd);
 			ballMember.addBkListener(true, account, pwd, loginResp.getUid());
 			betAutoBuyService.updateLoginIn(account);
 		}
