@@ -48,7 +48,7 @@ public class LoginRest extends BaseRest {
 		checkRequired(pwd, "密码");
 		LoginResp loginResp = null;
 		if (ballAutoBet.getLoginResp(account) != null ){
-			if(!ballAutoBet.getPwd4Cache(account).equals(pwd)){
+			if(ballAutoBet.getPwd4Cache(account)==null || !ballAutoBet.getPwd4Cache(account).equals(pwd)){
 				return RestResult.errorResult("密码错误");
 			}
 			loginResp = ballAutoBet.getLoginResp(account);
