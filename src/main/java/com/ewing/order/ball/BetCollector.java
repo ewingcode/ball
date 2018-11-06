@@ -150,11 +150,11 @@ public class BetCollector {
 		}
 
 		public static List<BetInfoDto> getBkRollList() {
-			return sort(bkRollList);
+			return  bkRollList ;
 		}
 
 		public static List<BetInfoDto> getBkTodayList() {
-			return sort(bkTodayList);
+			return  bkTodayList ;
 		}
 
 		public static List<BetInfoDto> getFtRollList() {
@@ -330,6 +330,7 @@ public class BetCollector {
 		List<BetInfo> entityList = BeanCopy.copy(gameList, BetInfo.class);
 		betInfoService.updateReadyBetInfo(entityList);
 		CollectDataPool.bkTodayList = BeanCopy.copy(entityList, BetInfoDto.class);
+		CollectDataPool.sort(CollectDataPool.bkTodayList);
 	}
 
 	private void addTestGame(String gid) {
@@ -351,6 +352,7 @@ public class BetCollector {
 		List<BetRollInfo> entityList = BeanCopy.copy(rollGameList, BetRollInfo.class);
 		List<BetInfo> betInfoList = betRollInfoService.updateByRoll(entityList);
 		CollectDataPool.bkRollList = betRollInfoService.fillMaxMinInfo(betInfoList);
+		CollectDataPool.sort(CollectDataPool.bkRollList);
 		for(BetRollInfo betRollInfo : entityList){
 			if(betRollInfo.getId()!=null){
 				CollectDataPool.putRollDetail(betRollInfo);
