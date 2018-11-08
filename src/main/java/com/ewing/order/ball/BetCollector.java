@@ -329,8 +329,7 @@ public class BetCollector {
 		}
 		List<BetInfo> entityList = BeanCopy.copy(gameList, BetInfo.class);
 		betInfoService.updateReadyBetInfo(entityList);
-		CollectDataPool.bkTodayList = BeanCopy.copy(entityList, BetInfoDto.class);
-		CollectDataPool.sort(CollectDataPool.bkTodayList);
+		CollectDataPool.bkTodayList = BeanCopy.copy(entityList, BetInfoDto.class); 
 	}
 
 	private void addTestGame(String gid) {
