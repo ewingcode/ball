@@ -3,8 +3,8 @@ package com.ewing.order.ball.shared;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ewing.order.ball.util.XStreamEx;
 import com.ewing.order.util.GsonUtil;
-import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
@@ -18,7 +18,7 @@ public class XMLBean {
 	@SuppressWarnings("unchecked")
 	public <T> T fromResp(String xmlStr) {
 		try {
-			XStream xstream = new XStream(new DomDriver("UTF-8"));
+			XStreamEx xstream = new XStreamEx(new DomDriver("UTF-8"));
 			xstream.processAnnotations(this.getClass());
 			return (T) xstream.fromXML(xmlStr);
 		} catch (Exception e) {
