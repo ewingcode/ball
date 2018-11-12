@@ -24,6 +24,7 @@ import com.ewing.order.core.web.common.RequestJson;
 import com.ewing.order.core.web.common.RestResult;
 import com.ewing.order.util.BeanCopy;
 import com.fasterxml.jackson.databind.util.BeanUtil;
+import com.google.common.collect.Lists;
 
 /**
  *
@@ -42,8 +43,8 @@ public class BKGameRest extends BaseRest {
 	 */
 	@RequestMapping(value = "/ball/bkRollGameList.op", method = RequestMethod.POST)
 	@ResponseBody
-	public RestResult<List<BetInfoDto>> bkRollGameList() throws Exception {
-		return RestResult.successResult(BetCollector.CollectDataPool.getBkRollList());
+	public RestResult<List<BetInfoDto>> bkRollGameList() throws Exception { 
+		return RestResult.successResult(BetCollector.CollectDataPool.getSortBkRollList());
 	}
 
 	/**
@@ -54,7 +55,7 @@ public class BKGameRest extends BaseRest {
 	@RequestMapping(value = "/ball/bkTodayGameList.op", method = RequestMethod.POST)
 	@ResponseBody
 	public RestResult<List<BetInfoDto>> bkTodayGameList() throws Exception {
-		return RestResult.successResult(BetCollector.CollectDataPool.getBkTodayList());
+		return RestResult.successResult(BetCollector.CollectDataPool.getSortBkTodayList());
 	}
 
 	private static Integer spreadValue = 1;

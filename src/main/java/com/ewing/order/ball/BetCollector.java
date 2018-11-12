@@ -152,6 +152,16 @@ public class BetCollector {
 		public static List<BetInfoDto> getBkRollList() {
 			return  bkRollList ;
 		}
+		
+		public static List<BetInfoDto> getSortBkRollList() {
+			List<BetInfoDto> list = Lists.newCopyOnWriteArrayList(bkRollList);
+			return  sort(list) ;
+		}
+		
+		public static List<BetInfoDto> getSortBkTodayList() {
+			List<BetInfoDto> list = Lists.newCopyOnWriteArrayList(bkTodayList);
+			return  sort(list) ;
+		}
 
 		public static List<BetInfoDto> getBkTodayList() {
 			return  bkTodayList ;
