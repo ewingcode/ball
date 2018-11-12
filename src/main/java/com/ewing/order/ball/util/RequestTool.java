@@ -548,7 +548,7 @@ public class RequestTool {
 		sb.append("&gtype="+gtype);
 		sb.append("&wtype="+wtype.toLowerCase());
 		sb.append("&chose_team="+side.toLowerCase());
-
+		//url和param加在一起，不然接口报错
 		String resp = httpRequest(url+"?"+sb.toString(), "POST", "", getHeaders());
 		if (HttpUtils.isErrorResp(resp))
 			throw new BusiException("获取指定比赛的投注信息！");

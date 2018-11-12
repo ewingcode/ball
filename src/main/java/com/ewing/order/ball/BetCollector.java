@@ -276,10 +276,11 @@ public class BetCollector {
 		Timer timer1 = new Timer();
 		timer1.schedule(new TimerTask() {
 			public void run() {
+				log.info("收集当天的篮球信息：");
 				try {
 					collectCurrentBasketball();
-				} catch (Exception e) {
-					log.error(e.getMessage(), e);
+				} catch (Throwable e) {
+					log.error("收集当天的篮球失败:"+e.getMessage(), e);
 				}
 			}
 		}, 1000, todayDataCollectTime);
@@ -287,10 +288,11 @@ public class BetCollector {
 		Timer timer2 = new Timer();
 		timer2.schedule(new TimerTask() {
 			public void run() {
+				 log.info("收集滚球的篮球信息：");
 				try {
 					collectRollingBasketball();
-				} catch (Exception e) {
-					log.error(e.getMessage(), e);
+				} catch (Throwable e) {
+					log.error("收集滚球的篮球失败:"+e.getMessage(), e);
 				}
 			}
 		}, 1000, rollDataCollectTime);

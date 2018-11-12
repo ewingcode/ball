@@ -23,7 +23,9 @@ import com.google.common.collect.Lists;
 public class BasketBallService {
 	private static Logger log = LoggerFactory.getLogger(BasketBallService.class);
 
-	private static ExecutorService receiveThreads;
+	private static ExecutorService rollReceiveThreads;
+	
+	private static ExecutorService todayReceiveThreads;
 
 	private static BasketBallService basketBallService = null;
 
@@ -38,7 +40,8 @@ public class BasketBallService {
 	}
 
 	private BasketBallService() {
-		receiveThreads = Executors.newFixedThreadPool(3);
+		rollReceiveThreads = Executors.newFixedThreadPool(3);
+		todayReceiveThreads = Executors.newFixedThreadPool(3);
 	}
 
 	/**
@@ -64,7 +67,7 @@ public class BasketBallService {
 			ArrayList<Future<BkGameListResp>> futureList = new ArrayList<>();
 			for (final League league : leagueListResp.getGame().get(0).getLeague()) {
 				//log.info("联赛：" + league.toString());
-				Future<BkGameListResp> furture = receiveThreads
+				Future<BkGameListResp> furture = todayReceiveThreads
 						.submit(new Callable<BkGameListResp>() {
 
 							@Override
@@ -108,7 +111,7 @@ public class BasketBallService {
 			ArrayList<Future<BkRollGameListResp>> futureList = new ArrayList<>();
 			for (League league : leagueListResp.getGame().get(0).getLeague()) {
 				//log.info("联赛：" + league.toString());
-				Future<BkRollGameListResp> furture = receiveThreads
+				Future<BkRollGameListResp> furture = rollReceiveThreads
 						.submit(new Callable<BkRollGameListResp>() {
 
 							@Override
