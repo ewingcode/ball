@@ -374,11 +374,7 @@ public class BetCollector {
 
 	public void collectCurrentFootball() {
 		// log.info("收集当天的足球信息：");
-		List<FtGame> gameList = footBallService.collectCurrentFootball(uid);
-		BallSource ballSource = BallSource.getFTCurrent();
-		for (FtGame ftGame : gameList) {
-			ballSource.receiveBallEvent(new BallEvent(ftGame.getGid(), ftGame));
-		}
+		List<FtGame> gameList = footBallService.collectCurrentFootball(uid); 
 		List<BetInfo> entityList = BeanCopy.copy(gameList, BetInfo.class);
 		betInfoService.updateReadyBetInfo(entityList);
 		CollectDataPool.ftTodayList = BeanCopy.copy(entityList, BetInfoDto.class);
