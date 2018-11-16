@@ -1,7 +1,9 @@
 package com.ewing.order.ball;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.CRC32;
 
 import javax.annotation.Resource;
@@ -13,11 +15,17 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.aliyuncs.utils.StringUtils;
+import com.ewing.order.ball.bill.DailyBillResp;
 import com.ewing.order.ball.login.LoginResp;
+import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.busi.ball.ddl.BetAutoBuy;
+import com.ewing.order.busi.ball.ddl.BetBill;
 import com.ewing.order.busi.ball.service.BetAutoBuyService;
+import com.ewing.order.busi.ball.service.BetBillService;
 import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.common.prop.BallmatchProp;
+import com.ewing.order.util.BeanCopy;
+import com.ewing.order.util.DataFormat;
 import com.ewing.order.util.HttpUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -32,6 +40,8 @@ public class BallAutoBet {
 	private static Logger log = LoggerFactory.getLogger(HttpUtils.class);
 	@Resource
 	private BetAutoBuyService betAutoBuyService;
+	@Resource
+	private BetBillService betBillService;
 	@Resource
 	private BallMember ballMember;
 	private long crc32RuleValue = 0l;
@@ -73,6 +83,60 @@ public class BallAutoBet {
 			}
 		}
 	}
+	
+	
+	@Scheduled(cron = "0 0/10 * * * * ")
+	public void updateBill() {
+		if (!BallmatchProp.allowrunautobet)
+			return;
+		log.info("updateBill");
+		while(loginCache.isEmpty()){
+			try {
+				TimeUnit.SECONDS.sleep(5);
+			} catch (InterruptedException e) { 
+				e.printStackTrace();
+			}
+		}
+		List<BetAutoBuy> list = betAutoBuyService.findAll();
+		if(list==null)
+			return;
+		for (BetAutoBuy betAutoBuy : list) {
+			if (betAutoBuy.getIseff().equals(IsEff.EFFECTIVE)) {
+				LoginResp loginResp = getLoginResp(betAutoBuy.getAccount());
+				if (loginResp!=null) { 
+					updateAccountBill(betAutoBuy.getAccount(),loginResp.getUid()); 
+				}
+			}  
+		}
+	}
+	
+	public void updateAccountBill(String account,String uid){
+		Calendar cal = Calendar.getInstance();
+		for(int i=0;i<10;i++){
+			String date = DataFormat.DateToString(cal.getTime(), DataFormat.DATE_FORMAT);
+			try {
+				DailyBillResp dailyBillResp = RequestTool.getDailyBill(uid, date);
+				if(dailyBillResp!=null && CollectionUtils.isNotEmpty(dailyBillResp.getWagers())){
+					List<BetBill> betBillList = BeanCopy.copy(dailyBillResp.getWagers(), BetBill.class);
+					betBillService.saveBill(account, date, betBillList);
+				}
+			} catch (Exception e) {
+				log.error("获取历史账单出错,account:"+account+",日期:"+date);
+			}
+			cal.add(Calendar.DATE, -1); 
+		}
+	}
+	
+	public static void main(String[] args) { 
+			Calendar cal = Calendar.getInstance();
+			for(int i=0;i<10;i++){
+				String date = DataFormat.DateToString(cal.getTime(), DataFormat.DATE_FORMAT);
+				System.out.println(date);
+				cal.add(Calendar.DATE, -1); 
+			}
+	 
+	}
+	
 	public List<BetAutoBuy> hasNewBetAccount() { 
 		List<BetAutoBuy> list = betAutoBuyService.findAll();
 		log.info("hasNewBetAccount:"+list.size());

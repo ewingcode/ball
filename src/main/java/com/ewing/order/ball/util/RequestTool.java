@@ -575,7 +575,7 @@ public class RequestTool {
 		String resp = httpRequest(url, "POST", data, getHeaders());
 		if (HttpUtils.isErrorResp(resp))
 			throw new BusiException("获取指定日期投注记录失败！");
-		log.info("getHistoryView:" + resp);
+		//log.info("getHistoryView:" + resp);
 		DailyBillResp billResp = new DailyBillResp();
 		return billResp.fromResp(resp);
 	}

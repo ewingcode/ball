@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.ewing.order.busi.ball.dao.BetBillDao;
 import com.ewing.order.busi.ball.ddl.BetBill;
-import com.ewing.order.util.BeanCopy;
 
 /**
  *
@@ -29,10 +28,7 @@ public class BetBillService {
 			BetBill yetBetBill = betBillDao.find(betBill.getAccount(), betBill.getW_id());
 			if (yetBetBill == null) {
 				betBillDao.save(betBill);
-			} else {
-				BeanCopy.copy(yetBetBill, betBill, true);
-				betBillDao.update(yetBetBill);
-			}
+			} 
 		}
 	}
 
