@@ -335,10 +335,10 @@ public class BetCollector {
 	public void collectCurrentBasketball() {
 		// log.info("收集当天的篮球信息：");
 		List<BkGame> gameList = basketBalService.collectCurrentBasketball(uid);
-		BallSource ballSource = BallSource.getBKCurrent();
+		/*BallSource ballSource = BallSource.getBKCurrent();
 		for (BkGame bkGame : gameList) {
 			ballSource.receiveBallEvent(new BallEvent(bkGame.getGid(), bkGame));
-		}
+		}*/
 		List<BetInfo> entityList = BeanCopy.copy(gameList, BetInfo.class);
 		betInfoService.updateReadyBetInfo(entityList);
 		CollectDataPool.bkTodayList = BeanCopy.copy(entityList, BetInfoDto.class); 
