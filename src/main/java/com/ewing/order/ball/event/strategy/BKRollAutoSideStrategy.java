@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -363,7 +364,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 						betInfo.getGid(), gtype, wtype, side);
 				log("投注前信息：" + bkPreOrderViewResp);
 				// 下注前需要再次检查一下次条件
-				if (betCondition(betInfo.getGid(), betInfo.getLeague(), betInfo.getN_sw_OU())) {
+				//if (betCondition(betInfo.getGid(), betInfo.getLeague(), betInfo.getN_sw_OU())) {
 					log.info(getStrategyName() + "准备下注:" + ballEvent.getSource().toString()+",buyWayDesc:"+buyWayDesc+",betMoney:"+betMoney+",money:"+this.getMoney());
 					if (getBetStrategyContext().isAllowBet() ) { 
 						if(isMatchSpread(bkPreOrderViewResp)){
@@ -398,14 +399,39 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 						ftBetResp.setBuy_desc(buyWayDesc);
 						 
 					}
-				}
+				//}
 
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
+				ftBetResp = BetResp.debugBetResp();
+				ftBetResp.setLeague(betInfo.getLeague());
+				ftBetResp.setTeam_c(betInfo.getTeam_c());
+				ftBetResp.setTeam_h(betInfo.getTeam_h());
+				ftBetResp.setTicket_id(BizGenerator.generateBizNum());
+				ftBetResp.setGid(betInfo.getGid());
+				ftBetResp.setGold(betMoney);
+				ftBetResp.setGtype(gtype); 
+				ftBetResp.setWtype(wtype);
+				ftBetResp.setSpread(betInfo.getRatio_re_c().toString());
+				ftBetResp.setType(side);
+				ftBetResp.setCode("500"); 
+				String errMsg = ExceptionUtils.getMessage(e);
+				if(!StringUtils.isEmpty(errMsg) ){
+					if(errMsg.length()>200){
+						errMsg = errMsg.substring(0, 199);
+					}
+					ftBetResp.setErrormsg(errMsg);
+				} 
 			}
 		}
 		log.info("===下注结果:" + ftBetResp.toString());
 		return ftBetResp;
 	}
+	
+	public static void main(String[] args) {
+		String s = "111111111111";
+		System.out.println(s.substring(0, 10000));
+	}
+ 
 
 }
