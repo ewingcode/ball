@@ -168,7 +168,7 @@ public class BetStrategyPool {
 				BallEvent ballEvent = new BallEvent(betInfoDto.getGid(), betInfoDto);
 				if (!isNewBallEvent(betStrategy.getRuleId(), ballEvent.getGameId(),
 						betInfoDto.getLastUpdate())) {
-					log.info("球赛信息没有变化，球赛ID：" + ballEvent.getGameId());
+					//log.info("球赛信息没有变化，球赛ID：" + ballEvent.getGameId());
 					continue;
 				}
 				log.info("执行全局投注规则比较，规则ID：" + betStrategy.getRuleId() + ",球赛ID："
