@@ -45,108 +45,111 @@ public class BallAutoBet {
 	@Resource
 	private BallMember ballMember;
 	private long crc32RuleValue = 0l;
-	
-	private static Map<String,LoginResp> loginCache = Maps.newConcurrentMap();
-	
-	private static Map<String,String> loginPwdCache = Maps.newConcurrentMap();
-	static int i=0;
-	
+
+	private static Map<String, LoginResp> loginCache = Maps.newConcurrentMap();
+
+	private static Map<String, String> loginPwdCache = Maps.newConcurrentMap();
+	static int i = 0;
+
 	/**
 	 * 保存登录密码
 	 */
-	public void updateLoginPwdCache(String account,String pwd){
+	public void updateLoginPwdCache(String account, String pwd) {
 		loginPwdCache.put(account, pwd);
 	}
+
 	/**
 	 * 获取登录密码
 	 */
-	public String getPwd4Cache(String account){
+	public String getPwd4Cache(String account) {
 		return loginPwdCache.get(account);
 	}
-	
+
 	@Scheduled(cron = "*/10 * * * * * ")
 	public void init() {
 		if (!BallmatchProp.allowrunautobet)
 			return;
 		List<BetAutoBuy> list = betAutoBuyService.findAll();
-		if(list==null)
+		if (list == null)
 			return;
-		for (BetAutoBuy betAutoBuy : list) { 
-			if (betAutoBuy.getIseff().equals(IsEff.EFFECTIVE)) {
-				if (getLoginResp(betAutoBuy.getAccount())==null) {
+		for (BetAutoBuy betAutoBuy : list) {
+			if (betAutoBuy.getIseff().equals(IsEff.EFFECTIVE)
+					&& betAutoBuy.getIsallow().equals(IsEff.EFFECTIVE)) {
+				if (getLoginResp(betAutoBuy.getAccount()) == null) {
 					log.info("start autoBuy for " + betAutoBuy.getAccount());
-					start(betAutoBuy.getAccount(), betAutoBuy.getPwd()); 
+					start(betAutoBuy.getAccount(), betAutoBuy.getPwd());
 				}
-			} else { 
+			} else {
 				stop(betAutoBuy.getAccount());
 			}
 		}
 	}
-	
-	
+
 	@Scheduled(cron = "0 0/10 * * * * ")
 	public void updateBill() {
 		if (!BallmatchProp.allowrunautobet)
-			return;
-		log.info("updateBill");
-		while(loginCache.isEmpty()){
+			return; 
+		while (loginCache.isEmpty()) {
 			try {
 				TimeUnit.SECONDS.sleep(5);
-			} catch (InterruptedException e) { 
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 		List<BetAutoBuy> list = betAutoBuyService.findAll();
-		if(list==null)
+		if (list == null)
 			return;
 		for (BetAutoBuy betAutoBuy : list) {
-			if (betAutoBuy.getIseff().equals(IsEff.EFFECTIVE)) {
+			if (betAutoBuy.getIseff().equals(IsEff.EFFECTIVE)
+					&& betAutoBuy.getIsallow().equals(IsEff.EFFECTIVE)) {
 				LoginResp loginResp = getLoginResp(betAutoBuy.getAccount());
-				if (loginResp!=null) { 
-					updateAccountBill(betAutoBuy.getAccount(),loginResp.getUid()); 
+				if (loginResp != null) {
+					updateAccountBill(betAutoBuy.getAccount(), loginResp.getUid());
 				}
-			}  
+			}
 		}
 	}
-	
-	public void updateAccountBill(String account,String uid){
+
+	public void updateAccountBill(String account, String uid) {
 		Calendar cal = Calendar.getInstance();
-		for(int i=0;i<10;i++){
+		for (int i = 0; i < 10; i++) {
 			String date = DataFormat.DateToString(cal.getTime(), DataFormat.DATE_FORMAT);
 			try {
 				DailyBillResp dailyBillResp = RequestTool.getDailyBill(uid, date);
-				if(dailyBillResp!=null && CollectionUtils.isNotEmpty(dailyBillResp.getWagers())){
-					List<BetBill> betBillList = BeanCopy.copy(dailyBillResp.getWagers(), BetBill.class);
+				if (dailyBillResp != null
+						&& CollectionUtils.isNotEmpty(dailyBillResp.getWagers())) {
+					List<BetBill> betBillList = BeanCopy.copy(dailyBillResp.getWagers(),
+							BetBill.class);
 					betBillService.saveBill(account, date, betBillList);
 				}
 			} catch (Exception e) {
-				log.error("获取历史账单出错,account:"+account+",日期:"+date);
+				log.error("获取历史账单出错,account:" + account + ",日期:" + date);
 			}
-			cal.add(Calendar.DATE, -1); 
+			cal.add(Calendar.DATE, -1);
 		}
 	}
-	
-	public static void main(String[] args) { 
-			Calendar cal = Calendar.getInstance();
-			for(int i=0;i<10;i++){
-				String date = DataFormat.DateToString(cal.getTime(), DataFormat.DATE_FORMAT);
-				System.out.println(date);
-				cal.add(Calendar.DATE, -1); 
-			}
-	 
+
+	public static void main(String[] args) {
+		Calendar cal = Calendar.getInstance();
+		for (int i = 0; i < 10; i++) {
+			String date = DataFormat.DateToString(cal.getTime(), DataFormat.DATE_FORMAT);
+			System.out.println(date);
+			cal.add(Calendar.DATE, -1);
+		}
+
 	}
-	
-	public List<BetAutoBuy> hasNewBetAccount() { 
+
+	public List<BetAutoBuy> hasNewBetAccount() {
 		List<BetAutoBuy> list = betAutoBuyService.findAll();
-		log.info("hasNewBetAccount:"+list.size());
-		if (CollectionUtils.isEmpty(list)){ 
+		log.info("hasNewBetAccount:" + list.size());
+		if (CollectionUtils.isEmpty(list)) {
 			return Lists.newArrayList();
 		}
-		long tmpcrc32RuleValue = computeCrc32(list); 
-		if (crc32RuleValue == 0l || crc32RuleValue != tmpcrc32RuleValue) { 
+		long tmpcrc32RuleValue = computeCrc32(list);
+		if (crc32RuleValue == 0l || crc32RuleValue != tmpcrc32RuleValue) {
 			crc32RuleValue = tmpcrc32RuleValue;
 			return list;
-		} else { 
+		} else {
 			return null;
 		}
 
@@ -155,33 +158,33 @@ public class BallAutoBet {
 	private Long computeCrc32(List<BetAutoBuy> list) {
 		CRC32 crc32 = new CRC32();
 		long tmpcrc32RuleValue = 0l;
-		for (BetAutoBuy betRule : list) { 
+		for (BetAutoBuy betRule : list) {
 			crc32.update(betRule.toString().getBytes());
 			tmpcrc32RuleValue += crc32.getValue();
 		}
 		return tmpcrc32RuleValue;
 	}
-	
+
 	public void start(String account, String pwd) {
 		LoginResp loginResp = ballMember.login(account, pwd);
 		if (loginResp != null && !StringUtils.isEmpty(loginResp.getUid())) {
 			loginCache.put(account, loginResp);
-			updateLoginPwdCache(account,pwd);
+			updateLoginPwdCache(account, pwd);
 			ballMember.addBkListener(true, account, pwd, loginResp.getUid());
 			betAutoBuyService.updateLoginIn(account);
 		}
 	}
 
-	public void stop(String account) { 
-		if(getLoginResp(account)==null)
+	public void stop(String account) {
+		if (getLoginResp(account) == null)
 			return;
 		log.info("stop autoBuy for " + account);
 		loginCache.remove(account);
 		ballMember.stopBkListener(account);
 		betAutoBuyService.updateLoginOut(account);
 	}
-	
-	public LoginResp getLoginResp(String account){
+
+	public LoginResp getLoginResp(String account) {
 		return loginCache.get(account);
 	}
 }

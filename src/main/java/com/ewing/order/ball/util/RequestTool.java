@@ -597,7 +597,7 @@ public class RequestTool {
 		String resp = httpRequest(url, "POST", data, getHeaders());
 		if (HttpUtils.isErrorResp(resp))
 			throw new BusiException("获取今日投注记录失败！");
-		log.info("getTodayWagers:" + resp);
+		//log.info("getTodayWagers:" + resp);
 		TodayBillResp billResp = new TodayBillResp();
 		return billResp.fromResp(resp);
 	}
@@ -616,7 +616,7 @@ public class RequestTool {
 		data.put("gtype", "ALL");
 		data.put("isAll", "N");
 		String resp = httpRequest(url, "POST", data, getHeaders());
-		log.info("getHistoryData:" + resp);
+		//log.info("getHistoryData:" + resp);
 		if (HttpUtils.isErrorResp(resp))
 			throw new BusiException("获取历史投注记录失败！");
 		HistoryBillResp billResp = new HistoryBillResp();

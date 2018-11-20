@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.ewing.order.busi.ball.ddl.BetAutoBuy;
-import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.core.jpa.BaseDao;
 
 /**
@@ -21,7 +20,7 @@ public class BetAutoBuyDao {
 	private BaseDao baseDao;
 
 	public List<BetAutoBuy> findAll() {
-		return baseDao.find("  isallow='" + IsEff.EFFECTIVE + "'", BetAutoBuy.class);
+		return baseDao.findAll(BetAutoBuy.class);
 	}
 
 	public BetAutoBuy find(String account) {
