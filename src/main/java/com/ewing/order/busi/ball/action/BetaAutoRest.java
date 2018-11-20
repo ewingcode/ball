@@ -59,10 +59,9 @@ public class BetaAutoRest extends BaseRest {
 	
 	@RequestMapping(value = "/ballauto/active.op", method = RequestMethod.GET)
 	@ResponseBody
-	public RestResult<Boolean> activeAccount() throws Exception {
-		RequestJson requestJson = getRequestJson();
-		String account = requestJson.getString("account"); 
-		String isAllow = requestJson.getString("isallow"); 
+	public RestResult<Boolean> activeAccount() throws Exception { 
+		String account = request.getParameter("account"); 
+		String isAllow = request.getParameter("isallow"); 
 		checkRequired(account, "account"); 
 		checkRequired(isAllow, "isAllow"); 
 		betAutoBuyService.activeAccount(account,isAllow);
