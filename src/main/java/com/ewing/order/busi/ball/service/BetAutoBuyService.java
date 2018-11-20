@@ -59,11 +59,22 @@ public class BetAutoBuyService {
 				betAutoBuy.setPwd(ballAutoBet.getPwd4Cache(account));
 				betAutoBuy.setIseff(IsEff.EFFECTIVE);
 				betAutoBuy.setIs_login(IsEff.INEFFECTIVE);
+				betAutoBuy.setIsallow(IsEff.INEFFECTIVE);
 				betAutoBuy.setPhone(phone);
 				baseDao.save(betAutoBuy);
 			}
 		}
 		betRuleService.updateRule(account, GtypeStatus.BK, PtypeStatus.ROLL, money);
+	}
+	
+	@Transactional
+	public void activeAccount(String account,String isAllow)
+			throws IllegalAccessException, InvocationTargetException {
+		BetAutoBuy betAutoBuy = betAutoBuyDao.find(account);
+		if (betAutoBuy != null) {
+			betAutoBuy.setIsallow(isAllow);
+			baseDao.update(betAutoBuy);
+		} 
 	}
 
 	@Transactional

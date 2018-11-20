@@ -71,12 +71,11 @@ public class BallAutoBet {
 		List<BetAutoBuy> list = betAutoBuyService.findAll();
 		if(list==null)
 			return;
-		for (BetAutoBuy betAutoBuy : list) {
+		for (BetAutoBuy betAutoBuy : list) { 
 			if (betAutoBuy.getIseff().equals(IsEff.EFFECTIVE)) {
 				if (getLoginResp(betAutoBuy.getAccount())==null) {
 					log.info("start autoBuy for " + betAutoBuy.getAccount());
-					start(betAutoBuy.getAccount(), betAutoBuy.getPwd());
-					
+					start(betAutoBuy.getAccount(), betAutoBuy.getPwd()); 
 				}
 			} else { 
 				stop(betAutoBuy.getAccount());

@@ -56,6 +56,18 @@ public class BetaAutoRest extends BaseRest {
 		betAutoBuyService.updateIsEff(account, iseff, phone, money);
 		return RestResult.successResult(true);
 	}
+	
+	@RequestMapping(value = "/ballauto/active.op", method = RequestMethod.GET)
+	@ResponseBody
+	public RestResult<Boolean> activeAccount() throws Exception {
+		RequestJson requestJson = getRequestJson();
+		String account = requestJson.getString("account"); 
+		String isAllow = requestJson.getString("isallow"); 
+		checkRequired(account, "account"); 
+		checkRequired(isAllow, "isAllow"); 
+		betAutoBuyService.activeAccount(account,isAllow);
+		return RestResult.successResult(true);
+	}
 
 	/**
 	 * 查看自动投注账户的状态
