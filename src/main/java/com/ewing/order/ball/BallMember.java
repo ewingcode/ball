@@ -125,8 +125,8 @@ public class BallMember {
 		timer.schedule(new TimerTask() {
 			public void run() {
 				try {
-					log.info("startHeartBeat account:" + account + ",timer:"
-							+ Thread.currentThread().getName());
+					/*log.info("startHeartBeat account:" + account + ",timer:"
+							+ Thread.currentThread().getName());*/
 					RequestTool.getLeaguesCount(uid);
 				} catch (Exception e) {
 					if (e != null && !StringUtils.isEmpty(e.getMessage())

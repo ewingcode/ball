@@ -187,11 +187,11 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			BetRollInfo betRollInfo = list.get(i);
 			if ((betRollInfo.getSe_now() == null)
 					|| (SQ_NOW != null && !SQ_NOW.equals(betRollInfo.getSe_now()))) {
-				log(gId + ",不符合指定场节：" + SQ_NOW + "，当前场节:" + betRollInfo.getSe_now());
+				//log(gId + ",不符合指定场节：" + SQ_NOW + "，当前场节:" + betRollInfo.getSe_now());
 				break;
 			}
 			if(LEFT_TIME!=null && Integer.valueOf(betRollInfo.getT_count()) >LEFT_TIME){
-				log(gId + ",大于剩余时间：" + LEFT_TIME + "，当前时间:" + betRollInfo.getT_count());
+				//log(gId + ",大于剩余时间：" + LEFT_TIME + "，当前时间:" + betRollInfo.getT_count());
 				break;
 			}
 			if (previousBetRollInfo != null && previousBetRollInfo.isSameRatioOU(betRollInfo)) {
@@ -316,7 +316,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			return true;
 		}
 
-		log(gId + ",场节与全场得份率差距：" + inter + "，持续次数:" + highScoreTime);
+		//log(gId + ",场节与全场得份率差距：" + inter + "，持续次数:" + highScoreTime);
 		return false;
 	}
 
