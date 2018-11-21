@@ -7,13 +7,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import com.ewing.order.ball.bk.bet.BetResp;
+import com.ewing.order.ball.bk.bet.BkPreOrderViewResp;
+import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.busi.ball.ddl.BetRule;
 
 public abstract class BetStrategy {
 	private static Logger log = LoggerFactory.getLogger(BetStrategy.class);
 	private BetStrategyContext betStrategyContext;
 
-	protected final static Integer maxRetryBet = 3;
+	protected final static Integer maxRetryBet = 3; 
 
 	private String strategyName;
 
@@ -166,6 +168,34 @@ public abstract class BetStrategy {
 		}
 
 		return ftBetResp;
+	}
+	/**
+	 * 获取投注信息
+	 * 
+	 * @param uid
+	 * @param gid
+	 * @param gtype
+	 * @param wtype
+	 * @param side
+	 * @return
+	 */
+	public BkPreOrderViewResp getbkPreOrderView(String uid,String gid,String gtype,String wtype,String side) { 
+		int retryTime = 0;
+		BkPreOrderViewResp bkPreOrderViewResp = null; 
+		while (retryTime < maxRetryBet) {
+			retryTime++;
+			try {
+				bkPreOrderViewResp = RequestTool.getbkPreOrderView(uid,
+						gid, gtype, wtype, side);
+			} catch (Exception e) { 
+				 log("获取投注信息失败,gid:"+gid);
+			}
+			if (bkPreOrderViewResp != null && StringUtils.isEmpty(bkPreOrderViewResp.getErrormsg())) {
+				break;
+			}
+		}
+
+		return bkPreOrderViewResp;
 	}
 
 	/**

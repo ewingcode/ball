@@ -360,21 +360,21 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		if (ballEvent.getSource() != null && ballEvent.getSource() instanceof BetInfoDto) {
 			BetInfoDto betInfo = (BetInfoDto) ballEvent.getSource();
 			try {
-				BkPreOrderViewResp bkPreOrderViewResp = RequestTool.getbkPreOrderView(this.getBetStrategyContext().getUid(),
+				BkPreOrderViewResp bkPreOrderViewResp = getbkPreOrderView(this.getBetStrategyContext().getUid(),
 						betInfo.getGid(), gtype, wtype, side);
 				log("投注前信息：" + bkPreOrderViewResp);
 				// 下注前需要再次检查一下次条件
 				//if (betCondition(betInfo.getGid(), betInfo.getLeague(), betInfo.getN_sw_OU())) {
 					log.info(getStrategyName() + "准备下注:" + ballEvent.getSource().toString()+",buyWayDesc:"+buyWayDesc+",betMoney:"+betMoney+",money:"+this.getMoney());
 					if (getBetStrategyContext().isAllowBet() ) { 
-						if(isMatchSpread(bkPreOrderViewResp)){
+						//if(isMatchSpread(bkPreOrderViewResp)){
 							ftBetResp = RequestTool.bkbet(this.getBetStrategyContext().getUid(), betInfo.getGid(), gtype, betMoney, wtype,
 									side, bkPreOrderViewResp);
 							if(ftBetResp!=null) 
 								ftBetResp.setBuy_desc(buyWayDesc);
-						}else{
-							log("错误投注大小分，目标:"+buyRollInfo.getRatio_rou_c()+",结果:"+bkPreOrderViewResp.getSpread());
-						}
+						/*}else{
+							throw new Exception("错误投注大小分，目标:"+buyRollInfo.getRatio_rou_c()+",结果:"+bkPreOrderViewResp.getSpread());
+						}*/
 					} else {
 						String ioratio =null;
 						String spread=null;
