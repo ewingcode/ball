@@ -300,10 +300,12 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 				}
 			}
 			StringBuffer sb = new StringBuffer();
-			sb.append("买入方:").append(side.equals("C") ? "大" : "小");
-			sb.append("滚球开始ID：")
+			sb.append("时间:").append(buyRollInfo.getT_count());
+			sb.append(",买入方:").append(side.equals("C") ? "大" : "小");
+			sb.append(",GID："+buyRollInfo.getGid());
+			sb.append(",滚球开始ID：")
 					.append(previousBetRollInfo != null ? previousBetRollInfo.getId() : 0);
-			sb.append("滚球ID：").append(buyRollInfo.getId());
+			sb.append(",滚球ID：").append(buyRollInfo.getId());
 			sb.append(",买入分数:").append(buyRollInfo.getRatio_rou_c());
 			sb.append(",总分结果:").append(buyRollInfo.getSc_total());
 			sb.append(",Q4-全场得分:").append(fnum2.format(CalUtil.computeScoreSec4Quartz(buyRollInfo)
@@ -412,7 +414,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 				ftBetResp.setGold(betMoney);
 				ftBetResp.setGtype(gtype); 
 				ftBetResp.setWtype(wtype);
-				ftBetResp.setSpread(betInfo.getRatio_re_c().toString());
+				ftBetResp.setSpread(betInfo.getRatio_rou_c().toString());
 				ftBetResp.setType(side);
 				ftBetResp.setCode("500"); 
 				String errMsg = ExceptionUtils.getMessage(e);
