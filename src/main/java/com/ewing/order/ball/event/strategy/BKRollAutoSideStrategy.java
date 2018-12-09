@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 import com.ewing.order.ball.BetCollector;
 import com.ewing.order.ball.bk.bet.BetResp;
@@ -21,7 +21,6 @@ import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.busi.ball.ddl.BetLog;
 import com.ewing.order.busi.ball.ddl.BetRollInfo;
 import com.ewing.order.util.BizGenerator;
-import com.google.common.collect.Lists;
 
 /**
  * 
@@ -142,14 +141,14 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 	}
 
 	private boolean betCondition(String gId, String league, String sw_ou) {
-		if (!sw_ou.equals("Y")) {
-			log(gId + "不符号买入规则，大小球已经关闭");
-			return false;
-		}
 		if (!isNotExcludeLeague(league)) {
 			log(gId + "不符号买入规则，排除的联赛");
 			return false;
 		}
+		if (!sw_ou.equals("Y")) {
+			log(gId + "不符号买入规则，大小球已经关闭");
+			return false;
+		} 
 		if (!fixHighScore(gId)) {
 			log(gId + "不符合全场与某节的差值,差值：" + ALL_AND_QUARTZ_INTERVAL + ",出现次数:" + MIN_HIGH_SCORE_TIME);
 			return false;
