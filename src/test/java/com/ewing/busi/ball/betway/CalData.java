@@ -57,7 +57,7 @@ public class CalData {
 	int avg = 0;
 	float scoreEachSec = 0;
 	float ratio_rou = 0;
-	boolean showRollDetail = true;
+	boolean showRollDetail = false;
 	boolean showQuartzScore = false; 
 	boolean logDetail = true;
 	private Map<String, List<BetRollInfo>> rollMap = Maps.newConcurrentMap();
@@ -69,8 +69,8 @@ public class CalData {
 	@Test
 	public void testAllGame() {
 		long start = System.currentTimeMillis();
-		String startTime = "2018-10-01";
-		String endTime = "2018-10-23";
+		String startTime = "2018-12-03";
+		String endTime = "2018-12-13";
 		Integer minGid = 0;
 		List<BetInfo> entityList = baseDao
 				.find("select * from bet_info where status=1 and gtype='BK' and create_time>='"
@@ -93,8 +93,11 @@ public class CalData {
 		printCost("findBetInfo", start);
 		start = System.currentTimeMillis();
 		// 查询所有滚球，放在内存中
+		System.out.println("select * from bet_roll_info where gid in ("
+				+ SqlUtil.array2InCondition(gidList) + ")");
 	 	List<BetRollInfo> allRollList = baseDao.find("select * from bet_roll_info where gid in ("
 				+ SqlUtil.array2InCondition(gidList) + ")", BetRollInfo.class); 
+	 	printCost("allRollList", start);
 		//List<BetRollInfo> allRollList = baseDao.find("select * from bet_roll_info where gid > "+minGid, BetRollInfo.class);
 		printCost("findAllRollInfo", start);
 		for (BetRollInfo betRollInfo : allRollList) {
@@ -150,13 +153,15 @@ public class CalData {
 				}
 			}
 		}*/
-		printCost("fillMaxMinInfo", start);
-		betInfoDtoList = betRollInfoService.fillMaxMinInfo(betInfoList);
+		printCost("fillMaxMinInfo start", start);
+		  betInfoDtoList = BeanCopy.copy(betInfoList, BetInfoDto.class);
+		// betInfoDtoList = betRollInfoService.fillMaxMinInfo(betInfoList);
+		printCost("fillMaxMinInfo end", start);
 		for (BetInfoDto betInfo : betInfoDtoList) {
 
-			if (betInfo.getMinRatioRou() == null) {
+			/*if (betInfo.getMinRatioRou() == null) {
 				continue;
-			}
+			}*/
 			if (showRollDetail) {
 				printGame(betInfo);
 				printRollDetail(betInfo);
@@ -177,13 +182,13 @@ public class CalData {
 //		  }
 		 
 
-		 batchBuy(betInfoDtoList,"Q4",true);
-		 batchBuy(betInfoDtoList,"Q4",false);
+		  batchBuy(betInfoDtoList,"Q4",true);
+		  batchBuy(betInfoDtoList,"Q4",false);
 		//0.03,得分率差比例:null,最大阀值比例:0.5,场数：8,出现次数:7,持续时间:30
-		batchBuy2(betInfoDtoList,0.03f, 7, 30, "AUTO", "Q4", true,
-				0.5f, null, null);
-		batchBuy2(betInfoDtoList,0.03f, 7, 30, "AUTO", "Q4", false,
-				0.5f, null, null);
+		batchBuy2(betInfoDtoList,0.025f, 5, 50, "AUTO", "Q4", true,
+				1.2f, null, null);
+		batchBuy2(betInfoDtoList,0.025f, 5, 50, "AUTO", "Q4", false,
+				1.2f, null, null);
 		Integer total = betInfoList.size();
 		log.info("滚球小比率：" + fnum.format((rollSmall / (total * 1f)) * 100) + "%");
 		log.info("滚球大比率：" + fnum.format((rollBig / (total * 1f)) * 100) + "%");
@@ -200,8 +205,8 @@ public class CalData {
 		Integer winNum = 0;
 		Integer totalNum = 0;
 		List<BuyWay2> buyWay2List = Lists.newArrayList();
-		for (int j = 20; j <= 30; j += 5) {
-			for (int i = 5; i <= 15; i++) {
+		for (int j = 20; j <= 50; j += 5) {
+			for (int i = 5; i <= 10; i++) {
 				for (int z = 30; z <= 120; z += 20) {
 					for (int k = 5; k <= 12; k += 2) { 
 					//	for(int b = 450; b >= 400; b -= 10){
@@ -507,9 +512,9 @@ public class CalData {
 
 		public void compute(List<BetInfoDto> betInfoDtoList) {
 			for (BetInfoDto betInfo : betInfoDtoList) {
-				if (betInfo.getMinRatioRou() == null) {
+			/*	if (betInfo.getMinRatioRou() == null) {
 					continue;
-				}
+				}*/
 				checkBuy(betInfo);
 			}
 
@@ -558,7 +563,7 @@ public class CalData {
 						continue;
 					}
 					float scoreEveryQuartz = CalUtil.computeScoreSec4Quartz(betRollInfo);
-					float scoreAllQuartz = CalUtil.computeScoreSec4Alltime(betRollInfo);
+					float scoreAllQuartz = CalUtil.computeScoreSecBefore4Q(betRollInfo);
 					if (scoreEveryQuartz == 0f || scoreAllQuartz == 0f)
 						continue;
 					inter = Math.abs(scoreEveryQuartz - scoreAllQuartz);
@@ -850,7 +855,7 @@ public class CalData {
 
 		todaySmall += betInfo.getRatio_rou_c() > Float.valueOf(betInfo.getSc_total()) ? 1 : 0;
 		todayBig += betInfo.getRatio_rou_c() < Float.valueOf(betInfo.getSc_total()) ? 1 : 0;
-		rollBig += Float.valueOf(betInfo.getMinRatioRou()) < Float.valueOf(betInfo.getSc_total())
+		/*	rollBig += Float.valueOf(betInfo.getMinRatioRou()) < Float.valueOf(betInfo.getSc_total())
 				? 1 : 0;
 		rollSmall += Float.valueOf(betInfo.getMaxRatioRou()) > Float.valueOf(betInfo.getSc_total())
 				? 1 : 0;
@@ -859,7 +864,7 @@ public class CalData {
 						/ betInfo.getRatio_rou_c());
 		Float maxAndBeginPercent = Math
 				.abs((betInfo.getRatio_rou_c() - Float.valueOf(betInfo.getMaxRatioRou()))
-						/ betInfo.getRatio_rou_c());
+						/ betInfo.getRatio_rou_c());*/
 
 		String ratio_re = betInfo.getStrong().equals("H") ? betInfo.getRatio()
 				: "-" + betInfo.getRatio();
@@ -880,10 +885,10 @@ public class CalData {
 		ratio_rou_sb.append(
 				StringUtils.rightPad(("大小：" + betInfo.getRatio_o().substring(1)).trim(), 11, " "));
 		ratio_rou_sb.append(StringUtils.rightPad(" 总分：" + betInfo.getSc_total(), 11, " "));
-		ratio_rou_sb.append(StringUtils.rightPad("最小：" + betInfo.getMinRatioRou() + "("
+		/*ratio_rou_sb.append(StringUtils.rightPad("最小：" + betInfo.getMinRatioRou() + "("
 				+ fnum.format(minAndBeginPercent * 100) + "%)", 16, " "));
 		ratio_rou_sb.append(StringUtils.rightPad("最大：" + betInfo.getMaxRatioRou() + "("
-				+ fnum.format(maxAndBeginPercent * 100) + "%)", 16, " "));
+				+ fnum.format(maxAndBeginPercent * 100) + "%)", 16, " "));*/
 		ratio_rou_sb.append(StringUtils.rightPad("大    ：" + betInfo.getIor_OUC(), 14, " "));
 		ratio_rou_sb.append(StringUtils.rightPad("小    ：" + betInfo.getIor_OUH(), 14, " "));
 
