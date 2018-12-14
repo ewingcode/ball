@@ -1,75 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<!-- status log4j2内部日志级别 -->
+<configuration status="INFO"> 
 	<Properties>
-		<Property name="PID">????</Property>
-		<Property name="LOG_EXCEPTION_CONVERSION_WORD">%xwEx</Property>
-		<Property name="LOG_LEVEL_PATTERN">%5p</Property>
-		<!-- <Property name="LOG_PATTERN">%-d{yyyy-MM-dd HH:mm:ss} - [ %p ] %l %m%n</Property> -->
-		<Property name="LOG_PATTERN">%-d{yyyy-MM-dd HH:mm:ss} - [ %p ] %m%n</Property>
+		<Property name="pattern">%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %c{1}:%L -%m%n</Property>
+		<Property name="displayName">ball</Property>
 	</Properties>
-	
 	<Appenders>
-		<Console name="Console" target="SYSTEM_OUT" follow="true">
-			<PatternLayout pattern="${LOG_PATTERN}" />
+		<Console name="console" target="SYSTEM_OUT" follow="true">
+			<PatternLayout>
+			    <charset>UTF-8</charset>
+				<pattern>${pattern}</pattern>
+			</PatternLayout>
 		</Console>
-		<RollingFile name="InfoFile" fileName="/logs/info.log"
-			filePattern="/logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%info.log.gz">
+		<!-- 文件 每次运行程序会自动清空，由append属性决定 -->
+		<File name="error" fileName="${displayName}_error.log" append="false">
+			<!-- 指定error 级别的日志 -->
+			<ThresholdFilter level="ERROR" onMatch="ACCEPT"
+				onMismatch="DENY" />
 			<PatternLayout>
-				<Pattern>${LOG_PATTERN}</Pattern>
+				 <charset>UTF-8</charset>
+				<pattern>${pattern}</pattern>
 			</PatternLayout>
-			<Policies>
-				<SizeBasedTriggeringPolicy size="10 MB" />
-			</Policies>
-		</RollingFile>
-		<RollingFile name="ErrorFile" fileName="/logs/error.log"
-			filePattern="/logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%error.log.gz">
-			 <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+		</File>
+		<!-- 滚动文件 -->
+		<RollingFile name="rollingFile" fileName="${displayName}.log"
+			filePattern="${displayName}_%d{yyyy-MM-dd}.log">
 			<PatternLayout>
-				<Pattern>${LOG_PATTERN}</Pattern>
+			     <charset>UTF-8</charset>
+				<pattern>${pattern}</pattern>
 			</PatternLayout>
-			<Policies>
-				<SizeBasedTriggeringPolicy size="10 MB" />
-			</Policies>
-		</RollingFile>
-		
-		<RollingFile name="AccessFile" fileName="access.log"
-			filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
-			<PatternLayout>
-				<Pattern>${LOG_PATTERN}</Pattern>
-			</PatternLayout>
-			<Policies>
-				<SizeBasedTriggeringPolicy size="10 MB" />
-			</Policies>
+			<!-- 按大小划分 -->
+			<SizeBasedTriggeringPolicy size="50 MB" />
 		</RollingFile>
 	</Appenders>
 	<Loggers>
-		<Logger name="org.apache.catalina.startup.DigesterFactory"
-			level="error" />
-		<Logger name="org.apache.catalina.util.LifecycleBase" level="error" />
-		<Logger name="org.apache.coyote.http11.Http11NioProtocol"
-			level="warn" />
-		<logger name="org.apache.sshd.common.util.SecurityUtils" level="warn" />
-		<Logger name="org.apache.tomcat.util.net.NioSelectorPool"
-			level="warn" />
-		<Logger name="org.crsh.plugin" level="warn" />
-		<logger name="org.crsh.ssh" level="warn" />
-		<Logger name="org.eclipse.jetty.util.component.AbstractLifeCycle"
-			level="error" />
-		<Logger name="org.hibernate.validator.internal.util.Version"
-			level="warn" />
-		<logger
-			name="org.springframework.boot.actuate.autoconfigure.CrshAutoConfiguration"
-			level="warn" />
-		<logger name="org.springframework.boot.actuate.endpoint.jmx"
-			level="warn" />
-		<logger name="org.thymeleaf" level="warn" />
-		<Root level="info">
-			<AppenderRef ref="Console" />
-			<AppenderRef ref="InfoFile" />
-			<AppenderRef ref="ErrorFile" />
+		<!-- <Logger name="org.apache.catalina.util.LifecycleBase" level="ERROR" 
+			/> <Logger name="org.apache.coyote.http11.Http11NioProtocol" level="WARN" 
+			/> <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="WARN" 
+			/> -->
+		<Logger name="org.springframework" level="WARN" />
+		<Logger name="com.ewing" level="INFO" />
+		<Root level="INFO">
+			<AppenderRef ref="console"></AppenderRef>
+			<AppenderRef ref="error"></AppenderRef>
+			<AppenderRef ref="rollingFile"></AppenderRef>
 		</Root>
-		<Logger name="accessLog" level="info" additivity="false">  
-            <AppenderRef ref="AccessFile" />  
-        </Logger>  
 	</Loggers>
-</Configuration>
+</configuration>

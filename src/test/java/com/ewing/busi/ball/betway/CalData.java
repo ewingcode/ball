@@ -6,8 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
+import javax.annotation.Resource; 
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
@@ -59,7 +58,7 @@ public class CalData {
 	float ratio_rou = 0;
 	boolean showRollDetail = false;
 	boolean showQuartzScore = false; 
-	boolean logDetail = true;
+	boolean logDetail = false;
 	private Map<String, List<BetRollInfo>> rollMap = Maps.newConcurrentMap();
 
 	private void printCost(String name, long start) {
@@ -69,7 +68,7 @@ public class CalData {
 	@Test
 	public void testAllGame() {
 		long start = System.currentTimeMillis();
-		String startTime = "2018-12-03";
+		String startTime = "2018-12-12";
 		String endTime = "2018-12-13";
 		Integer minGid = 0;
 		List<BetInfo> entityList = baseDao
@@ -435,7 +434,7 @@ public class CalData {
 								- CalUtil.computeScoreSec4Alltime(buySmall)))
 						.append(fnum2.format(scoreEachSec))
 						.append(",买入率:").append(fnum2.format(CalUtil.computeScoreSec4Quartz(buySmall)))
-						.append(",全场率:").append(fnum2.format(CalUtil.computeScoreSec4Alltime(buySmall)))
+						.append(",全场率:").append(fnum2.format(CalUtil.computeScoreSecBefore4Q(buySmall)))
 						.append(buySmall.getRatio_rou_c()).append(",当时总分:")
 						.append(buySmall.getSc_total()).append(",预计总分:")
 						.append(expectLeftScore(buySmall)).append(",预计总分2:")
@@ -515,7 +514,11 @@ public class CalData {
 			/*	if (betInfo.getMinRatioRou() == null) {
 					continue;
 				}*/
-				checkBuy(betInfo);
+				try {
+					checkBuy(betInfo);
+				} catch (Exception e) { 
+					e.printStackTrace();
+				}
 			}
 
 		}
@@ -559,7 +562,7 @@ public class CalData {
 						continue;
 					}
 					if (leftTime != null && !StringUtils.isEmpty(betRollInfo.getT_count())
-							&&  Integer.valueOf(betRollInfo.getT_count()) >leftTime) {
+							&&  CalUtil.getFixTcount(betRollInfo.getT_count()) >leftTime) {
 						continue;
 					}
 					float scoreEveryQuartz = CalUtil.computeScoreSec4Quartz(betRollInfo);
@@ -597,9 +600,8 @@ public class CalData {
 							if (beginBetRollInfo == null)
 								beginBetRollInfo = betRollInfo;
 							else
-								tmpHighScoreCostTime = Integer
-										.valueOf(beginBetRollInfo.getT_count())
-										- Integer.valueOf(betRollInfo.getT_count());
+								tmpHighScoreCostTime = CalUtil.getFixTcount(beginBetRollInfo.getT_count())
+										- CalUtil.getFixTcount(betRollInfo.getT_count());
 						} else {
 							highScoreTime = 0;
 							tmpHighScoreCostTime = 0;
@@ -611,9 +613,8 @@ public class CalData {
 							if (beginBetRollInfo == null)
 								beginBetRollInfo = betRollInfo;
 							else
-								tmpHighScoreCostTime = Integer
-										.valueOf(beginBetRollInfo.getT_count())
-										- Integer.valueOf(betRollInfo.getT_count());
+								tmpHighScoreCostTime = CalUtil.getFixTcount(beginBetRollInfo.getT_count())
+										- CalUtil.getFixTcount(betRollInfo.getT_count());
 						} else {
 							highScoreTime = 0;
 							beginBetRollInfo = null;
@@ -736,7 +737,7 @@ public class CalData {
 							.append(fnum2.format(scoreEachSec)).append(",买入率:")
 							.append(fnum2.format(CalUtil.computeScoreSec4Quartz(buySmall)))
 							.append(",全场率:")
-							.append(fnum2.format(CalUtil.computeScoreSec4Alltime(buySmall)))
+							.append(fnum2.format(CalUtil.computeScoreSecBefore4Q(buySmall)))
 							.append(",预计总分:").append(expectLeftScore(buySmall)).append(",预计总分2:")
 							.append(expectLeftScore2(buySmall)).append(",大回报:")
 							.append(buySmall.getIor_ROUC()).append(",小回报:")
@@ -997,7 +998,7 @@ public class CalData {
 			costTime += 2400;
 		}
 
-		costTime = costTime - Integer.valueOf(betRollInfo.getT_count());
+		costTime = costTime - CalUtil.getFixTcount(betRollInfo.getT_count());
 		float chabie = Integer.valueOf(betRollInfo.getSc_total()) - scoreEachSec * costTime;
 		return betRollInfo.getRatio_rou_c() + chabie;
 	}
@@ -1016,7 +1017,7 @@ public class CalData {
 			costTime += 2400;
 		}
 
-		costTime = costTime - Integer.valueOf(betRollInfo.getT_count());
+		costTime = costTime - CalUtil.getFixTcount(betRollInfo.getT_count());
 		float chabie = Integer.valueOf(betRollInfo.getSc_total()) - scoreEachSec * costTime;
 		return betRollInfo.getRatio_rou_c() + chabie;
 	}

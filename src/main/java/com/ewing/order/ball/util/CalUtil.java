@@ -17,10 +17,15 @@ public class CalUtil {
 		System.out.println(fnum.format(0f));
 	}
 
+	public static Integer getFixTcount(String tCount){
+		int i = tCount.indexOf(".");
+		return i >-1? Integer.valueOf(tCount.substring(0, i)):Integer.valueOf(tCount);
+		 
+	}
 	public static Float computeScoreSec4Quartz(BetRollInfo betRollInfo) {
 		if (betRollInfo == null || StringUtils.isEmpty(betRollInfo.getT_count()))
 			return 0f;
-		Integer costTime = getEachQuartz(betRollInfo) - Integer.valueOf(betRollInfo.getT_count());
+		Integer costTime = getEachQuartz(betRollInfo) - getFixTcount(betRollInfo.getT_count());
 		Float rate = 0f;
 		if (betRollInfo.getSe_now().equals("Q1")) {
 			rate = Float.valueOf(betRollInfo.getSc_Q1_total()) / costTime;
@@ -61,7 +66,7 @@ public class CalUtil {
 		} else if (betRollInfo.getSe_now().equals("Q4")) {
 			costTime += each * 4;
 		}
-		costTime = costTime - Integer.valueOf(betRollInfo.getT_count());
+		costTime = costTime - getFixTcount(betRollInfo.getT_count());
 		if (costTime == 0)
 			return 0f;
 		Float rate = Integer.valueOf(betRollInfo.getSc_total()) / (costTime * 1f);
@@ -78,7 +83,7 @@ public class CalUtil {
 			return 0f;
 		Integer costTime = each * 3;
 
-		costTime = costTime - Integer.valueOf(betRollInfo.getT_count());
+		costTime = costTime - getFixTcount(betRollInfo.getT_count());
 		if (costTime == 0)
 			return 0f;
 		Float rate = (Integer.valueOf(betRollInfo.getSc_total()) - Integer.valueOf(betRollInfo.getSc_Q4_total()))

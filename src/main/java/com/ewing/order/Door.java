@@ -1,5 +1,7 @@
 package com.ewing.order;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -19,6 +21,8 @@ import org.springframework.context.annotation.ComponentScan;
 @ServletComponentScan 
 @EnableCaching
 public class Door extends SpringBootServletInitializer {
+	
+	 
   static{
 	  setLog4j2Path();
   }
@@ -34,7 +38,7 @@ public class Door extends SpringBootServletInitializer {
 	}
 	
 	public static void main(String[] args) {
-		//setLog4j2Path();
+		 
 		SpringApplication.run(Door.class, args);
 	}
 }
