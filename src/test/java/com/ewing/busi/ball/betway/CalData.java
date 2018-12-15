@@ -68,7 +68,7 @@ public class CalData {
 	@Test
 	public void testAllGame() {
 		long start = System.currentTimeMillis();
-		String startTime = "2018-12-12";
+		String startTime = "2018-12-01";
 		String endTime = "2018-12-13";
 		Integer minGid = 0;
 		List<BetInfo> entityList = baseDao
@@ -731,7 +731,7 @@ public class CalData {
 							.append(",间隔分率:").append(interval)
 							.append(",Q4-全场得分:")
 							.append(fnum2.format(CalUtil.computeScoreSec4Quartz(buySmall)
-									- CalUtil.computeScoreSec4Alltime(buySmall)))
+									- CalUtil.computeScoreSecBefore4Q(buySmall)))
 							.append(",持续次数").append(highScoreTime).append(",持续时间")
 							.append(tmpHighScoreCostTime).append(",初率:")
 							.append(fnum2.format(scoreEachSec)).append(",买入率:")
@@ -1025,18 +1025,19 @@ public class CalData {
 	private Float expectLeftScore(BetRollInfo betRollInfo) {
 		if (betRollInfo == null)
 			return 0f;
+		Integer each = CalUtil.getEachQuartz(betRollInfo);
 		Integer costTime = 0;
 		if (betRollInfo.getSe_now().equals("Q1")) {
-			costTime = +1800;
+			costTime = +each;
 		} else if (betRollInfo.getSe_now().equals("Q2")) {
-			costTime += 1200;
+			costTime += each*2;
 		} else if (betRollInfo.getSe_now().equals("Q3")) {
-			costTime += 600;
+			costTime += each*3;
 		} else if (betRollInfo.getSe_now().equals("Q4")) {
-			costTime += 0;
+			costTime += each*4;
 		}
 
-		costTime = costTime + Integer.valueOf(betRollInfo.getT_count());
+		costTime = CalUtil.getFixTcount(betRollInfo.getT_count());
 		float total = Integer.valueOf(betRollInfo.getSc_total())
 				+ CalUtil.computeScoreSec4Quartz(betRollInfo) * costTime;
 		return total;
@@ -1045,18 +1046,19 @@ public class CalData {
 	private Float expectLeftScore2(BetRollInfo betRollInfo) {
 		if (betRollInfo == null)
 			return 0f;
+		Integer each = CalUtil.getEachQuartz(betRollInfo);
 		Integer costTime = 0;
 		if (betRollInfo.getSe_now().equals("Q1")) {
-			costTime = +1800;
+			costTime = each;
 		} else if (betRollInfo.getSe_now().equals("Q2")) {
-			costTime += 1200;
+			costTime += each*2;
 		} else if (betRollInfo.getSe_now().equals("Q3")) {
-			costTime += 600;
+			costTime += each*3;
 		} else if (betRollInfo.getSe_now().equals("Q4")) {
-			costTime += 0;
+			costTime += each*4;
 		}
 
-		costTime = costTime + Integer.valueOf(betRollInfo.getT_count());
+		costTime = costTime + CalUtil.getFixTcount(betRollInfo.getT_count());
 		float total = Integer.valueOf(betRollInfo.getSc_total())
 				+ CalUtil.computeScoreSec4Alltime(betRollInfo) * costTime;
 		return total;

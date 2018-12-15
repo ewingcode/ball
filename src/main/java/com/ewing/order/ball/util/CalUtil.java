@@ -48,7 +48,7 @@ public class CalUtil {
 				: false;
 	}
 
-	private static Integer getEachQuartz(BetRollInfo betRollInfo) {
+	public static Integer getEachQuartz(BetRollInfo betRollInfo) {
 		return isNba(betRollInfo.getLeague()) ? nbaQuartsSec : quartsSec;
 	}
 
