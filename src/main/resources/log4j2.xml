@@ -24,7 +24,7 @@
 			</PatternLayout>
 		</File>
 		<!-- 滚动文件 -->
-		<RollingFile name="rollingFile" fileName="${displayName}.log"
+		<RollingFile name="rollingFile" fileName="${displayName}_info.log"
 			filePattern="${displayName}_%d{yyyy-MM-dd}.log">
 			<PatternLayout>
 			     <charset>UTF-8</charset>
