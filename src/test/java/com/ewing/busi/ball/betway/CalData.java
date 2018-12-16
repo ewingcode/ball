@@ -69,7 +69,7 @@ public class CalData {
 	public void testAllGame() {
 		long start = System.currentTimeMillis();
 		String startTime = "2018-12-01";
-		String endTime = "2018-12-13";
+		String endTime = "2018-12-16";
 		Integer minGid = 0;
 		List<BetInfo> entityList = baseDao
 				.find("select * from bet_info where status=1 and gtype='BK' and create_time>='"
@@ -180,14 +180,14 @@ public class CalData {
 //			   }
 //		  }
 		 
-
-		  batchBuy(betInfoDtoList,"Q4",true);
-		  batchBuy(betInfoDtoList,"Q4",false);
+  		
+//		  batchBuy(betInfoDtoList,"Q4",true);
+		  //batchBuy(betInfoDtoList,"Q4",false);
 		//0.03,得分率差比例:null,最大阀值比例:0.5,场数：8,出现次数:7,持续时间:30
 		batchBuy2(betInfoDtoList,0.025f, 5, 50, "AUTO", "Q4", true,
-				1.2f, null, null);
+				0.7f, null, null);
 		batchBuy2(betInfoDtoList,0.025f, 5, 50, "AUTO", "Q4", false,
-				1.2f, null, null);
+				0.7f, null, null);
 		Integer total = betInfoList.size();
 		log.info("滚球小比率：" + fnum.format((rollSmall / (total * 1f)) * 100) + "%");
 		log.info("滚球大比率：" + fnum.format((rollBig / (total * 1f)) * 100) + "%");
@@ -207,10 +207,11 @@ public class CalData {
 		for (int j = 20; j <= 50; j += 5) {
 			for (int i = 5; i <= 10; i++) {
 				for (int z = 30; z <= 120; z += 20) {
-					for (int k = 5; k <= 12; k += 2) { 
-					//	for(int b = 450; b >= 400; b -= 10){
+					for (int k = 5; k <= 25; k += 2) { 
+					 	for(int b = 500; b >= 350; b -= 50){
+					 		 
 						BuyWay2 buyWay = new BuyWay2(j / (1000 * 1f), i, z, "AUTO", seNow, desc,
-								k/10f, null, null);
+								k/10f, b, null);
 						buyWay.compute(betInfoDtoList); 
 						buyWay.printResult();
 						buyWay2List.add(buyWay);
@@ -227,7 +228,7 @@ public class CalData {
 						}
 						totalNum++;
 						}
-					//}
+					 }
 
 				}
 
@@ -431,10 +432,10 @@ public class CalData {
 						.append(",总分结果:").append(betInfo.getSc_total())
 						.append(",Q4-全场得分:")
 						.append(fnum2.format(CalUtil.computeScoreSec4Quartz(buySmall)
-								- CalUtil.computeScoreSec4Alltime(buySmall)))
+								- CalUtil.computeScoreSecBefore4Q(buySmall)))
 						.append(fnum2.format(scoreEachSec))
-						.append(",买入率:").append(fnum2.format(CalUtil.computeScoreSec4Quartz(buySmall)))
-						.append(",全场率:").append(fnum2.format(CalUtil.computeScoreSecBefore4Q(buySmall)))
+						.append(",4节入球率:").append(fnum2.format(CalUtil.computeScoreSec4Quartz(buySmall)))
+						.append(",4节入球率:").append(fnum2.format(CalUtil.computeScoreSecBefore4Q(buySmall)))
 						.append(buySmall.getRatio_rou_c()).append(",当时总分:")
 						.append(buySmall.getSc_total()).append(",预计总分:")
 						.append(expectLeftScore(buySmall)).append(",预计总分2:")
@@ -550,7 +551,15 @@ public class CalData {
 			side = "";
 			String tmpSide = "";
 			BetRollInfo beginBetRollInfo = null;
+		 
 			for (BetRollInfo betRollInfo : list) {
+				Integer tempLeftTime = null;
+				if(this.leftTime!=null) {
+				  tempLeftTime = this.leftTime;
+				if(CalUtil.isNba(betRollInfo.getLeague())) {
+					tempLeftTime = this.leftTime+100;
+				}
+				}
 				if (buySmall == null) {
 
 					if (previousBetRollInfo != null
@@ -561,8 +570,8 @@ public class CalData {
 					if (seNow != null && !seNow.equals(betRollInfo.getSe_now())) {
 						continue;
 					}
-					if (leftTime != null && !StringUtils.isEmpty(betRollInfo.getT_count())
-							&&  CalUtil.getFixTcount(betRollInfo.getT_count()) >leftTime) {
+					if (tempLeftTime != null && !StringUtils.isEmpty(betRollInfo.getT_count())
+							&&  CalUtil.getFixTcount(betRollInfo.getT_count()) >tempLeftTime) {
 						continue;
 					}
 					float scoreEveryQuartz = CalUtil.computeScoreSec4Quartz(betRollInfo);
@@ -725,6 +734,9 @@ public class CalData {
 							.append(operateName).append(",买入分数:").append(buySmall.getRatio_rou_c())
 							.append(",总分结果:")
 							.append(betInfo.getSc_total())
+							.append(",预计总分:").append(expectLeftScore(buySmall))
+							.append(",预计总分2:").append(expectLeftScore2(buySmall))
+							.append(",预计总分3:").append(expectLeftScore3(buySmall))
 							.append(",时间:")
 							.append(buySmall.getT_count())
 							.append(",当时总分:").append(buySmall.getSc_total())
@@ -738,8 +750,7 @@ public class CalData {
 							.append(fnum2.format(CalUtil.computeScoreSec4Quartz(buySmall)))
 							.append(",全场率:")
 							.append(fnum2.format(CalUtil.computeScoreSecBefore4Q(buySmall)))
-							.append(",预计总分:").append(expectLeftScore(buySmall)).append(",预计总分2:")
-							.append(expectLeftScore2(buySmall)).append(",大回报:")
+							.append(",大回报:")
 							.append(buySmall.getIor_ROUC()).append(",小回报:")
 							.append(buySmall.getIor_ROUH()).append(" " + betInfo.getLeague())
 							.append(" " + betInfo.getTeam_h()).append(" vs ")
@@ -1058,11 +1069,27 @@ public class CalData {
 			costTime += each*4;
 		}
 
-		costTime = costTime + CalUtil.getFixTcount(betRollInfo.getT_count());
+		costTime = CalUtil.getFixTcount(betRollInfo.getT_count());
 		float total = Integer.valueOf(betRollInfo.getSc_total())
 				+ CalUtil.computeScoreSec4Alltime(betRollInfo) * costTime;
 		return total;
 	}
+	
+	private Float expectLeftScore3(BetRollInfo betRollInfo) {
+		if (betRollInfo == null)
+			return 0f;
+		Float q4rate = CalUtil.computeScoreSec4Quartz(betRollInfo);
+		Float q3rate = CalUtil.computeScoreSecBefore4Q(betRollInfo);
+		Integer eachCount = CalUtil.getEachQuartz(betRollInfo); 
+		Integer leftTime = CalUtil.getFixTcount(betRollInfo.getT_count());
+		float q4cost = eachCount - leftTime;
+		Integer totalCost = eachCount * 4 - leftTime;
+		float expectRate = q3rate * ((eachCount * 3) / (totalCost * 1f)) + q4rate * (q4cost / (totalCost * 1f));
+
+		float expectTotal =  Integer.valueOf(betRollInfo.getSc_total()) + expectRate * leftTime; 
+		return expectTotal;
+	}
+	
 
 	private Integer numberPlus(String number1, String number2) {
 		return (StringUtils.isEmpty(number1) ? 0 : Integer.valueOf(number1))

@@ -43,7 +43,7 @@ public class CalUtil {
 		}
 	}
 
-	private static Boolean isNba(String league) {
+	public static Boolean isNba(String league) {
 		return !StringUtils.isEmpty(league) && (league.indexOf("NBA") > -1 || league.indexOf("中国男子篮球职业联赛") > -1) ? true
 				: false;
 	}
