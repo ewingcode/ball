@@ -418,6 +418,7 @@ public class RequestTool {
 		params += "&ticket_id=" + ticket_id;
 		params += "&active=m_delay";
 		params += "&langx=zh-cn";
+		params += "&autoOdd=Y&isRB=Y";
 		params += "&timestamp=" + String.valueOf(System.currentTimeMillis());
 		params += "&timestamp2=" + timestamp2;
 		params += "&wtype=" + wtype;
