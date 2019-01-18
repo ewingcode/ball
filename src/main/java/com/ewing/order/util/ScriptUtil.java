@@ -26,4 +26,17 @@ public class ScriptUtil {
 		}
 
 	}
+	
+	public static void main(String[] args) throws ScriptException {
+		ScriptEngineManager manager = new ScriptEngineManager();
+		ScriptEngine se = manager.getEngineByName("js");
+		String packageCode = "wentu_86411698122-SDO100676198053"; 
+		String packageCodeStr ="'"+packageCode+"'";
+		String str2 ="packageCode.replace('wentu','wt')";
+		str2 = str2.replace("packageCode", packageCodeStr);
+		System.out.println(se.eval(str2));
+		String str3 ="packageCode.substring(packageCode.indexOf('-')+1)";
+		str3 = str3.replace("packageCode", packageCodeStr);
+		System.out.println(se.eval(str3));
+	}
 }

@@ -3,8 +3,8 @@ package com.ewing.order.ball.util;
 import java.text.DecimalFormat;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.jandex.Main;
 
+import com.ewing.order.ball.dto.BetInfoDto;
 import com.ewing.order.busi.ball.ddl.BetRollInfo;
 
 public class CalUtil {
@@ -51,6 +51,10 @@ public class CalUtil {
 	public static Integer getEachQuartz(BetRollInfo betRollInfo) {
 		return isNba(betRollInfo.getLeague()) ? nbaQuartsSec : quartsSec;
 	}
+	
+	public static Integer getEachQuartz(String leagueName) {
+		return isNba(leagueName) ? nbaQuartsSec : quartsSec;
+	}
 
 	public static Float computeScoreSec4Alltime(BetRollInfo betRollInfo) {
 		Integer each = getEachQuartz(betRollInfo);
@@ -76,8 +80,22 @@ public class CalUtil {
 			return 0f;
 		}
 	}
+	
+	public static Float computeWholeRate(BetInfoDto betInfoDto) {
+		Integer each = getEachQuartz(betInfoDto.getLeague());
+		Integer costTime = each * 4;
+		  
+		Float rate = Integer.valueOf(betInfoDto.getSc_total()) / (costTime * 1f);
+		try {
+			return Float.valueOf(fnum.format(rate));
+		} catch (NumberFormatException e) {
+			return 0f;
+		}
+	}
 
 	public static Float computeScoreSecBefore4Q(BetRollInfo betRollInfo) {
+		/*if(false)
+		return computeScoreSec4Alltime(betRollInfo);*/
 		Integer each = getEachQuartz(betRollInfo);
 		if (betRollInfo == null || StringUtils.isEmpty(betRollInfo.getT_count()))
 			return 0f;

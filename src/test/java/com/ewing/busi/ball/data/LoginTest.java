@@ -10,8 +10,8 @@ import com.ewing.order.util.GsonUtil;
 public class LoginTest {
 	public static void main(String[] args) {
 		//1X016 赔率改变
-		BallmatchProp.url = "http://199.26.97.182";
-		String gid = "2704242";
+		BallmatchProp.url = "http://199.26.100.188/";
+		String gid = "2762132";
 		LoginResp loginResp = RequestTool.login("tansonLAM38", "523123ZX");
 		System.out.println(GsonUtil.getGson().toJson(loginResp));
 		String uid=loginResp.getUid();
