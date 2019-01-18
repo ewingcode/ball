@@ -17,6 +17,7 @@ import com.ewing.order.ball.dto.BetInfoDto;
 import com.ewing.order.ball.event.BallEvent;
 import com.ewing.order.ball.event.BetStrategy;
 import com.ewing.order.ball.event.InRateCache;
+import com.ewing.order.ball.util.CalUtil;
 import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.busi.ball.ddl.BetLog;
 import com.ewing.order.busi.ball.ddl.BetRollInfo;
@@ -207,14 +208,22 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		BetRollInfo previousBetRollInfo = null;
 		String tmpSide = "";
 		for (int i = list.size() - 1; i >= 0; i--) {
+			
 			BetRollInfo betRollInfo = list.get(i);
+			Integer tempLeftTime = null;
+			if (this.LEFT_TIME != null) {
+				tempLeftTime = this.LEFT_TIME;
+				if (CalUtil.isNba(betRollInfo.getLeague())) {
+					tempLeftTime = this.LEFT_TIME + 100;
+				}
+			}
 			if ((betRollInfo.getSe_now() == null)
 					|| (SQ_NOW != null && !SQ_NOW.equals(betRollInfo.getSe_now()))) {
 				// log(gId + ",不符合指定场节：" + SQ_NOW + "，当前场节:" +
 				// betRollInfo.getSe_now());
 				break;
 			}
-			if (LEFT_TIME != null && Integer.valueOf(betRollInfo.getT_count()) > LEFT_TIME) {
+			if (LEFT_TIME != null && Integer.valueOf(betRollInfo.getT_count()) > tempLeftTime) {
 				// log(gId + ",大于剩余时间：" + LEFT_TIME + "，当前时间:" +
 				// betRollInfo.getT_count());
 				break;
