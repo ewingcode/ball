@@ -120,14 +120,16 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		EXCLUDE_LEAGUE = getParamValue(paramMap, "EXCLUDE_LEAGUE");
 		BUY_WAY = getIntegerParamValue(paramMap, "BUY_WAY");
 		LEFT_TIME = getIntegerParamValue(paramMap, "LEFT_TIME");
-		TEST_BUY = getIntegerParamValue(paramMap, "TEST_BUY");
-		SCORERATE_ALLMATCH = getIntegerParamValue(paramMap, "SCORERATE_ALLMATCH");
+		if( getIntegerParamValue(paramMap, "TEST_BUY")!=null)
+			TEST_BUY = getIntegerParamValue(paramMap, "TEST_BUY");
+		if( getIntegerParamValue(paramMap, "SCORERATE_ALLMATCH")!=null)
+			SCORERATE_ALLMATCH = getIntegerParamValue(paramMap, "SCORERATE_ALLMATCH");
 		if (getIntegerParamValue(paramMap, "MAXEACHDAY") != null)
 			MAXEACHDAY = getIntegerParamValue(paramMap, "MAXEACHDAY");
 		maxInterval = computeMaxInterval();
 	}
 	private Float computeScoreSec4Alltime(BetRollInfo betRollInfo) {
-		return SCORERATE_ALLMATCH == 1 ? InRateCache.computeScoreSec4Alltime(betRollInfo)
+		return SCORERATE_ALLMATCH ==null || SCORERATE_ALLMATCH == 1  ? InRateCache.computeScoreSec4Alltime(betRollInfo)
 				: InRateCache.computeScoreSecBefore4Q(betRollInfo);
 	}
 	private Float computeMaxInterval() {
