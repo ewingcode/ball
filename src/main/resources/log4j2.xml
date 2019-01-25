@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
-<!-- status log4j2内部日志级别 -->
+<!--???????????: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<!-- status log4j2?????? -->
 <configuration status="INFO"> 
 	<Properties>
 		<Property name="pattern">%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %c{1}:%L -%m%n</Property>
@@ -12,27 +12,29 @@
 			    <charset>UTF-8</charset>
 				<pattern>${pattern}</pattern>
 			</PatternLayout>
-		</Console>
-		<!-- 文件 每次运行程序会自动清空，由append属性决定 -->
-		<File name="error" fileName="${displayName}_error.log" append="false">
-			<!-- 指定error 级别的日志 -->
+		</Console> 
+		<RollingFile name="error" fileName="logs/${displayName}_error.log"
+			filePattern="${displayName}_%d{yyyy-MM-dd}.log">
 			<ThresholdFilter level="ERROR" onMatch="ACCEPT"
 				onMismatch="DENY" />
-			<PatternLayout>
-				 <charset>UTF-8</charset>
-				<pattern>${pattern}</pattern>
-			</PatternLayout>
-		</File>
-		<!-- 滚动文件 -->
-		<RollingFile name="rollingFile" fileName="${displayName}_info.log"
-			filePattern="${displayName}_%d{yyyy-MM-dd}.log">
 			<PatternLayout>
 			     <charset>UTF-8</charset>
 				<pattern>${pattern}</pattern>
 			</PatternLayout>
-			<!-- 按大小划分 -->
+			<!-- ????? -->
 			<SizeBasedTriggeringPolicy size="50 MB" />
 		</RollingFile>
+		<RollingFile name="info" fileName="logs/${displayName}_info.log"
+			filePattern="${displayName}_%d{yyyy-MM-dd}.log">
+			<ThresholdFilter level="INFO" onMatch="ACCEPT"
+				onMismatch="DENY" />
+			<PatternLayout>
+			     <charset>UTF-8</charset>
+				<pattern>${pattern}</pattern>
+			</PatternLayout> 
+			<SizeBasedTriggeringPolicy size="50 MB" />
+		</RollingFile> 
+		  
 	</Appenders>
 	<Loggers>
 		<!-- <Logger name="org.apache.catalina.util.LifecycleBase" level="ERROR" 
@@ -40,11 +42,12 @@
 			/> <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="WARN" 
 			/> -->
 		<Logger name="org.springframework" level="WARN" />
-		<Logger name="com.ewing" level="INFO" />
+		<Logger name="com.alog" level="INFO" />
 		<Root level="INFO">
 			<AppenderRef ref="console"></AppenderRef>
 			<AppenderRef ref="error"></AppenderRef>
-			<AppenderRef ref="rollingFile"></AppenderRef>
+			<AppenderRef ref="info"></AppenderRef>
 		</Root>
-	</Loggers>
-</configuration>
+		 
+		</Loggers>
+	</configuration>
