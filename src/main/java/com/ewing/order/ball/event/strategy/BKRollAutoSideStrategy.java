@@ -412,8 +412,13 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 					// if(isMatchSpread(bkPreOrderViewResp)){
 					ftBetResp = RequestTool.bkbet(this.getBetStrategyContext().getUid(),
 							betInfo.getGid(), gtype, betMoney, wtype, side, bkPreOrderViewResp);
-					if (ftBetResp != null)
+					if (ftBetResp != null){
 						ftBetResp.setBuy_desc(buyWayDesc);
+						if(!ftBetResp.getCode().equals("560")){
+							ftBetResp.setType(side);
+							ftBetResp.setSpread(betInfo.getRatio_rou_c().toString());
+						}
+					}
 					/*
 					 * }else{ throw new
 					 * Exception("错误投注大小分，目标:"+buyRollInfo.getRatio_rou_c()+
@@ -441,7 +446,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 					ftBetResp.setWtype(wtype);
 					ftBetResp.setSpread(spread);
 					ftBetResp.setType(side);
-					ftBetResp.setCode("560");
+					ftBetResp.setCode("560"); 
 					ftBetResp.setBuy_desc(buyWayDesc);
 
 				}
@@ -457,7 +462,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 				ftBetResp.setGid(betInfo.getGid());
 				ftBetResp.setGold(betMoney);
 				ftBetResp.setGtype(gtype);
-				ftBetResp.setWtype(wtype);
+				ftBetResp.setWtype(wtype); 
 				ftBetResp.setSpread(betInfo.getRatio_rou_c().toString());
 				ftBetResp.setType(side);
 				ftBetResp.setCode("500");
