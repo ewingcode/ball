@@ -416,7 +416,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 						ftBetResp.setBuy_desc(buyWayDesc);
 						if(!ftBetResp.getCode().equals("560")){
 							ftBetResp.setType(side);
-							ftBetResp.setSpread(betInfo.getRatio_rou_c().toString());
+							ftBetResp.setSpread(buyRollInfo.getRatio_rou_c().toString());
 						}
 					}
 					/*
