@@ -175,7 +175,11 @@ public class BKRollAutoSideStrategy2 extends BetStrategy {
 			return false;
 		}
 		if(FIX_SIDE!=null){
-			side=FIX_SIDE;
+			side = FIX_SIDE;
+			if(!fixSide(gId)){
+				log(gId + "不符合指定场节买入");
+				return false;
+			}
 		}else{
 	 		if (!fixHighScore(gId)) {
 	 			log(gId + "不符合全场与某节的差值,差值：" + ALL_AND_QUARTZ_INTERVAL + ",出现次数:" + MIN_HIGH_SCORE_TIME);
@@ -203,6 +207,47 @@ public class BKRollAutoSideStrategy2 extends BetStrategy {
 		return BUYSIDE.equals("AUTO");
 	}
 
+	public boolean fixSide(String gId) { 
+		List<BetRollInfo> list = BetCollector.CollectDataPool.getRollDetail(gId, 2);
+		if (CollectionUtils.isEmpty(list))
+			return false;  
+	 
+		for (int i = list.size() - 1; i >= 0; i--) { 
+			BetRollInfo betRollInfo = list.get(i);
+			Integer tempLeftTime = null;
+			if (this.LEFT_TIME != null) {
+				tempLeftTime = this.LEFT_TIME;
+				if (CalUtil.isNba(betRollInfo.getLeague())) {
+					tempLeftTime = this.LEFT_TIME + 100;
+				}
+			}
+			if ((betRollInfo.getSe_now() == null)
+					|| (SQ_NOW != null && !SQ_NOW.equals(betRollInfo.getSe_now()))) {
+				  log(gId + ",不符合指定场节：" + SQ_NOW + "，当前场节:" +
+				  betRollInfo.getSe_now());
+				break;
+			}
+			if (LEFT_TIME != null && Integer.valueOf(betRollInfo.getT_count()) > tempLeftTime) {
+				  log(gId + ",大于剩余时间：" + LEFT_TIME + "，当前时间:" +
+				  betRollInfo.getT_count());
+				break;
+			} 
+			buyRollInfo = betRollInfo;
+			if(buyRollInfo!=null){
+				StringBuffer sb = new StringBuffer();
+				sb.append("时间:").append(buyRollInfo.getT_count());
+				sb.append(",买入方:").append(side.equals("C") ? "大" : "小");
+				sb.append(",GID：" + buyRollInfo.getGid()); 
+				sb.append(",滚球ID：").append(buyRollInfo.getId());
+				sb.append(",买入分数:").append(buyRollInfo.getRatio_rou_c());
+				sb.append(",总分结果:").append(buyRollInfo.getSc_total()); 
+				buyWayDesc = sb.toString();
+				return true;
+			}
+
+		} 
+		return false;
+	}
 	public boolean fixHighScore(String gId) {
 		side = "";
 		List<BetRollInfo> list = BetCollector.CollectDataPool.getRollDetail(gId, 30);
