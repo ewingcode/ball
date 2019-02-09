@@ -25,6 +25,8 @@ public class BetLogService {
 	private BetLogDao betLogDao;
 	@Resource
 	private BaseDao baseDao;
+	
+	
 
 	@Transactional(rollbackOn = { Exception.class })
 	public void save(String account, BetLog betLog) {

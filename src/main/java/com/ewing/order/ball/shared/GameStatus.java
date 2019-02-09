@@ -7,7 +7,7 @@ package com.ewing.order.ball.shared;
  */
 public class GameStatus {
 	public final static String READY = "0";// 未开始
-	public final static String RUNNING = "1";// 无效
-	public final static String OVER = "2";// 无效
+	public final static String RUNNING = "1";// 比赛中
+	public final static String OVER = "2";// 结束
 
 }

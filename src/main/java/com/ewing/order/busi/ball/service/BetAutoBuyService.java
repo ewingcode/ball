@@ -44,7 +44,7 @@ public class BetAutoBuyService {
 	}
 
 	@Transactional
-	public void updateIsEff(String account, String isEff, String phone, String money)
+	public void updateIsEff(String account, String isEff, String phone, String money,Integer isTest,Integer continueMaxMatch)
 			throws IllegalAccessException, InvocationTargetException {
 		BetAutoBuy betAutoBuy = betAutoBuyDao.find(account);
 		if (betAutoBuy != null) {
@@ -64,7 +64,7 @@ public class BetAutoBuyService {
 				baseDao.save(betAutoBuy);
 			}
 		}
-		betRuleService.updateRule(account, GtypeStatus.BK, PtypeStatus.ROLL, money);
+		betRuleService.updateRule(account, GtypeStatus.BK, PtypeStatus.ROLL, money,isTest,continueMaxMatch);
 	}
 	
 	@Transactional

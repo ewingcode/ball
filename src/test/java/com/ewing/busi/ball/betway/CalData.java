@@ -84,11 +84,11 @@ public class CalData {
 				BetRollInfo.class);
 	}
  
-	@Test
+	// @Test
 	public void test(){
 		Map<Integer,List<BuyWay>>  allResult = Maps.newHashMap();
-		Date startDate = DataFormat.stringToDate("2018-10-01 00:00:00",DataFormat.DATETIME_FORMAT);
-		Date endDate = DataFormat.stringToDate("2019-01-13 23:59:59",DataFormat.DATETIME_FORMAT);
+		Date startDate = DataFormat.stringToDate("2019-01-01 00:00:00",DataFormat.DATETIME_FORMAT);
+		Date endDate = DataFormat.stringToDate("2019-01-18 23:59:59",DataFormat.DATETIME_FORMAT);
 		Calendar startCal = Calendar.getInstance();
 		startCal.setTime(startDate);
 		Calendar endCal = Calendar.getInstance();
@@ -162,9 +162,9 @@ public class CalData {
 		}
 	}
 	
-	//@Test
+	@Test
 	public void test3(){ 
-		 computeGame2("2018-10-01 00:00:00", "2019-01-13 23:59:59") ;
+		 computeGame2("2019-01-01 00:00:00", "2019-01-21 23:59:59") ;
 	}
 	
 	private void combineResult(Map<Integer,List<BuyWay>>  allResult ,Map<Integer,List<BuyWay>> newResult){
@@ -196,7 +196,7 @@ public class CalData {
 				.find("select * from bet_info where status=1 and gtype='BK' and create_time>='"
 						+ startTime + "' and create_time<='" + endTime + "' "
 						// +" and league like '%NBA%'"
-						+ " and (league not like '%3X3%' and league not like '%美式足球%' and league not like '%篮网球%' and league not like '%测试%')"
+						+ " and (league not like '%3X3%' and league not like '%美式足球%' and league not like '%篮网球%' and league not like '%测试%'  and league not like '%女子%')"
 						// + " and ratio is not null and ratio_o is not null "
 						// + " and gid in ('2762650')"
 						+ " order by datetime desc ", BetInfo.class);
@@ -353,16 +353,24 @@ public class CalData {
 	 
 		
 		List<BetInfoDto> betInfoDtoList = loadGameInfo(startTime,endTime); 
+		 
 		// CalData:649
 		// -方案ID:3917,滚球买入AUTO，得分率差0.01416,得分率差比例:0.2,最大阀值比例:0.8,场数：71,出现次数:null,持续时间:120,
 		// 剩余时间:null,是否反向买入:false,比率：64.79%,,赢场次:46,输场次25,下注:7100.0,金额:1221.9
 		// 方案ID:r59954,滚球买入AUTO，得分率差0.019059999,
 		//得分率差比例:0.2,最大阀值比例:1.2,场数：577,出现次数:11,持续时间:120,剩余时间:550,是否反向买入:true,
 		// 是否全场得分：false,比率：57.02%,,赢场次:329,输场次248,下注:57700.0,金额:2457.7
-		 
+		List<BuyWay> buyWayList5  = batchBuy2(betInfoDtoList,0.025f, 5, 50, "AUTO", "Q4", true,
+				  1.2f, null, null,true);  
 		List<BuyWay> buyWayList2  = batchBuy2(betInfoDtoList,null, 11, 120, "AUTO", "Q4", true,
-		  1.2f, 550, 0.2f,false); 
-		  buyWayMap.put(0, buyWayList2);
+		  1.2f, 550, 0.2f,false);  
+		//z3482,滚球买入AUTO，得分率差0.03692,得分率差比例:0.4,最大阀值比例:0.8,场数：543,出现次数:null,持续时间:100,剩余时间:500,是否反向买入:false,是否全场得分：false,比率：56.91%,,赢场次:309,输场次234,下注:54300.0,金额:1907.7001
+		 //z27261,滚球买入AUTO，得分率差0.0136400005,得分率差比例:0.2,最大阀值比例:0.8,场数：248,出现次数:7,持续时间:100,剩余时间:450,是否反向买入:false,是否全场得分：true,比率：58.87%,,赢场次:146,输场次102,下注:24800.0,金额:1880.0
+		 List<BuyWay> buyWayList3  = batchBuy2(betInfoDtoList,null, null, 100, "AUTO", "Q4", false,
+				  0.8f, 500, 0.4f,false); 
+		 List<BuyWay> buyWayList4  = batchBuy2(betInfoDtoList,null, 7, 100, "AUTO", "Q4", true,
+				  0.8f, 450, 0.2f,true); 
+		 buyWayList2.addAll(buyWayList3);
 		InRateCache.clearAll();
 		rollMap.clear();
 		return buyWayMap;
@@ -374,15 +382,16 @@ public class CalData {
 		List<BuyWay> buyWay2List = Lists.newArrayList();
 		List<Callable<BuyWay>> callableList = Lists.newArrayList();
 		List<Future<BuyWay>> allFutureList = Lists.newArrayList();
-		// for (int j = 20; j <= 50; j += 5) {
 		Integer idInc = 0;
+		  for (int j = 20; j <= 50; j += 5) {
+	
 		for (int i = 4; i <= 12; i++) {
 			for (int z = 20; z <= 200; z += 20) {
 				for (int k = 4; k <= 15; k += 2) {
 					for (int l = 600; l >= 350; l -= 50) {
 						for (int b = 0; b <= 200; b += 20) {
 							for (int m = 0; m < 2; m++) {
-								Float interval = null;// j / (1000 * 1f);
+								Float interval =j==20? null:j / (1000 * 1f);
 								Integer minHighScoreTime = i == 4 ? null : i;
 								Integer highScoreCostTime = z == 20 ? null : z;
 								Float maxintervalPercent = k == 4 ? null : k / 10f;
@@ -418,7 +427,7 @@ public class CalData {
 						}
 					}
 				}
-
+			}
 			}
 
 		}

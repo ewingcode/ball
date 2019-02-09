@@ -51,9 +51,11 @@ public class BetaAutoRest extends BaseRest {
 		String phone = requestJson.getString("phone");
 		String money = requestJson.getString("money");
 		String iseff = requestJson.getString("iseff");
+		String isTest = requestJson.getString("isTest");
+		String continueMaxMatch = requestJson.getString("continueMaxMatch");
 		checkRequired(account, "account");
 		checkRequired(iseff, "iseff");
-		betAutoBuyService.updateIsEff(account, iseff, phone, money);
+		betAutoBuyService.updateIsEff(account, iseff, phone, money,Integer.valueOf(isTest),Integer.valueOf(continueMaxMatch));
 		return RestResult.successResult(true);
 	}
 	
@@ -86,6 +88,8 @@ public class BetaAutoRest extends BaseRest {
 			BeanCopy.copy(dto, betAutoBuy, true);
 			if(CollectionUtils.isNotEmpty(ruleList)){
 				dto.setMoney(ruleList.get(0).getMoney());
+				dto.setContinueMaxMatch(ruleList.get(0).getContinueMaxMatch()==null?"0":ruleList.get(0).getContinueMaxMatch().toString());
+				dto.setIsTest(ruleList.get(0).getIsTest()==null?"0":ruleList.get(0).getIsTest().toString());
 			}
 			// 如果不是活跃中的用户则设置为失效用户，让前台可以更新用户状态来激活自动下注
 			dto.setIseff(ballMember.isActiveAccount(account) ? IsEff.EFFECTIVE : IsEff.INEFFECTIVE);

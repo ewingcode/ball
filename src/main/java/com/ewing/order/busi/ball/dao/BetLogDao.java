@@ -23,6 +23,10 @@ public class BetLogDao {
 	public void save(BetLog betLog) {
 		baseDao.save(betLog);
 	}
+	
+	public BetLog findById(Integer id){
+		return baseDao.findOne(id, BetLog.class);
+	}
 
 	public List<BetLog> findSucBet(String account, String gId) {
 		return baseDao.find("account='" + account + "' and gid='" + gId + "' and code = '560'",

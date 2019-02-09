@@ -8,14 +8,17 @@ import org.springframework.util.StringUtils;
 
 import com.ewing.order.ball.bk.bet.BetResp;
 import com.ewing.order.ball.bk.bet.BkPreOrderViewResp;
+import com.ewing.order.ball.shared.BwContinueAllowBet;
+import com.ewing.order.ball.shared.BwContinueStatus;
 import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.busi.ball.ddl.BetRule;
+import com.ewing.order.busi.ball.ddl.BwContinue;
 
 public abstract class BetStrategy {
 	private static Logger log = LoggerFactory.getLogger(BetStrategy.class);
 	private BetStrategyContext betStrategyContext;
 
-	protected final static Integer maxRetryBet = 6; 
+	protected final static Integer maxRetryBet = 6;
 
 	private String strategyName;
 
@@ -30,10 +33,39 @@ public abstract class BetStrategy {
 	private Integer ruleId;
 
 	private String money;
-	
-	private Map<String,String> paramMap;
-	
-	
+
+	private Integer continueMaxMatch;
+
+	private Integer isTest;
+
+	private Map<String, String> paramMap;
+
+	private BwContinue bwContinue;
+
+	public BwContinue getBwContinue() {
+		return bwContinue;
+	}
+
+	public void setBwContinue(BwContinue bwContinue) {
+		this.bwContinue = bwContinue;
+	}
+
+	public Integer getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Integer isTest) {
+		this.isTest = isTest;
+	}
+
+	public Integer getContinueMaxMatch() {
+		return continueMaxMatch;
+	}
+
+	public void setContinueMaxMatch(Integer continueMaxMatch) {
+		this.continueMaxMatch = continueMaxMatch;
+	}
+
 	public Map<String, String> getParamMap() {
 		return paramMap;
 	}
@@ -82,9 +114,11 @@ public abstract class BetStrategy {
 		this.iseff = false;
 	}
 
-	public void log(String message){
-		log.info("strategyName:"+strategyName+",account:"+betStrategyContext.getAccount()+"-"+message);
+	public void log(String message) {
+		log.info("strategyName:" + strategyName + ",account:" + betStrategyContext.getAccount()
+				+ "-" + message);
 	}
+
 	/**
 	 * 
 	 * @param uid
@@ -123,13 +157,13 @@ public abstract class BetStrategy {
 	 */
 	public abstract void initParam(Map<String, String> paramMap);
 
-	 
 	/**
 	 * 描述
 	 */
-	public String desc(BetRule betRule){
+	public String desc(BetRule betRule) {
 		return "";
 	}
+
 	/**
 	 * 策略名称
 	 * 
@@ -153,10 +187,8 @@ public abstract class BetStrategy {
 	 * @return
 	 */
 	public abstract boolean isSatisfy(BallEvent ballEvent);
-	
-	 
 
-	public Object betNow(BallEvent ballEvent) { 
+	public Object betNow(BallEvent ballEvent) {
 		int retryTime = 0;
 		BetResp ftBetResp = null;
 		while (retryTime < maxRetryBet) {
@@ -169,6 +201,7 @@ public abstract class BetStrategy {
 
 		return ftBetResp;
 	}
+
 	/**
 	 * 获取投注信息
 	 * 
@@ -179,18 +212,19 @@ public abstract class BetStrategy {
 	 * @param side
 	 * @return
 	 */
-	public BkPreOrderViewResp getbkPreOrderView(String uid,String gid,String gtype,String wtype,String side) { 
+	public BkPreOrderViewResp getbkPreOrderView(String uid, String gid, String gtype, String wtype,
+			String side) {
 		int retryTime = 0;
-		BkPreOrderViewResp bkPreOrderViewResp = null; 
+		BkPreOrderViewResp bkPreOrderViewResp = null;
 		while (retryTime < maxRetryBet) {
 			retryTime++;
 			try {
-				bkPreOrderViewResp = RequestTool.getbkPreOrderView(uid,
-						gid, gtype, wtype, side);
-			} catch (Exception e) { 
-				 log("获取投注信息失败,gid:"+gid);
+				bkPreOrderViewResp = RequestTool.getbkPreOrderView(uid, gid, gtype, wtype, side);
+			} catch (Exception e) {
+				log("获取投注信息失败,gid:" + gid);
 			}
-			if (bkPreOrderViewResp != null && StringUtils.isEmpty(bkPreOrderViewResp.getErrormsg())) {
+			if (bkPreOrderViewResp != null
+					&& StringUtils.isEmpty(bkPreOrderViewResp.getErrormsg())) {
 				break;
 			}
 		}
@@ -211,5 +245,43 @@ public abstract class BetStrategy {
 
 	public BetStrategyContext getBetStrategyContext() {
 		return this.betStrategyContext;
+	}
+
+	protected Boolean allowBuyInBwContinue(String account) {
+		if (this.continueMaxMatch == null || this.continueMaxMatch==0){
+			return true;
+		}
+		bwContinue = this.betStrategyContext.getBwContinueService().findRunning(account, ruleId);
+		if (bwContinue == null) {
+			return true;
+		}
+		if (bwContinue.getAllowBet().equals(BwContinueAllowBet.NOTALLOW)) {
+			return false;
+		}
+		if (!bwContinue.getStatus().equals(BwContinueStatus.RUNNING)) {
+			return false;
+		}
+		if (bwContinue.getTotalMatch() >= this.continueMaxMatch) {
+			return false;
+		}
+		return true;
+	}
+
+	protected String computeBetMoney(Float betRadio, Float betMoney) {
+		if (this.continueMaxMatch == null || this.continueMaxMatch==0) {
+			return String.valueOf(betMoney.intValue());
+		}
+		Float winLossBetMoney = 0f;
+		
+		if (bwContinue != null && bwContinue.getTotalBetMoney() != null
+				&& bwContinue.getTotalBetMoney() > 0 && betRadio > 0) {
+			winLossBetMoney = bwContinue.getTotalBetMoney() / betRadio;
+		}
+		Float totalBetMoney = winLossBetMoney + betMoney;
+		return String.valueOf(totalBetMoney.intValue());
+	} 
+	
+	protected Boolean isAllowBuy() {
+		return getIsTest() == null || getIsTest() == 0;
 	}
 }

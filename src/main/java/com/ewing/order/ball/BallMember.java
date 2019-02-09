@@ -25,6 +25,7 @@ import com.ewing.order.busi.ball.service.BetAutoBuyService;
 import com.ewing.order.busi.ball.service.BetBillService;
 import com.ewing.order.busi.ball.service.BetLogService;
 import com.ewing.order.busi.ball.service.BetRuleService;
+import com.ewing.order.busi.ball.service.BwContinueService;
 import com.ewing.order.util.HttpUtils;
 import com.google.common.collect.Maps;
 
@@ -45,6 +46,8 @@ public class BallMember {
 	private BetRuleService betRuleService;
 	@Resource
 	private BetAutoBuyService betAutoBuyService;
+	@Resource
+	private BwContinueService bwContinueService;
 	@Resource
 	private BallAutoBet ballAutoBet;
 	private static Map<String, Timer> heartBeatTimers = Maps.newConcurrentMap();
@@ -83,6 +86,7 @@ public class BallMember {
 	public void addBkTodayListener(Boolean isAuto, String account, String uid) {
 		BetStrategyPool betStrategyPool = new BetStrategyPool();
 		betStrategyPool.getBetStrategyContext().setBetLogService(betLogService)
+				.setBwContinueService(bwContinueService)
 				.setBetRuleService(betRuleService).setAccount(account).setUid(uid)
 				.setGtype(GtypeStatus.BK).setPtype(PtypeStatus.TODAY)
 				.setBetInfoList(new WrapDataCallBack<List<BetInfoDto>>() {
@@ -102,6 +106,7 @@ public class BallMember {
 	public void addBkRollListener(Boolean isAuto, String account, String uid) {
 		BetStrategyPool betStrategyPool = new BetStrategyPool();
 		betStrategyPool.getBetStrategyContext().setBetLogService(betLogService)
+				.setBwContinueService(bwContinueService)
 				.setBetRuleService(betRuleService).setAccount(account).setUid(uid)
 				.setGtype(GtypeStatus.BK).setPtype(PtypeStatus.ROLL)
 				.setBetInfoList(new WrapDataCallBack<List<BetInfoDto>>() {

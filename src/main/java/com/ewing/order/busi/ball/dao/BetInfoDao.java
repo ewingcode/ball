@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.ewing.order.ball.shared.GameStatus;
 import com.ewing.order.busi.ball.ddl.BetInfo;
 import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.core.jpa.BaseDao;
@@ -28,6 +29,15 @@ public class BetInfoDao {
 	 */
 	public List<BetInfo> getAll() {
 		return baseDao.find(" iseff='" + IsEff.EFFECTIVE + "'  ", BetInfo.class);
+	}
+	
+	/**
+	 * 获取进行中的比赛
+	 * 
+	 * @return
+	 */
+	public List<BetInfo> findRunning() {
+		return baseDao.find(" status='" + GameStatus.RUNNING + "'  ", BetInfo.class);
 	}
 
 	public BetInfo findByGameId(String gameId) {

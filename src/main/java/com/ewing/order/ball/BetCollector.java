@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -359,15 +360,19 @@ public class BetCollector {
 
 	public void collectRollingBasketball() {
 		// log.info("收集当天篮球滚球信息：");
-		List<BkRollGame> rollGameList = basketBalService.collectRollingBasketball(uid);
-		List<BetRollInfo> entityList = BeanCopy.copy(rollGameList, BetRollInfo.class);
-		List<BetInfo> betInfoList = betRollInfoService.updateByRoll(entityList);
-		CollectDataPool.bkRollList = betRollInfoService.fillMaxMinInfo(betInfoList);
-		CollectDataPool.sort(CollectDataPool.bkRollList);
-		for(BetRollInfo betRollInfo : entityList){
-			if(betRollInfo.getId()!=null){
-				CollectDataPool.putRollDetail(betRollInfo);
+		try {
+			List<BkRollGame> rollGameList = basketBalService.collectRollingBasketball(uid);
+			List<BetRollInfo> entityList = BeanCopy.copy(rollGameList, BetRollInfo.class);
+			List<BetInfo> betInfoList = betRollInfoService.updateByRoll(entityList);
+			CollectDataPool.bkRollList = betRollInfoService.fillMaxMinInfo(betInfoList);
+			CollectDataPool.sort(CollectDataPool.bkRollList);
+			for(BetRollInfo betRollInfo : entityList){
+				if(betRollInfo.getId()!=null){
+					CollectDataPool.putRollDetail(betRollInfo);
+				}
 			}
+		}catch( Exception e) {
+			log.error(e.getMessage(),e);
 		}
 		// addTestGame("2590702");
 	}

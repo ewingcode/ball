@@ -5,6 +5,7 @@ import java.util.List;
 import com.ewing.order.ball.dto.BetInfoDto;
 import com.ewing.order.busi.ball.service.BetLogService;
 import com.ewing.order.busi.ball.service.BetRuleService;
+import com.ewing.order.busi.ball.service.BwContinueService;
 import com.ewing.order.common.prop.BallmatchProp;
 
 public class BetStrategyContext {
@@ -12,6 +13,8 @@ public class BetStrategyContext {
 	private BetLogService betLogService;
 
 	private BetRuleService betRuleService;
+	
+	private BwContinueService bwContinueService;
 
 	private String account;
 
@@ -85,11 +88,22 @@ public class BetStrategyContext {
 	public BetRuleService getBetRuleService() {
 		return betRuleService;
 	}
+	
+	public BwContinueService getBwContinueService() {
+		return bwContinueService;
+	}
 
 	public BetStrategyContext setBetLogService(BetLogService betLogService) {
 		this.betLogService = betLogService;
 		return this;
 	}
+	
+	public BetStrategyContext setBwContinueService(BwContinueService bwContinueService) {
+		this.bwContinueService = bwContinueService;
+		return this;
+	}
+	
+	
 
 	public BetStrategyContext setBetRuleService(BetRuleService betRuleService) {
 		this.betRuleService = betRuleService;

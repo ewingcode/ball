@@ -1,10 +1,12 @@
 package com.ewing.order.busi.ball.service;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -17,6 +19,7 @@ import com.ewing.order.busi.ball.ddl.BetRollInfo;
 import com.ewing.order.busi.ball.ddl.RollGameCompute;
 import com.ewing.order.util.BeanCopy;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 @Component
 public class BetRollInfoService {
@@ -46,10 +49,12 @@ public class BetRollInfoService {
 	@Transactional(rollbackOn = { Exception.class })
 	public List<BetInfo> updateByRoll(List<BetRollInfo> list) {
 		List<BetInfo> lastBetInfos = Lists.newArrayList();
+		Set<String> rollGIds = Sets.newHashSet();
 		for (BetRollInfo betRollInfo : list) {
 
 			if (StringUtils.isEmpty(betRollInfo.getGid()))
 				continue;
+			rollGIds.add(betRollInfo.getGid());
 			// 计算滚球变化数据
 			if (betRollInfo.getGtype().equals("BK")) {
 				calBasketball(betRollInfo);
@@ -58,6 +63,16 @@ public class BetRollInfoService {
 			recordRollBetInfo(betRollInfo);
 			// 更新对应投注项
 			lastBetInfos.add(updateBetInfo(betRollInfo));
+		}
+		//更新比赛为结束
+		List<BetInfo> runningMatchList = betInfoDao.findRunning();
+		if(CollectionUtils.isNotEmpty(runningMatchList)){
+			for(BetInfo betInfo : runningMatchList){
+				if(!rollGIds.contains(betInfo.getGid())){
+					betInfo.setStatus(GameStatus.OVER);
+					betInfoDao.update(betInfo);
+				}
+			}
 		}
 		return lastBetInfos;
 	}

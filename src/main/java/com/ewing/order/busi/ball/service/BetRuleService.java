@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.ewing.order.ball.shared.BetRuleStatus;
 import com.ewing.order.busi.ball.dao.BetRuleDao;
+import com.ewing.order.busi.ball.dao.BwContinueDao;
 import com.ewing.order.busi.ball.ddl.BetRule;
 import com.ewing.order.core.jpa.BaseDao;
 
@@ -26,9 +27,10 @@ public class BetRuleService {
 	private BetRuleDao betRuleDao;
 	@Resource
 	private BaseDao baseDao;
-
+	@Resource
+	private BwContinueDao bwContinueDao;
 	@Transactional
-	public void updateRule(String account, String gtype, String ptype, String money)
+	public void updateRule(String account, String gtype, String ptype, String money,Integer isTest,Integer continueMaxMatch)
 			throws IllegalAccessException, InvocationTargetException {
 		List<BetRule> ruleList = betRuleDao.findRule(account, BetRuleStatus.NOTSUCCESS, gtype,
 				ptype);
@@ -37,7 +39,10 @@ public class BetRuleService {
 		} else {
 			BetRule betRule = ruleList.get(0);
 			betRule.setMoney(money);
+			betRule.setIsTest(isTest);
+			betRule.setContinueMaxMatch(continueMaxMatch);
 			baseDao.update(betRule);
+			bwContinueDao.updateContinueMaxMatch(betRule.getId(), continueMaxMatch);
 		}
 	}
 

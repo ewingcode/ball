@@ -15,8 +15,26 @@ public class BetAutoBuyDto {
 	private String iseff;
 	private String money;
 	private String phone;
+	private String isTest;
+	private String continueMaxMatch;
 	private Timestamp createTime;
 	private Timestamp lastUpdate;
+
+	public String getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(String isTest) {
+		this.isTest = isTest;
+	}
+
+	public String getContinueMaxMatch() {
+		return continueMaxMatch;
+	}
+
+	public void setContinueMaxMatch(String continueMaxMatch) {
+		this.continueMaxMatch = continueMaxMatch;
+	}
 
 	public String getPhone() {
 		return phone;

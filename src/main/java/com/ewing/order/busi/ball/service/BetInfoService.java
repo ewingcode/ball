@@ -28,6 +28,7 @@ public class BetInfoService {
 		return betInfoDao.findByGameId(gameId);
 	}
 
+	
 	@Transactional(rollbackOn = { Exception.class })
 	public void updateReadyBetInfo(List<BetInfo> list) {
 		for (BetInfo betInfo : list) {

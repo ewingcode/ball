@@ -29,8 +29,8 @@ import com.ewing.order.util.BizGenerator;
  * @author tansonlam
  * @create 2018年8月24日
  */
-public class BKRollAutoSideStrategy extends BetStrategy {
-	private static Logger log = LoggerFactory.getLogger(BKRollAutoSideStrategy.class);
+public class BKRollAutoSideStrategy2 extends BetStrategy {
+	private static Logger log = LoggerFactory.getLogger(BKRollAutoSideStrategy2.class);
 	private String gtype = "BK";
 
 	/**
@@ -100,13 +100,13 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 	/**
 	 * 买入方式说明
 	 */
-	private String buyWayDesc = "";
-
-	private Integer TEST_BUY = 0;
+	private String buyWayDesc = ""; 
 
 	private BetRollInfo buyRollInfo;
 	/**全场比赛得分，1：是   0：前一节得分率*/
 	private Integer SCORERATE_ALLMATCH =1;
+	
+	private String FIX_SIDE=null;
 	@Override
 	public void initParam(Map<String, String> paramMap) {
 		ALL_AND_QUARTZ_INTERVAL = getFloatParamValue(paramMap, "ALL_AND_QUARTZ_INTERVAL");
@@ -120,13 +120,14 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		EXCLUDE_LEAGUE = getParamValue(paramMap, "EXCLUDE_LEAGUE");
 		BUY_WAY = getIntegerParamValue(paramMap, "BUY_WAY");
 		LEFT_TIME = getIntegerParamValue(paramMap, "LEFT_TIME");
-		if( getIntegerParamValue(paramMap, "TEST_BUY")!=null)
-			TEST_BUY = getIntegerParamValue(paramMap, "TEST_BUY");
+		 
 		if( getIntegerParamValue(paramMap, "SCORERATE_ALLMATCH")!=null)
 			SCORERATE_ALLMATCH = getIntegerParamValue(paramMap, "SCORERATE_ALLMATCH");
 		if (getIntegerParamValue(paramMap, "MAXEACHDAY") != null)
 			MAXEACHDAY = getIntegerParamValue(paramMap, "MAXEACHDAY");
 		maxInterval = computeMaxInterval();
+		if( getParamValue(paramMap, "FIX_SIDE")!=null)
+			FIX_SIDE= getParamValue(paramMap, "FIX_SIDE");
 	}
 	private Float computeScoreSec4Alltime(BetRollInfo betRollInfo) {
 		return SCORERATE_ALLMATCH ==null || SCORERATE_ALLMATCH == 1  ? InRateCache.computeScoreSec4Alltime(betRollInfo)
@@ -137,7 +138,8 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			return ALL_AND_QUARTZ_INTERVAL + MAX_INTERVAL_PERCENT * ALL_AND_QUARTZ_INTERVAL;
 		return null;
 	}
- 
+
+	
 
 	@Override
 	public boolean isSatisfy(BallEvent ballEvent) {
@@ -172,9 +174,13 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			log(gId + "不符号买入规则，大小球已经关闭");
 			return false;
 		}
-		if (!fixHighScore(gId)) {
-			log(gId + "不符合全场与某节的差值,差值：" + ALL_AND_QUARTZ_INTERVAL + ",出现次数:" + MIN_HIGH_SCORE_TIME);
-			return false;
+		if(FIX_SIDE!=null){
+			side=FIX_SIDE;
+		}else{
+	 		if (!fixHighScore(gId)) {
+	 			log(gId + "不符合全场与某节的差值,差值：" + ALL_AND_QUARTZ_INTERVAL + ",出现次数:" + MIN_HIGH_SCORE_TIME);
+	 			return false;
+	 		}
 		}
 		if (!(betTimeEachMatch(this.getBetStrategyContext().getAccount(), gId) < MAXEACHMATCH)) {
 			log(gId + "不符号买入规则，本次比赛最大买入" + MAXEACHMATCH + "次");
@@ -184,6 +190,12 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			log(gId + "不符合高分规则,每天最大买入" + MAXEACHDAY + "场");
 			return false;
 		}
+		if(!allowBuyInBwContinue(this.getBetStrategyContext().getAccount())){
+			log(gId + "不符连续追加买入规则");
+			return false;
+		}
+		//写死买入小
+		
 		return true;
 	}
 
@@ -369,6 +381,8 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		return CollectionUtils.isEmpty(histories) ? 0 : histories.size();
 	}
 
+	
+	  
 	/**
 	 * 每天的下注次数
 	 * 
@@ -380,11 +394,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		return CollectionUtils.isEmpty(histories) ? 0 : histories.size();
 	}
 
-	private Boolean isMatchSpread(BkPreOrderViewResp bkPreOrderViewResp) {
-		return buyRollInfo != null
-				&& buyRollInfo.getRatio_rou_c().toString().equals(bkPreOrderViewResp.getSpread());
-	}
-
+ 
 	@Override
 	public Object bet(BallEvent ballEvent) {
 		String gtype = "BK";// 篮球
@@ -397,8 +407,9 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			try {
 				BkPreOrderViewResp bkPreOrderViewResp = getbkPreOrderView(
 						this.getBetStrategyContext().getUid(), betInfo.getGid(), gtype, wtype,
-						side);
+						side); 
 				log("投注前信息：" + bkPreOrderViewResp);
+				betMoney = super.computeBetMoney(Float.valueOf(bkPreOrderViewResp.getIoratio()), Float.valueOf(betMoney));
 				// 下注前需要再次检查一下次条件
 				// if (betCondition(betInfo.getGid(), betInfo.getLeague(),
 				// betInfo.getN_sw_OU())) {
@@ -439,7 +450,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 					ftBetResp.setGid(betInfo.getGid());
 					ftBetResp.setGold(betMoney);
 					ftBetResp.setGtype(gtype);
-					ftBetResp.setIoratio(ioratio);
+					ftBetResp.setIoratio(ioratio); 
 					ftBetResp.setWtype(wtype);
 					ftBetResp.setSpread(spread);
 					ftBetResp.setType(side);
@@ -474,11 +485,6 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 		}
 		log.info("===下注结果:" + ftBetResp.toString());
 		return ftBetResp;
-	}
-
-	public static void main(String[] args) {
-		String s = "111111111111";
-		System.out.println(s.substring(0, 10000));
-	}
+	} 
 
 }

@@ -3,6 +3,7 @@ package com.ewing.order.ball;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -98,7 +99,7 @@ public class BasketBallService {
 		return allList;
 	}
 
-	public List<BkRollGame> collectRollingBasketball(String uid) {
+	public List<BkRollGame> collectRollingBasketball(String uid) throws InterruptedException, ExecutionException {
 		List<BkRollGame> allList = Lists.newArrayList();
 		// log.info("查询篮球滚球：");
 		String gtype = "BK";// 篮球
@@ -123,7 +124,7 @@ public class BasketBallService {
 				futureList.add(furture);
 			}
 			for (Future<BkRollGameListResp> f : futureList) {
-				try {
+				 
 					BkRollGameListResp gameListResp = f.get();
 					//log.info("投注项：" + gameListResp);
 					List<BkRollGame> gameList = gameListResp.getGame();
@@ -133,9 +134,7 @@ public class BasketBallService {
 						ftGame.setSystime(gameListResp.getSystime());
 					}
 					allList.addAll(gameList);
-				} catch (Exception e) {
-					log.error(e.getMessage(), e);
-				}
+			 
 			}
 			log.info("滚球篮球场数："+allList.size());
 		}

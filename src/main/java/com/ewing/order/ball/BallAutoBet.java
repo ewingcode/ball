@@ -20,8 +20,10 @@ import com.ewing.order.ball.login.LoginResp;
 import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.busi.ball.ddl.BetAutoBuy;
 import com.ewing.order.busi.ball.ddl.BetBill;
+import com.ewing.order.busi.ball.ddl.BwContinue;
 import com.ewing.order.busi.ball.service.BetAutoBuyService;
 import com.ewing.order.busi.ball.service.BetBillService;
+import com.ewing.order.busi.ball.service.BwContinueService;
 import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.common.prop.BallmatchProp;
 import com.ewing.order.util.BeanCopy;
@@ -42,6 +44,8 @@ public class BallAutoBet {
 	private BetAutoBuyService betAutoBuyService;
 	@Resource
 	private BetBillService betBillService;
+	@Resource
+	private BwContinueService bwContinueService;
 	@Resource
 	private BallMember ballMember;
 	private long crc32RuleValue = 0l;
@@ -82,6 +86,18 @@ public class BallAutoBet {
 			} else {
 				stop(betAutoBuy.getAccount());
 			}
+		}
+	}
+	
+	@Scheduled(cron = "*/10 * * * * * ")
+	public void checkBwContinue() {
+		if (!BallmatchProp.allowrunautobet)
+			return;
+		List<BwContinue> list = bwContinueService.findAllRunning();
+		if (CollectionUtils.isEmpty(list))
+			return;
+		for (BwContinue bwContinue : list) {
+			bwContinueService.updateByGameResult(bwContinue);
 		}
 	}
 

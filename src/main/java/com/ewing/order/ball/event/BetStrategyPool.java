@@ -140,35 +140,37 @@ public class BetStrategyPool {
 		return gameMap.get(ruleId + "_" + gId) == null
 				|| gameMap.get(ruleId + "_" + gId).before(lastUpdate);
 	}
-	 
+
 	/**
 	 * 执行全自动的下注策略，不针对某场比赛
 	 */
 	public void runAutoStratgeys() {
 		List<BetInfoDto> betList = this.getBetStrategyContext().getBetInfoList();
 		// 处理全局规则设置
-		for (BetStrategy betStrategyTemplate : betStrategys) { 
+		for (BetStrategy betStrategyTemplate : betStrategys) {
 			if (betStrategyTemplate.getgId() != null)
 				continue;
 			if (!betStrategyTemplate.getIseff()) {
 				continue;
 			}
-			for (BetInfoDto betInfoDto : betList) { 
+			for (BetInfoDto betInfoDto : betList) {
 				BetStrategy betStrategy = BetStrategyRegistCenter
-						.newBetStrategy(betStrategyTemplate.getClass().getSimpleName()); 
+						.newBetStrategy(betStrategyTemplate.getClass().getSimpleName());
 				betStrategy.setMoney(betStrategyTemplate.getMoney());
+				betStrategy.setIsTest(betStrategyTemplate.getIsTest());
+				betStrategy.setContinueMaxMatch(betStrategyTemplate.getContinueMaxMatch());
 				betStrategy.initParam(betStrategyTemplate.getParamMap());
 				betStrategy.setLevel(betStrategyTemplate.getLevel());
 				betStrategy.setBetStrategyName(betStrategyTemplate.getStrategyName());
 				betStrategy.setIseff(betStrategyTemplate.getIseff());
-				betStrategy.setgId(betStrategyTemplate.getgId()); 
+				betStrategy.setgId(betStrategyTemplate.getgId());
 				betStrategy.setUid(betStrategyTemplate.getUid());
 				betStrategy.setRuleId(betStrategyTemplate.getRuleId());
 				betStrategy.setBetStrategyContext(betStrategyContext);
 				BallEvent ballEvent = new BallEvent(betInfoDto.getGid(), betInfoDto);
 				if (!isNewBallEvent(betStrategy.getRuleId(), ballEvent.getGameId(),
 						betInfoDto.getLastUpdate())) {
-					//log.info("球赛信息没有变化，球赛ID：" + ballEvent.getGameId());
+					// log.info("球赛信息没有变化，球赛ID：" + ballEvent.getGameId());
 					continue;
 				}
 				log.info("执行全局投注规则比较，规则ID：" + betStrategy.getRuleId() + ",球赛ID："
@@ -185,6 +187,14 @@ public class BetStrategyPool {
 								betLog.setBet_rule_id(betStrategy.getRuleId());
 								betStrategyContext.getBetLogService()
 										.save(betStrategyContext.getAccount(), betLog);
+								//对追加的策略，在批次投注表追加投注日志明细
+								if (betStrategy.getContinueMaxMatch() != null
+										&& betStrategy.getBwContinue() != null) {
+									betStrategy.getBetStrategyContext().getBwContinueService()
+											.addNewMatch(betStrategy.getBwContinue(),
+													betLog.getId(),
+													Float.valueOf(betLog.getGold()));
+								}
 							}
 						}
 					} catch (InterruptedException e) {
@@ -198,7 +208,7 @@ public class BetStrategyPool {
 			}
 		}
 	}
-	
+
 	/**
 	 * 半自动的下注策略，针对指定比赛
 	 */
@@ -219,7 +229,7 @@ public class BetStrategyPool {
 				if (ballEvent.getGameId().equals(betStrategy.getgId())) {
 					if (!isNewBallEvent(betStrategy.getRuleId(), ballEvent.getGameId(),
 							betInfoDto.getLastUpdate())) {
-						//log.info("球赛信息没有变化，球赛ID：" + ballEvent.getGameId());
+						// log.info("球赛信息没有变化，球赛ID：" + ballEvent.getGameId());
 						continue;
 					}
 					log.info("执行单场投注规则比较，规则ID：" + betStrategy.getRuleId() + ",球赛ID："
@@ -259,7 +269,7 @@ public class BetStrategyPool {
 						} finally {
 							betLock.unlock();
 						}
-					} 
+					}
 				}
 			}
 		}

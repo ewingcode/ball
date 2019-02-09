@@ -21,6 +21,9 @@ public class BetRuleDao {
 	@Resource
 	private BaseDao baseDao;
 
+	public BetRule findById(Integer ruleId){
+		return baseDao.findOne(ruleId, BetRule.class);
+	}
 	
 	public BetRule findMainRule(String gtype,String ptype) {
 		return baseDao.findOne("is_main='1' and gtype='" + gtype + "' and ptype='"

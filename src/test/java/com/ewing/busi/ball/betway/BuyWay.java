@@ -33,7 +33,7 @@ public class BuyWay {
 	private String seNow;
 	float smallWinMoney;
 	float smallBuyMoneyEach = 100f;
-	boolean showWinDetail = false;
+	boolean showWinDetail = true;
 	private Integer highScoreCostTime;
 	List<StringBuffer> smallBuyList = Lists.newArrayList();
 	private String buySide;
@@ -326,11 +326,11 @@ public class BuyWay {
 					.append(side.equals("H") ? "【小】" : "【大】").append(",按方向:")
 					.append(operateName).append(",买入分数:").append(buySmall.getRatio_rou_c())
 					.append(",总分结果:").append(betInfo.getSc_total())
-//					.append(",即买入率:")
-//					.append(fnum2.format(scoreEveryQuartz))
-//					.append(",即全场率:")
-//					.append(fnum2.format(computeScoreSec4Alltime(buySmall, isAll)))
-//					.append(",完全场率:").append(fnum2.format(CalUtil.computeWholeRate(betInfo)))
+					.append(",即买入率:")
+					.append(fnum2.format(scoreEveryQuartz))
+					.append(",即全场率:")
+					.append(fnum2.format(scoreAllQuartz))
+					.append(",完全场率:").append(fnum2.format(CalUtil.computeWholeRate(betInfo)))
 					.append(",预计总分:").append(CalData.expectLeftScore(buySmall)).append(",预计总分2:")
 					.append(CalData.expectLeftScore2(buySmall)).append(",预计总分3:")
 					.append(CalData.expectLeftScore3(buySmall)).append(",时间:")
