@@ -189,7 +189,7 @@ public class BetStrategyPool {
 										.save(betStrategyContext.getAccount(), betLog);
 								//对追加的策略，在批次投注表追加投注日志明细
 								if (betStrategy.getContinueMaxMatch() != null
-										&& betStrategy.getBwContinue() != null) {
+										&& betStrategy.getBwContinue() != null && betLog.getCode().equals("560")) {
 									betStrategy.getBetStrategyContext().getBwContinueService()
 											.addNewMatch(betStrategy.getBwContinue(),
 													betLog.getId(),
