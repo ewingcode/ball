@@ -45,7 +45,8 @@ public class BetRuleService {
 			betRule.setContinueMaxMatch(continueMaxMatch);
 			betRule.setContinueStartLostnum(continueStartLostnum); 
 			baseDao.update(betRule);
-			bwContinueDao.update2Cancel(betRule.getId());
+			if(continueMaxMatch==0)
+				bwContinueDao.update2Cancel(betRule.getId());
 		}
 	}
 
