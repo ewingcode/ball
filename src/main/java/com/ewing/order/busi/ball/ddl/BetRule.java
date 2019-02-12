@@ -72,9 +72,19 @@ public class BetRule implements java.io.Serializable {
 	@Column(name = "money")
 	private String money;
 	@Column(name = "continue_max_match")
-	private Integer continueMaxMatch;
+	private Integer continueMaxMatch; 
+	@Column(name = "continue_start_lostnum")
+	private Integer continueStartLostnum;
 	@Column(name = "is_test")
 	private Integer isTest;
+
+	public Integer getContinueStartLostnum() {
+		return continueStartLostnum;
+	}
+
+	public void setContinueStartLostnum(Integer continueStartLostnum) {
+		this.continueStartLostnum = continueStartLostnum;
+	}
 
 	public Integer getIsTest() {
 		return isTest;

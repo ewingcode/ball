@@ -7,7 +7,7 @@ package com.ewing.busi.ball.betway;
  */
 public class ContinueBet {
 
-	private Float targetMoney = 200f;
+	private Float targetMoney = 250f;
 	
 	private Float betMoney = 0f;
 	
@@ -15,9 +15,9 @@ public class ContinueBet {
 	
 	private Float maxBetEachMatch = 2000f;
 	
-	private Float rate = 0.76f;
+	private Float rate = 0.8f;
 	public Boolean count(){
-		betMoney = lostTotal+(targetMoney/rate);
+		betMoney = lostTotal/rate+targetMoney;
  
 		System.out.println("下注金额:"+betMoney);
 		if(betMoney>=maxBetEachMatch)

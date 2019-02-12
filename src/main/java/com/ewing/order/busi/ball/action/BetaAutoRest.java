@@ -53,9 +53,10 @@ public class BetaAutoRest extends BaseRest {
 		String iseff = requestJson.getString("iseff");
 		String isTest = requestJson.getString("isTest");
 		String continueMaxMatch = requestJson.getString("continueMaxMatch");
+		String continueStartLostnum = requestJson.getString("continueStartLostnum"); 
 		checkRequired(account, "account");
 		checkRequired(iseff, "iseff");
-		betAutoBuyService.updateIsEff(account, iseff, phone, money,Integer.valueOf(isTest),Integer.valueOf(continueMaxMatch));
+		betAutoBuyService.updateIsEff(account, iseff, phone, money,Integer.valueOf(isTest),Integer.valueOf(continueMaxMatch),Integer.valueOf(continueStartLostnum));
 		return RestResult.successResult(true);
 	}
 	

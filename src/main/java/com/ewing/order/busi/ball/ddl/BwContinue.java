@@ -43,6 +43,10 @@ public class BwContinue implements java.io.Serializable {
 	private Float totalBetMoney; 
 	@Column(name = "continue_max_match")
 	private Integer continueMaxMatch;
+	@Column(name = "continue_start_lostnum")
+	private Integer continueStartLostnum;
+	@Column(name = "win_gold")
+	private Float winGold;
 	@Column(name = "total_match")
 	private Integer totalMatch;
 	@Column(name = "allow_bet")
@@ -53,6 +57,22 @@ public class BwContinue implements java.io.Serializable {
 	private Timestamp createTime;
 	@Column(name = "lastUpdate")
 	private Timestamp lastUpdate;
+
+	public Float getWinGold() {
+		return winGold;
+	}
+
+	public void setWinGold(Float winGold) {
+		this.winGold = winGold;
+	}
+
+	public Integer getContinueStartLostnum() {
+		return continueStartLostnum;
+	}
+
+	public void setContinueStartLostnum(Integer continueStartLostnum) {
+		this.continueStartLostnum = continueStartLostnum;
+	}
 
 	public String getBetDetail() {
 		return betDetail;

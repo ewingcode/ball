@@ -29,8 +29,10 @@ public class BetRuleService {
 	private BaseDao baseDao;
 	@Resource
 	private BwContinueDao bwContinueDao;
+
 	@Transactional
-	public void updateRule(String account, String gtype, String ptype, String money,Integer isTest,Integer continueMaxMatch)
+	public void updateRule(String account, String gtype, String ptype, String money, Integer isTest,
+			Integer continueMaxMatch, Integer continueStartLostnum)
 			throws IllegalAccessException, InvocationTargetException {
 		List<BetRule> ruleList = betRuleDao.findRule(account, BetRuleStatus.NOTSUCCESS, gtype,
 				ptype);
@@ -41,8 +43,9 @@ public class BetRuleService {
 			betRule.setMoney(money);
 			betRule.setIsTest(isTest);
 			betRule.setContinueMaxMatch(continueMaxMatch);
+			betRule.setContinueStartLostnum(continueStartLostnum); 
 			baseDao.update(betRule);
-			bwContinueDao.updateContinueMaxMatch(betRule.getId(), continueMaxMatch);
+			bwContinueDao.update2Cancel(betRule.getId());
 		}
 	}
 
@@ -52,7 +55,7 @@ public class BetRuleService {
 		BetRule newBetRule = new BetRule();
 		BeanUtils.copyProperties(newBetRule, mainBetRule);
 		newBetRule.setId(null);
-		newBetRule.setIs_main("0"); 
+		newBetRule.setIs_main("0");
 		newBetRule.setAccount(account);
 		newBetRule.setMoney(money);
 		newBetRule.setCreateTime(null);

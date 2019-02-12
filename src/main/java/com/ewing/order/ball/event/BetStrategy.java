@@ -271,14 +271,19 @@ public abstract class BetStrategy {
 		if (this.continueMaxMatch == null || this.continueMaxMatch==0) {
 			return String.valueOf(betMoney.intValue());
 		}
-		Float winLossBetMoney = 0f;
-		
-		if (bwContinue != null && bwContinue.getTotalBetMoney() != null
-				&& bwContinue.getTotalBetMoney() > 0 && betRadio > 0) {
-			winLossBetMoney = bwContinue.getTotalBetMoney() / betRadio;
+	
+		Float totalBetMoney = betMoney;
+//		 	Float winLossBetMoney = 0f;
+//		  if (bwContinue != null && bwContinue.getTotalBetMoney() != null
+//				&& bwContinue.getTotalBetMoney() > 0 && betRadio > 0) {
+//			winLossBetMoney = bwContinue.getTotalBetMoney() / betRadio;
+//		}
+//		Float totalBetMoney = winLossBetMoney + betMoney;
+//		return String.valueOf(totalBetMoney.intValue()); 
+		if(bwContinue != null && bwContinue.getTotalMatch()>=bwContinue.getContinueStartLostnum()){
+			totalBetMoney = (bwContinue.getTotalMatch()+1-bwContinue.getContinueStartLostnum()+1)*betMoney;
 		}
-		Float totalBetMoney = winLossBetMoney + betMoney;
-		return String.valueOf(totalBetMoney.intValue());
+		return  String.valueOf(totalBetMoney.intValue());
 	} 
 	
 	protected Boolean isAllowBuy() {

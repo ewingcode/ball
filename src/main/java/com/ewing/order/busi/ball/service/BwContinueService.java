@@ -40,6 +40,7 @@ public class BwContinueService {
 			return;
 		String bwStatus = BwContinueStatus.RUNNING;
 		Integer allowBet = BwContinueAllowBet.NOTALLOW;
+		Float winGold =0f;
 		String betDetailStr = "";
 		if (StringUtils.isNotEmpty(bwContinue.getBetDetail())) {
 			BwBetDetailList bwBetDetailList = GsonUtil.getGson().fromJson(bwContinue.getBetDetail(),
@@ -55,11 +56,14 @@ public class BwContinueService {
 					if (betLog.getType().equals("C") && Float.valueOf(betLog.getSpread()) < Float
 							.valueOf(betInfo.getSc_total())) {
 						status = BwContinueStatus.SUCCESS;
+						winGold += Float.valueOf(betLog.getIoratio())*Float.valueOf(betLog.getGold());
 					} else if (betLog.getType().equals("H") && Float
 							.valueOf(betLog.getSpread()) > Float.valueOf(betInfo.getSc_total())) {
 						status = BwContinueStatus.SUCCESS;
+						winGold += Float.valueOf(betLog.getIoratio())*Float.valueOf(betLog.getGold());
 					} else {
 						status = BwContinueStatus.FAIL;
+						winGold -= Float.valueOf(betLog.getGold());
 					}
 					bwBetDetail.setResult(status);
 				}
@@ -69,14 +73,14 @@ public class BwContinueService {
 					.get(bwBetDetailList.getBwDetail().size() - 1);
 			if (bwBetDetail.getResult().equals(BwContinueStatus.SUCCESS)) {
 				bwStatus = BwContinueStatus.SUCCESS;
-				bwContinueDao.updateStatus(bwStatus, allowBet, betDetailStr, bwContinue);
+				bwContinueDao.updateStatus(winGold,bwStatus, allowBet, betDetailStr, bwContinue);
 			} else if (bwBetDetail.getResult().equals(BwContinueStatus.FAIL)) {
 				if (bwContinue.getTotalMatch() < bwContinue.getContinueMaxMatch()) {
 					allowBet = BwContinueAllowBet.ALLOW;
 				} else {
 					bwStatus = BwContinueStatus.FAIL;
 				}
-				bwContinueDao.updateStatus(bwStatus, allowBet, betDetailStr, bwContinue);
+				bwContinueDao.updateStatus(winGold,bwStatus, allowBet, betDetailStr, bwContinue);
 			}
 		}
 		
@@ -90,6 +94,7 @@ public class BwContinueService {
 			bwContinue.setAllowBet(BwContinueAllowBet.ALLOW);
 			bwContinue.setBetRuleId(betRuleId);
 			bwContinue.setContinueMaxMatch(betRule.getContinueMaxMatch());
+			bwContinue.setContinueStartLostnum(betRule.getContinueStartLostnum());
 			bwContinue.setStatus(BwContinueStatus.RUNNING);
 			bwContinue.setTargetMoney(Float.valueOf(betRule.getMoney()));
 			bwContinue.setTotalBetMoney(0f);

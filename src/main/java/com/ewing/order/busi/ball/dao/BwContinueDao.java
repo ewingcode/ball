@@ -25,15 +25,16 @@ public class BwContinueDao {
 		baseDao.save(bwContinue);
 	}
 	
-	public int updateContinueMaxMatch(Integer betRuleId,Integer continueMaxMatch){
+	public int update2Cancel(Integer betRuleId){
 		return baseDao.executeUpdate("update bw_continue set "
-				+ "continue_max_match="+continueMaxMatch 
+				+ "status=-1" 
 				+ " where bet_rule_id=" + betRuleId+" and status='"+BwContinueStatus.RUNNING+"'" );
 	}
 	
 	
-	public int updateStatus(String status,Integer allowBet,String betDetail,BwContinue oldBwContinue){
+	public int updateStatus(Float winGold,String status,Integer allowBet,String betDetail,BwContinue oldBwContinue){
 		return baseDao.executeUpdate("update bw_continue set "
+				+ "win_gold = win_gold +"+winGold
 				+ "status='"+status+"'"
 				+ ",bet_detail='"+betDetail+"'"
 				+ ",allow_bet='"+allowBet+"'"
