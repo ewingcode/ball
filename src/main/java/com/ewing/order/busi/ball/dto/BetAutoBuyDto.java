@@ -3,7 +3,7 @@ package com.ewing.order.busi.ball.dto;
 import java.sql.Timestamp;
 
 public class BetAutoBuyDto {
-	private static final long serialVersionUID = 1L;
+ 
 
 	public BetAutoBuyDto() {
 		super();
@@ -17,8 +17,17 @@ public class BetAutoBuyDto {
 	private String phone;
 	private String isTest;
 	private String continueMaxMatch;
+	private String continueStartLostnum;
 	private Timestamp createTime;
 	private Timestamp lastUpdate;
+
+	public String getContinueStartLostnum() {
+		return continueStartLostnum;
+	}
+
+	public void setContinueStartLostnum(String continueStartLostnum) {
+		this.continueStartLostnum = continueStartLostnum;
+	}
 
 	public String getIsTest() {
 		return isTest;

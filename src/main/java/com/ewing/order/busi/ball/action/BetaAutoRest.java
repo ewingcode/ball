@@ -90,6 +90,7 @@ public class BetaAutoRest extends BaseRest {
 			if(CollectionUtils.isNotEmpty(ruleList)){
 				dto.setMoney(ruleList.get(0).getMoney());
 				dto.setContinueMaxMatch(ruleList.get(0).getContinueMaxMatch()==null?"0":ruleList.get(0).getContinueMaxMatch().toString());
+				dto.setContinueStartLostnum(ruleList.get(0).getContinueStartLostnum()==null?"1":ruleList.get(0).getContinueStartLostnum().toString());
 				dto.setIsTest(ruleList.get(0).getIsTest()==null?"0":ruleList.get(0).getIsTest().toString());
 			}
 			// 如果不是活跃中的用户则设置为失效用户，让前台可以更新用户状态来激活自动下注
