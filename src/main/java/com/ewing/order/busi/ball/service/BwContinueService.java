@@ -80,6 +80,9 @@ public class BwContinueService {
 				} else {
 					bwStatus = BwContinueStatus.FAIL;
 				}
+				if(bwContinue.getAllowBet()==BwContinueAllowBet.ALLOW){
+					return;
+				}
 				bwContinueDao.updateStatus(winGold,bwStatus, allowBet, betDetailStr, bwContinue);
 			}
 		}

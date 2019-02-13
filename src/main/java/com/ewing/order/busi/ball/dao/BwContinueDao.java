@@ -34,7 +34,7 @@ public class BwContinueDao {
 	
 	public int updateStatus(Float winGold,String status,Integer allowBet,String betDetail,BwContinue oldBwContinue){
 		return baseDao.executeUpdate("update bw_continue set "
-				+ "win_gold = win_gold +"+winGold
+				+ "win_gold =  IFNULL(win_gold,0) +"+winGold
 				+ ",status='"+status+"'"
 				+ ",bet_detail='"+betDetail+"'"
 				+ ",allow_bet='"+allowBet+"'"
