@@ -101,17 +101,17 @@ public class BallAutoBet {
 		}
 	}
 
-	@Scheduled(cron = "0 0/10 * * * * ")
+	@Scheduled(cron = "0 0/5 * * * * ")
 	public void updateBill() {
 		if (!BallmatchProp.allowrunautobet)
 			return; 
-		while (loginCache.isEmpty()) {
+		/*while (loginCache.isEmpty()) {
 			try {
 				TimeUnit.SECONDS.sleep(5);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
 		List<BetAutoBuy> list = betAutoBuyService.findAll();
 		if (list == null)
 			return;
