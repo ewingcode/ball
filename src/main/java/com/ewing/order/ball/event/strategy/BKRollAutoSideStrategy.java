@@ -399,6 +399,9 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 						this.getBetStrategyContext().getUid(), betInfo.getGid(), gtype, wtype,
 						side);
 				log("投注前信息：" + bkPreOrderViewResp);
+				if(StringUtils.isNotEmpty(bkPreOrderViewResp.getErrormsg())){
+					throw new Exception(bkPreOrderViewResp.getErrormsg());
+				}
 				// 下注前需要再次检查一下次条件
 				// if (betCondition(betInfo.getGid(), betInfo.getLeague(),
 				// betInfo.getN_sw_OU())) {
@@ -463,6 +466,7 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 				ftBetResp.setSpread(betInfo.getRatio_rou_c().toString());
 				ftBetResp.setType(side);
 				ftBetResp.setCode("500");
+				ftBetResp.setBuy_desc(buyWayDesc);
 				String errMsg = ExceptionUtils.getMessage(e);
 				if (!StringUtils.isEmpty(errMsg)) {
 					if (errMsg.length() > 200) {
