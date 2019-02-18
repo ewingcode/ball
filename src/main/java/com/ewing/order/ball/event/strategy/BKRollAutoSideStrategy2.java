@@ -227,7 +227,7 @@ public class BKRollAutoSideStrategy2 extends BetStrategy {
 				  betRollInfo.getSe_now());
 				break;
 			}
-			if (LEFT_TIME != null && Integer.valueOf(betRollInfo.getT_count()) > tempLeftTime) {
+			if (LEFT_TIME != null && CalUtil.getFixTcount(betRollInfo.getT_count()) > tempLeftTime) {
 				  log(gId + ",大于剩余时间：" + LEFT_TIME + "，当前时间:" +
 				  betRollInfo.getT_count());
 				break;
@@ -279,7 +279,7 @@ public class BKRollAutoSideStrategy2 extends BetStrategy {
 				// betRollInfo.getSe_now());
 				break;
 			}
-			if (LEFT_TIME != null && Integer.valueOf(betRollInfo.getT_count()) > tempLeftTime) {
+			if (LEFT_TIME != null && CalUtil.getFixTcount(betRollInfo.getT_count()) > tempLeftTime) {
 				// log(gId + ",大于剩余时间：" + LEFT_TIME + "，当前时间:" +
 				// betRollInfo.getT_count());
 				break;
@@ -323,8 +323,8 @@ public class BKRollAutoSideStrategy2 extends BetStrategy {
 						beginBuyRollinfo = betRollInfo;
 					else
 						tmpHighScoreCostTime = Math
-								.abs(Integer.valueOf(beginBuyRollinfo.getT_count())
-										- Integer.valueOf(betRollInfo.getT_count()));
+								.abs(CalUtil.getFixTcount(beginBuyRollinfo.getT_count())
+										- CalUtil.getFixTcount(betRollInfo.getT_count()));
 
 				} else {
 					highScoreTime = 0;
@@ -338,8 +338,8 @@ public class BKRollAutoSideStrategy2 extends BetStrategy {
 						beginBuyRollinfo = betRollInfo;
 					else
 						tmpHighScoreCostTime = Math
-								.abs(Integer.valueOf(beginBuyRollinfo.getT_count())
-										- Integer.valueOf(betRollInfo.getT_count()));
+								.abs(CalUtil.getFixTcount(beginBuyRollinfo.getT_count())
+										- CalUtil.getFixTcount(betRollInfo.getT_count()));
 				} else {
 					highScoreTime = 0;
 					beginBuyRollinfo = null;
@@ -391,7 +391,7 @@ public class BKRollAutoSideStrategy2 extends BetStrategy {
 				}
 			}
 			StringBuffer sb = new StringBuffer();
-			sb.append("时间:").append(buyRollInfo.getT_count());
+			sb.append("时间:").append(CalUtil.getFixTcount(buyRollInfo.getT_count()));
 			sb.append(",买入方:").append(side.equals("C") ? "大" : "小");
 			sb.append(",GID：" + buyRollInfo.getGid());
 			sb.append(",滚球开始ID：")
