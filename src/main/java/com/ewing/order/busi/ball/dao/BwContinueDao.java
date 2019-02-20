@@ -61,7 +61,7 @@ public class BwContinueDao {
 				+ "bet_detail='" + betDetail+"'"
 				+ ",allow_bet=" + BwContinueAllowBet.NOTALLOW 
 				+ ",total_match=total_match+1  "
-			    + ",total_bet_money="+totalBetMoney
+			    + ",total_bet_money =IFNULL(total_bet_money,0) +"+totalBetMoney
 				+ " where id=" + id);
 	}
 
