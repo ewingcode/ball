@@ -17,6 +17,7 @@ import com.ewing.order.ball.dto.BetInfoDto;
 import com.ewing.order.ball.event.BallEvent;
 import com.ewing.order.ball.event.BetStrategy;
 import com.ewing.order.ball.event.InRateCache;
+import com.ewing.order.ball.logger.BetLogger;
 import com.ewing.order.ball.util.CalUtil;
 import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.busi.ball.ddl.BetLog;
@@ -461,7 +462,7 @@ public class BKRollAutoSideStrategy2 extends BetStrategy {
 				// 下注前需要再次检查一下次条件
 				// if (betCondition(betInfo.getGid(), betInfo.getLeague(),
 				// betInfo.getN_sw_OU())) {
-				log.info(getStrategyName() + "准备下注:" + ballEvent.getSource().toString()
+				log(getStrategyName() + "准备下注:" + ballEvent.getSource().toString()
 						+ ",buyWayDesc:" + buyWayDesc + ",betMoney:" + betMoney + ",money:"
 						+ this.getMoney());
 				if (getBetStrategyContext().isAllowBet() && isAllowBuy()) {
@@ -509,7 +510,7 @@ public class BKRollAutoSideStrategy2 extends BetStrategy {
 				// }
 
 			} catch (Exception e) {
-				log.error(e.getMessage(), e);
+				BetLogger.logger.error(e.getMessage(), e);
 				ftBetResp = BetResp.debugBetResp();
 				ftBetResp.setLeague(betInfo.getLeague());
 				ftBetResp.setTeam_c(betInfo.getTeam_c());

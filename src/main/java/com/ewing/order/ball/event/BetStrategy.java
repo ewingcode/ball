@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 
 import com.ewing.order.ball.bk.bet.BetResp;
 import com.ewing.order.ball.bk.bet.BkPreOrderViewResp;
+import com.ewing.order.ball.logger.BetLogger;
 import com.ewing.order.ball.shared.BwContinueAllowBet;
 import com.ewing.order.ball.shared.BwContinueStatus;
 import com.ewing.order.ball.util.RequestTool;
@@ -115,7 +116,7 @@ public abstract class BetStrategy {
 	}
 
 	public void log(String message) {
-		log.info("strategyName:" + strategyName + ",account:" + betStrategyContext.getAccount()
+		BetLogger.logger.info("strategyName:" + strategyName + ",account:" + betStrategyContext.getAccount()
 				+ "-" + message);
 	}
 

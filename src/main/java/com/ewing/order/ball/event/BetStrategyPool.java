@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 import com.ewing.order.ball.dto.BetInfoDto;
+import com.ewing.order.ball.logger.BetStrategyErrorLogger;
+import com.ewing.order.ball.logger.BetStrategyLogger;
 import com.ewing.order.busi.ball.ddl.BetLog;
 import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.common.exception.BusiException;
@@ -33,7 +35,7 @@ import com.ewing.order.util.GsonUtil;
  * @create 2018年7月30日
  */
 public class BetStrategyPool {
-	private static Logger log = LoggerFactory.getLogger(BetStrategyPool.class);
+	private static Logger log = BetStrategyLogger.logger;
 
 	/**
 	 * 单个赛局的投注策略
@@ -197,8 +199,8 @@ public class BetStrategyPool {
 								}
 							}
 						}
-					} catch (InterruptedException e) {
-						log.error(e.getMessage(), e);
+					} catch (Exception e) {
+						BetStrategyErrorLogger.logger.error(e.getMessage(), e);
 					} finally {
 						betLock.unlock();
 					}
@@ -265,7 +267,7 @@ public class BetStrategyPool {
 								}
 							}
 						} catch (InterruptedException e) {
-							log.error(e.getMessage(), e);
+							BetStrategyErrorLogger.logger.error(e.getMessage(), e);
 						} finally {
 							betLock.unlock();
 						}

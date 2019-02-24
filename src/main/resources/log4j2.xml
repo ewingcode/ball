@@ -4,7 +4,7 @@
 <configuration status="INFO"> 
 	<Properties>
 		<Property name="pattern">%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %c{1}:%L -%m%n</Property>
-		<Property name="displayName">ball</Property>
+		<Property name="displayName">rms</Property>
 	</Properties>
 	<Appenders>
 		<Console name="console" target="SYSTEM_OUT" follow="true">
@@ -33,8 +33,37 @@
 				<pattern>${pattern}</pattern>
 			</PatternLayout> 
 			<SizeBasedTriggeringPolicy size="50 MB" />
+		</RollingFile>
+		<RollingFile name="betStrategy" fileName="logs/bet_strategy.log"
+			filePattern="${displayName}_%d{yyyy-MM-dd}.log">
+			<ThresholdFilter level="INFO" onMatch="ACCEPT"
+				onMismatch="DENY" />
+			<PatternLayout>
+			     <charset>UTF-8</charset>
+				<pattern>${pattern}</pattern>
+			</PatternLayout> 
+			<SizeBasedTriggeringPolicy size="50 MB" />
 		</RollingFile> 
-		  
+		<RollingFile name="betStrategyError" fileName="logs/bet_trategy_error.log"
+			filePattern="${displayName}_%d{yyyy-MM-dd}.log">
+			<ThresholdFilter level="INFO" onMatch="ACCEPT"
+				onMismatch="DENY" />
+			<PatternLayout>
+			     <charset>UTF-8</charset>
+				<pattern>${pattern}</pattern>
+			</PatternLayout> 
+			<SizeBasedTriggeringPolicy size="50 MB" />
+		</RollingFile>
+		<RollingFile name="bet" fileName="logs/bet.log"
+			filePattern="${displayName}_%d{yyyy-MM-dd}.log">
+			<ThresholdFilter level="INFO" onMatch="ACCEPT"
+				onMismatch="DENY" />
+			<PatternLayout>
+			     <charset>UTF-8</charset>
+				<pattern>${pattern}</pattern>
+			</PatternLayout> 
+			<SizeBasedTriggeringPolicy size="50 MB" />
+		</RollingFile>
 	</Appenders>
 	<Loggers>
 		<!-- <Logger name="org.apache.catalina.util.LifecycleBase" level="ERROR" 
@@ -42,12 +71,21 @@
 			/> <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="WARN" 
 			/> -->
 		<Logger name="org.springframework" level="WARN" />
-		<Logger name="com.alog" level="INFO" />
+		<Logger name="com" level="INFO" />
 		<Root level="INFO">
 			<AppenderRef ref="console"></AppenderRef>
 			<AppenderRef ref="error"></AppenderRef>
 			<AppenderRef ref="info"></AppenderRef>
 		</Root>
-		 
-		</Loggers>
-	</configuration>
+		<Logger name="betStrategy" level="info" additivity="false">  
+		    <AppenderRef ref="betStrategy" /> 
+		</Logger> 
+		<Logger name="betStrategyError" level="info" additivity="false">  
+		    <AppenderRef ref="betStrategyError" /> 
+		</Logger>
+		<Logger name="bet" level="info" additivity="false">  
+		    <AppenderRef ref="bet" /> 
+		</Logger>
+		  
+	</Loggers>
+</configuration>

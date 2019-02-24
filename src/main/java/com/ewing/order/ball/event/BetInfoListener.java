@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ewing.order.ball.logger.BetStrategyErrorLogger;
+
 public class BetInfoListener extends Thread implements EventListener {
 	private static Logger log = LoggerFactory.getLogger(BetInfoListener.class);
 	private ArrayBlockingQueue<BallEvent> eventQueue = new ArrayBlockingQueue<BallEvent>(100);
@@ -43,7 +45,7 @@ public class BetInfoListener extends Thread implements EventListener {
 					betStrategyPool.runHalfAutoStratgeys();
 				}
 			} catch (Exception e) {
-				log.error(e.getMessage(), e);
+				BetStrategyErrorLogger.logger.error(e.getMessage(), e);
 			}
 			try {
 				TimeUnit.SECONDS.sleep(1);
