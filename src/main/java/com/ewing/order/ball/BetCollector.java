@@ -99,7 +99,8 @@ public class BetCollector {
 
 		public static List<BetRollInfo> getRollDetail(String gid, int len) {
 			List<BetRollInfo> result = Lists.newArrayList();
-			List<BetRollInfo> list = bkRollDetailMap.get(gid);
+			List<BetRollInfo> allList = bkRollDetailMap.get(gid); 
+			List<BetRollInfo> list = Lists.newCopyOnWriteArrayList(allList) ;
 			if (CollectionUtils.isEmpty(list))
 				return null;
 			len = list.size() < len ? list.size() : len;
@@ -151,7 +152,7 @@ public class BetCollector {
 		}
 
 		public static List<BetInfoDto> getBkRollList() {
-			return  bkRollList ;
+			return  Lists.newCopyOnWriteArrayList(bkRollList) ;
 		}
 		
 		public static List<BetInfoDto> getSortBkRollList() {
@@ -165,7 +166,7 @@ public class BetCollector {
 		}
 
 		public static List<BetInfoDto> getBkTodayList() {
-			return  bkTodayList ;
+			return  Lists.newCopyOnWriteArrayList(bkTodayList);
 		}
 
 		public static List<BetInfoDto> getFtRollList() {

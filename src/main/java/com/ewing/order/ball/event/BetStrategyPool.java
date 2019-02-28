@@ -148,6 +148,9 @@ public class BetStrategyPool {
 	 */
 	public void runAutoStratgeys() {
 		List<BetInfoDto> betList = this.getBetStrategyContext().getBetInfoList();
+		if(CollectionUtils.isEmpty(betList)){
+			return;
+		}
 		// 处理全局规则设置
 		for (BetStrategy betStrategyTemplate : betStrategys) {
 			if (betStrategyTemplate.getgId() != null)
@@ -155,6 +158,7 @@ public class BetStrategyPool {
 			if (!betStrategyTemplate.getIseff()) {
 				continue;
 			}
+			
 			for (BetInfoDto betInfoDto : betList) {
 				BetStrategy betStrategy = BetStrategyRegistCenter
 						.newBetStrategy(betStrategyTemplate.getClass().getSimpleName());
