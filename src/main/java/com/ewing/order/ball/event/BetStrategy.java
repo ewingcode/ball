@@ -19,7 +19,7 @@ public abstract class BetStrategy {
 	private static Logger log = LoggerFactory.getLogger(BetStrategy.class);
 	private BetStrategyContext betStrategyContext;
 
-	protected final static Integer maxRetryBet = 6;
+	protected final static Integer maxRetryBet = 10;
 
 	private String strategyName;
 
@@ -116,6 +116,11 @@ public abstract class BetStrategy {
 	}
 
 	public void log(String message) {
+		 log.info("strategyName:" + strategyName + ",account:" + betStrategyContext.getAccount()
+				+ "-" + message);
+	}
+	
+	public void betlog(String message) {
 		BetLogger.logger.info("strategyName:" + strategyName + ",account:" + betStrategyContext.getAccount()
 				+ "-" + message);
 	}

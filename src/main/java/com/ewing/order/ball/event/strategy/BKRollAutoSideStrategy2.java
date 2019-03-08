@@ -447,14 +447,14 @@ public class BKRollAutoSideStrategy2 extends BetStrategy {
 		String wtype = "ROU";// 让球
 		String betMoney = MONEYEACHMATCH; // 下注金额
 		BetResp ftBetResp = null;
-		log("===准备下注:" + ballEvent.getSource().toString());
+		betlog("===准备下注:" + ballEvent.getSource().toString());
 		if (ballEvent.getSource() != null && ballEvent.getSource() instanceof BetInfoDto) {
 			BetInfoDto betInfo = (BetInfoDto) ballEvent.getSource();
 			try {
 				BkPreOrderViewResp bkPreOrderViewResp = getbkPreOrderView(
 						this.getBetStrategyContext().getUid(), betInfo.getGid(), gtype, wtype,
 						side); 
-				log("投注前信息：" + bkPreOrderViewResp);
+				betlog("投注前信息：" + bkPreOrderViewResp);
 				if(StringUtils.isNotEmpty(bkPreOrderViewResp.getErrormsg())){
 					throw new Exception(bkPreOrderViewResp.getErrormsg());
 				}
@@ -462,16 +462,20 @@ public class BKRollAutoSideStrategy2 extends BetStrategy {
 				// 下注前需要再次检查一下次条件
 				// if (betCondition(betInfo.getGid(), betInfo.getLeague(),
 				// betInfo.getN_sw_OU())) {
-				log(getStrategyName() + "准备下注:" + ballEvent.getSource().toString()
+				betlog("准备下注:" + ballEvent.getSource().toString()
 						+ ",buyWayDesc:" + buyWayDesc + ",betMoney:" + betMoney + ",money:"
 						+ this.getMoney());
 				if (getBetStrategyContext().isAllowBet() && isAllowBuy()) {
 					// if(isMatchSpread(bkPreOrderViewResp)){
 					ftBetResp = RequestTool.bkbet(this.getBetStrategyContext().getUid(),
 							betInfo.getGid(), gtype, betMoney, wtype, side, bkPreOrderViewResp);
+					betlog("线上下注结果:"+ftBetResp);
 					if (ftBetResp != null){
 						ftBetResp.setBuy_desc(buyWayDesc);
 						if(!ftBetResp.getCode().equals("560")){
+							ftBetResp.setLeague(betInfo.getLeague());
+							ftBetResp.setTeam_c(betInfo.getTeam_c());
+							ftBetResp.setTeam_h(betInfo.getTeam_h());
 							ftBetResp.setType(side);
 							ftBetResp.setSpread(buyRollInfo.getRatio_rou_c().toString());
 						}
@@ -532,7 +536,7 @@ public class BKRollAutoSideStrategy2 extends BetStrategy {
 				}
 			}
 		}
-		log.info("===下注结果:" + ftBetResp.toString());
+		betlog("===最终下注结果:" + ftBetResp.toString());
 		return ftBetResp;
 	} 
 
