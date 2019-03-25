@@ -2,6 +2,8 @@ package com.ewing.order.busi.ball.dto;
 
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+
 public class BetAutoBuyDto {
  
 
@@ -17,9 +19,27 @@ public class BetAutoBuyDto {
 	private String phone;
 	private String isTest;
 	private String continueMaxMatch;
-	private String continueStartLostnum;
+	private String continueStartLostnum; 
+	private String stopWingold; 
+	private String stopLosegold;
 	private Timestamp createTime;
 	private Timestamp lastUpdate;
+
+	public String getStopWingold() {
+		return stopWingold;
+	}
+
+	public void setStopWingold(String stopWingold) {
+		this.stopWingold = stopWingold;
+	}
+
+	public String getStopLosegold() {
+		return stopLosegold;
+	}
+
+	public void setStopLosegold(String stopLosegold) {
+		this.stopLosegold = stopLosegold;
+	}
 
 	public String getContinueStartLostnum() {
 		return continueStartLostnum;

@@ -40,7 +40,7 @@ public class IncomeCompute {
 		return totalTax;
 	}
 	public static void main(String[] args) {
-		IncomeCompute incomeCompute = new IncomeCompute(1111111f,1111111f,5000f,5100f,4000f);
+		IncomeCompute incomeCompute = new IncomeCompute(6116f,45143f,5000f,5100f,4000f);
 		Float newTax = incomeCompute.computeNewTax();
 		Float oldTax = incomeCompute.computeOldTax();
 		System.out.println("新年税："+newTax+",旧年税:"+oldTax+",差额:"+(Math.abs(oldTax-newTax)));

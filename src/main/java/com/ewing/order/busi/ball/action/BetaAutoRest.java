@@ -54,9 +54,12 @@ public class BetaAutoRest extends BaseRest {
 		String isTest = requestJson.getString("isTest");
 		String continueMaxMatch = requestJson.getString("continueMaxMatch");
 		String continueStartLostnum = requestJson.getString("continueStartLostnum"); 
+		String stopWingold = requestJson.getString("stopWingold"); 
+		String stopLosegold = requestJson.getString("stopLosegold");  
 		checkRequired(account, "account");
 		checkRequired(iseff, "iseff");
-		betAutoBuyService.updateIsEff(account, iseff, phone, money,Integer.valueOf(isTest),Integer.valueOf(continueMaxMatch),Integer.valueOf(continueStartLostnum));
+		betAutoBuyService.updateIsEff(account, iseff, phone, money,Integer.valueOf(isTest),
+				Integer.valueOf(continueMaxMatch),Integer.valueOf(continueStartLostnum),Float.valueOf(stopWingold),Float.valueOf(stopLosegold));
 		return RestResult.successResult(true);
 	}
 	
@@ -91,6 +94,8 @@ public class BetaAutoRest extends BaseRest {
 				dto.setMoney(ruleList.get(0).getMoney());
 				dto.setContinueMaxMatch(ruleList.get(0).getContinueMaxMatch()==null?"0":ruleList.get(0).getContinueMaxMatch().toString());
 				dto.setContinueStartLostnum(ruleList.get(0).getContinueStartLostnum()==null?"1":ruleList.get(0).getContinueStartLostnum().toString());
+				dto.setStopWingold(ruleList.get(0).getStopWingold()==null?"0":String.valueOf(ruleList.get(0).getStopWingold().intValue()));
+				dto.setStopLosegold(ruleList.get(0).getStopLosegold()==null?"0":String.valueOf(ruleList.get(0).getStopLosegold().intValue()));
 				dto.setIsTest(ruleList.get(0).getIsTest()==null?"0":ruleList.get(0).getIsTest().toString());
 			}
 			// 如果不是活跃中的用户则设置为失效用户，让前台可以更新用户状态来激活自动下注

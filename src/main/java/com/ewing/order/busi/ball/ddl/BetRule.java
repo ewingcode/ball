@@ -77,6 +77,26 @@ public class BetRule implements java.io.Serializable {
 	private Integer continueStartLostnum;
 	@Column(name = "is_test")
 	private Integer isTest;
+	@Column(name = "stop_wingold")
+	private Float stopWingold;
+	@Column(name = "stop_losegold")
+	private Float stopLosegold;
+	
+	public Float getStopWingold() {
+		return stopWingold;
+	}
+
+	public void setStopWingold(Float stopWingold) {
+		this.stopWingold = stopWingold;
+	}
+
+	public Float getStopLosegold() {
+		return stopLosegold;
+	}
+
+	public void setStopLosegold(Float stopLosegold) {
+		this.stopLosegold = stopLosegold;
+	}
 
 	public Integer getContinueStartLostnum() {
 		return continueStartLostnum;

@@ -32,7 +32,7 @@ public class BetRuleService {
 
 	@Transactional
 	public void updateRule(String account, String gtype, String ptype, String money, Integer isTest,
-			Integer continueMaxMatch, Integer continueStartLostnum)
+			Integer continueMaxMatch, Integer continueStartLostnum,Float stopWingold,Float stopLosegold)
 			throws IllegalAccessException, InvocationTargetException {
 		List<BetRule> ruleList = betRuleDao.findRule(account, BetRuleStatus.NOTSUCCESS, gtype,
 				ptype);
@@ -44,6 +44,8 @@ public class BetRuleService {
 			betRule.setIsTest(isTest);
 			betRule.setContinueMaxMatch(continueMaxMatch);
 			betRule.setContinueStartLostnum(continueStartLostnum); 
+			betRule.setStopLosegold(stopLosegold);
+			betRule.setStopWingold(stopWingold);
 			baseDao.update(betRule);
 			if(continueMaxMatch==0)
 				bwContinueDao.update2Cancel(betRule.getId());

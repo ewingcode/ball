@@ -3,6 +3,7 @@ package com.ewing.order.busi.ball.dao;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ public class ReportDao {
 	@Resource
 	private BaseDao baseDao;
 
-	
+	@Transactional
 	public  List<TotalBillDto> findTotalWin(String date) {
 		String sql="SELECT account,COUNT(1) AS matchCount ,SUM(win_gold) AS totalWin FROM `bet_bill` "
 				+ "WHERE SUBSTR(w_id,3) IN (SELECT ticket_id FROM bet_log WHERE bet_rule_id IS NOT NULL) "

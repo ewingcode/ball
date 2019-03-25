@@ -84,11 +84,11 @@ public class CalData {
 				BetRollInfo.class);
 	}
  
-	// @Test
+    @Test
 	public void test(){
 		Map<Integer,List<BuyWay>>  allResult = Maps.newHashMap();
 		Date startDate = DataFormat.stringToDate("2019-01-01 00:00:00",DataFormat.DATETIME_FORMAT);
-		Date endDate = DataFormat.stringToDate("2019-01-18 23:59:59",DataFormat.DATETIME_FORMAT);
+		Date endDate = DataFormat.stringToDate("2019-01-31 23:59:59",DataFormat.DATETIME_FORMAT);
 		Calendar startCal = Calendar.getInstance();
 		startCal.setTime(startDate);
 		Calendar endCal = Calendar.getInstance();
@@ -162,7 +162,7 @@ public class CalData {
 		}
 	}
 	
-	@Test
+//@Test
 	public void test3(){ 
 		 computeGame2("2019-01-01 00:00:00", "2019-01-21 23:59:59") ;
 	}

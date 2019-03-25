@@ -21,6 +21,10 @@ public class BetRuleDao {
 	@Resource
 	private BaseDao baseDao;
 
+	public List<BetRule> findAll(){
+		return baseDao.findAll(BetRule.class);
+	}
+	
 	public BetRule findById(Integer ruleId){
 		return baseDao.findOne(ruleId, BetRule.class);
 	}
