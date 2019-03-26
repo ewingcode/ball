@@ -267,12 +267,13 @@ public class BallAutoBet {
 
 	public void start(String account, String pwd) {
 		LoginResp loginResp = ballMember.login(account, pwd);
+		log.info("login for account:"+account+",message:"+loginResp.getCode_message());
 		if (loginResp != null && !StringUtils.isEmpty(loginResp.getUid())) {
 			loginCache.put(account, loginResp);
 			updateLoginPwdCache(account, pwd);
 			ballMember.addBkListener(true, account, pwd, loginResp.getUid());
 			betAutoBuyService.updateLoginIn(account);
-		}
+		} 
 	}
 
 	public void stop(String account) {
