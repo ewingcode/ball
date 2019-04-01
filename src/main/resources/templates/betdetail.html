@@ -42,7 +42,7 @@
             	var d = this.date.substring(0,4)+"-"+this.date.substring(4,6)+"-"+this.date.substring(6,8);
             	 
                 //发送get请求
-                this.$http.get('report/betdetail.op?date='+d+"&account="+account).then(function(res){
+                this.$http.get('report/betdetail.op?date='+d+"&account="+this.account).then(function(res){
                     this.list = res.data.data;    
                 },function(){
                     console.log('请求失败处理');
