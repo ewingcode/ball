@@ -43,7 +43,7 @@ public class ReportDao {
 
 	public List<BetDetailDto> findBetDetail(String account, String date) {
 		String sql = "SELECT  date_format(r.create_time, '%Y%m%d%H') as createTime,r.gold,r.total,r.type,r.spread,r.result,r.league,r.team_c,r.team_h";
-		sql += " FROM bet_log_result r WHERE account ='tsLAM38' AND CODE=560 and r.create_time >='"+date+"'  ORDER BY id DESC ";
+		sql += " FROM bet_log_result r WHERE account ='"+account+"' AND CODE=560 and r.create_time >='"+date+"'  ORDER BY id DESC ";
 		return baseDao.noMappedObjectQuery(sql, BetDetailDto.class);
 	}
 }
