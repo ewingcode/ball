@@ -72,6 +72,8 @@ public class BetDetailDto implements java.io.Serializable {
 	private String result;
 	@Column(name = "match_status")
 	private String match_status;
+	@Column(name = "total")
+	private String total;
 
 	public Integer getId() {
 		return id;
