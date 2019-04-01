@@ -75,6 +75,20 @@ public class BetDetailDto implements java.io.Serializable {
 	@Column(name = "total")
 	private String total;
 
+	private String wingold;
+	
+	public String getWingold() {
+		return wingold;
+	}
+	public void setWingold(String wingold) {
+		this.wingold = wingold;
+	}
+	public String getTotal() {
+		return total;
+	}
+	public void setTotal(String total) {
+		this.total = total;
+	}
 	public Integer getId() {
 		return id;
 	}

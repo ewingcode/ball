@@ -10,13 +10,13 @@
 </div>
   <ol>
     <li v-for="bill in list"> 
-        {{ bill.createTime }} {{bill.result}} {{bill.gold}} {{bill.total}}  
+        {{ bill.createTime }} {{bill.result}} {{bill.gold}} {{bill.wingold}}  
       <span v-if="bill.type === 'H'">
       	小
 	</span> 
 	<span v-else>
 	 大
-	</span>{{bill.spread}} {{bill.league}} {{bill.team_c}} {{bill.team_h}}
+	</span>{{bill.spread}} {{bill.total}} {{bill.league}} {{bill.team_c}} {{bill.team_h}}
     </li>
   </ol>
 </div>
