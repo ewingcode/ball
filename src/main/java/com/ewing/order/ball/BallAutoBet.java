@@ -122,8 +122,7 @@ public class BallAutoBet {
 		if (list == null)
 			return;
 		for (BetAutoBuy betAutoBuy : list) {
-			if (betAutoBuy.getIseff().equals(IsEff.EFFECTIVE)
-					&& betAutoBuy.getIsallow().equals(IsEff.EFFECTIVE)) {
+			if (betAutoBuy.getIsallow().equals(IsEff.EFFECTIVE)) {
 				LoginResp loginResp = getLoginResp(betAutoBuy.getAccount());
 				if (loginResp != null) {
 					updateAccountBill(betAutoBuy.getAccount(), loginResp.getUid());

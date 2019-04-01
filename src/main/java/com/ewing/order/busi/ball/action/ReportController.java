@@ -24,5 +24,10 @@ public class ReportController extends BaseController {
 	public ModelAndView windetail() {
 		return render("windetail");
 	}
+	
+	@GetMapping("/betdetail.op")
+	public ModelAndView betdetail() {
+		return render("betdetail");
+	}
 
 }
