@@ -81,7 +81,28 @@ public class BetRule implements java.io.Serializable {
 	private Float stopWingold;
 	@Column(name = "stop_losegold")
 	private Float stopLosegold;
+	@Column(name = "is_cover")
+	private Integer isCover;
+	@Column(name = "continue_plan_money")
+	private String continuePlanMoney;
 	
+	
+	public String getContinuePlanMoney() {
+		return continuePlanMoney;
+	}
+
+	public void setContinuePlanMoney(String continuePlanMoney) {
+		this.continuePlanMoney = continuePlanMoney;
+	}
+
+	public Integer getIsCover() {
+		return isCover;
+	}
+
+	public void setIsCover(Integer isCover) {
+		this.isCover = isCover;
+	}
+
 	public Float getStopWingold() {
 		return stopWingold;
 	}

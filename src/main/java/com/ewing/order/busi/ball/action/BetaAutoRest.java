@@ -56,10 +56,11 @@ public class BetaAutoRest extends BaseRest {
 		String continueStartLostnum = requestJson.getString("continueStartLostnum"); 
 		String stopWingold = requestJson.getString("stopWingold"); 
 		String stopLosegold = requestJson.getString("stopLosegold");  
+		String continuePlanMoney = requestJson.getString("continuePlanMoney");  
 		checkRequired(account, "account");
 		checkRequired(iseff, "iseff");
 		betAutoBuyService.updateIsEff(account, iseff, phone, money,Integer.valueOf(isTest),
-				Integer.valueOf(continueMaxMatch),Integer.valueOf(continueStartLostnum),Float.valueOf(stopWingold),Float.valueOf(stopLosegold));
+				Integer.valueOf(continueMaxMatch),Integer.valueOf(continueStartLostnum),Float.valueOf(stopWingold),Float.valueOf(stopLosegold),continuePlanMoney);
 		return RestResult.successResult(true);
 	}
 	
@@ -94,6 +95,7 @@ public class BetaAutoRest extends BaseRest {
 				dto.setMoney(ruleList.get(0).getMoney());
 				dto.setContinueMaxMatch(ruleList.get(0).getContinueMaxMatch()==null?"0":ruleList.get(0).getContinueMaxMatch().toString());
 				dto.setContinueStartLostnum(ruleList.get(0).getContinueStartLostnum()==null?"1":ruleList.get(0).getContinueStartLostnum().toString());
+				dto.setContinuePlanMoney(ruleList.get(0).getContinuePlanMoney());
 				dto.setStopWingold(ruleList.get(0).getStopWingold()==null?"0":String.valueOf(ruleList.get(0).getStopWingold().intValue()));
 				dto.setStopLosegold(ruleList.get(0).getStopLosegold()==null?"0":String.valueOf(ruleList.get(0).getStopLosegold().intValue()));
 				dto.setIsTest(ruleList.get(0).getIsTest()==null?"0":ruleList.get(0).getIsTest().toString());

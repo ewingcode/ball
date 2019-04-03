@@ -22,8 +22,18 @@ public class BetAutoBuyDto {
 	private String continueStartLostnum; 
 	private String stopWingold; 
 	private String stopLosegold;
+	private String continuePlanMoney;
 	private Timestamp createTime;
 	private Timestamp lastUpdate;
+
+	
+	public String getContinuePlanMoney() {
+		return continuePlanMoney;
+	}
+
+	public void setContinuePlanMoney(String continuePlanMoney) {
+		this.continuePlanMoney = continuePlanMoney;
+	}
 
 	public String getStopWingold() {
 		return stopWingold;

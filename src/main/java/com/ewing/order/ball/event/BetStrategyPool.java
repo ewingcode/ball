@@ -164,6 +164,8 @@ public class BetStrategyPool {
 						.newBetStrategy(betStrategyTemplate.getClass().getSimpleName());
 				betStrategy.setMoney(betStrategyTemplate.getMoney());
 				betStrategy.setIsTest(betStrategyTemplate.getIsTest());
+				betStrategy.setIsCover(betStrategyTemplate.getIsCover());
+				betStrategy.setContinuePlanMoney(betStrategyTemplate.getContinuePlanMoney());
 				betStrategy.setContinueMaxMatch(betStrategyTemplate.getContinueMaxMatch());
 				betStrategy.initParam(betStrategyTemplate.getParamMap());
 				betStrategy.setLevel(betStrategyTemplate.getLevel());

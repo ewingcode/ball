@@ -36,12 +36,32 @@ public abstract class BetStrategy {
 	private String money;
 
 	private Integer continueMaxMatch;
+	
+	private String continuePlanMoney;
 
 	private Integer isTest;
+
+	private Integer isCover;
 
 	private Map<String, String> paramMap;
 
 	private BwContinue bwContinue;
+
+	public String getContinuePlanMoney() {
+		return continuePlanMoney;
+	}
+
+	public void setContinuePlanMoney(String continuePlanMoney) {
+		this.continuePlanMoney = continuePlanMoney;
+	}
+
+	public Integer getIsCover() {
+		return isCover;
+	}
+
+	public void setIsCover(Integer isCover) {
+		this.isCover = isCover;
+	}
 
 	public BwContinue getBwContinue() {
 		return bwContinue;
@@ -116,13 +136,13 @@ public abstract class BetStrategy {
 	}
 
 	public void log(String message) {
-		 log.info("strategyName:" + strategyName + ",account:" + betStrategyContext.getAccount()
+		log.info("strategyName:" + strategyName + ",account:" + betStrategyContext.getAccount()
 				+ "-" + message);
 	}
-	
+
 	public void betlog(String message) {
-		BetLogger.logger.info("strategyName:" + strategyName + ",account:" + betStrategyContext.getAccount()
-				+ "-" + message);
+		BetLogger.logger.info("strategyName:" + strategyName + ",account:"
+				+ betStrategyContext.getAccount() + "-" + message);
 	}
 
 	/**
@@ -254,7 +274,7 @@ public abstract class BetStrategy {
 	}
 
 	protected Boolean allowBuyInBwContinue(String account) {
-		if (this.continueMaxMatch == null || this.continueMaxMatch==0){
+		if (this.continueMaxMatch == null || this.continueMaxMatch == 0) {
 			return true;
 		}
 		bwContinue = this.betStrategyContext.getBwContinueService().findRunning(account, ruleId);
@@ -274,24 +294,36 @@ public abstract class BetStrategy {
 	}
 
 	protected String computeBetMoney(Float betRadio, Float betMoney) {
-		if (this.continueMaxMatch == null || this.continueMaxMatch==0) {
+		if (this.continueMaxMatch == null || this.continueMaxMatch == 0) {
 			return String.valueOf(betMoney.intValue());
 		}
-	
+
 		Float totalBetMoney = betMoney;
-//		 	Float winLossBetMoney = 0f;
-//		  if (bwContinue != null && bwContinue.getTotalBetMoney() != null
-//				&& bwContinue.getTotalBetMoney() > 0 && betRadio > 0) {
-//			winLossBetMoney = bwContinue.getTotalBetMoney() / betRadio;
-//		}
-//		Float totalBetMoney = winLossBetMoney + betMoney;
-//		return String.valueOf(totalBetMoney.intValue()); 
-		if(bwContinue != null && bwContinue.getTotalMatch()>=bwContinue.getContinueStartLostnum()){
-			totalBetMoney = (bwContinue.getTotalMatch()+1-bwContinue.getContinueStartLostnum()+1)*betMoney;
-		}
-		return  String.valueOf(totalBetMoney.intValue());
-	} 
+		if(!StringUtils.isEmpty(this.continuePlanMoney)){
+			String[] planMoneyArray = StringUtils.split(this.continuePlanMoney, ",");
+			return planMoneyArray[bwContinue.getTotalMatch()];
+		}else{
+			//是否覆盖之前输的金额
+			if (this.isCover != null && this.isCover == 1) {
+				Float winLossBetMoney = 0f;
+				if (bwContinue != null && bwContinue.getTotalBetMoney() != null
+						&& bwContinue.getTotalBetMoney() > 0 && betRadio > 0) {
+					winLossBetMoney = bwContinue.getTotalBetMoney() / betRadio;
+				}
+				totalBetMoney = winLossBetMoney + betMoney;
+				return String.valueOf(totalBetMoney.intValue());
+			} else {
 	
+				if (bwContinue != null
+						&& bwContinue.getTotalMatch() >= bwContinue.getContinueStartLostnum()) {
+					totalBetMoney = (bwContinue.getTotalMatch() + 1
+							- bwContinue.getContinueStartLostnum() + 1) * betMoney;
+				}
+				return String.valueOf(totalBetMoney.intValue());
+			}
+		}
+	}
+
 	protected Boolean isAllowBuy() {
 		return getIsTest() == null || getIsTest() == 0;
 	}
