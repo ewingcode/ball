@@ -465,7 +465,7 @@ public class BKRollAutoSideStrategy2 extends BetStrategy {
 				betlog("准备下注:" + ballEvent.getSource().toString()
 						+ ",buyWayDesc:" + buyWayDesc + ",betMoney:" + betMoney + ",money:"
 						+ this.getMoney());
-				if (getBetStrategyContext().isAllowBet() && isAllowBuy()) {
+				if (getBetStrategyContext().isAllowBet() && isAllowBuy() && Float.valueOf(betMoney)>0) {
 					// if(isMatchSpread(bkPreOrderViewResp)){
 					ftBetResp = RequestTool.bkbet(this.getBetStrategyContext().getUid(),
 							betInfo.getGid(), gtype, betMoney, wtype, side, bkPreOrderViewResp);
