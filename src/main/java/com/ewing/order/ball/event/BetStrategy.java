@@ -2,9 +2,9 @@ package com.ewing.order.ball.event;
 
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 import com.ewing.order.ball.bk.bet.BetResp;
 import com.ewing.order.ball.bk.bet.BkPreOrderViewResp;
