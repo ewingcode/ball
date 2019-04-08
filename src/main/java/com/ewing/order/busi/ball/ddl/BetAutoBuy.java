@@ -43,10 +43,20 @@ public class BetAutoBuy implements java.io.Serializable {
 	private String iseff;
 	@Column(name = "isallow")
 	private String isallow;
+	@Column(name = "stop_byrule")
+	private String stopByrule; 
 	@Column(name = "createTime")
 	private Timestamp createTime;
 	@Column(name = "lastUpdate")
 	private Timestamp lastUpdate;
+
+	public String getStopByrule() {
+		return stopByrule;
+	}
+
+	public void setStopByrule(String stopByrule) {
+		this.stopByrule = stopByrule;
+	}
 
 	public String getIsallow() {
 		return isallow;

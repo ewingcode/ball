@@ -44,10 +44,21 @@ public class BetAutoBuyService {
 	}
 	
 	@Transactional
-	public void updateInEff(String account) {
+	public void stopByRule(String account) {
 		BetAutoBuy betAutoBuy = betAutoBuyDao.find(account);
 		if (betAutoBuy != null) {
 			betAutoBuy.setIseff(IsEff.INEFFECTIVE);
+			betAutoBuy.setStopByrule(IsEff.EFFECTIVE);
+			baseDao.update(betAutoBuy);
+		}
+	}
+	
+	@Transactional
+	public void recoverByRule(String account) {
+		BetAutoBuy betAutoBuy = betAutoBuyDao.find(account);
+		if (betAutoBuy != null) {
+			betAutoBuy.setIseff(IsEff.EFFECTIVE);
+			betAutoBuy.setStopByrule(IsEff.INEFFECTIVE);
 			baseDao.update(betAutoBuy);
 		}
 	}
@@ -59,6 +70,7 @@ public class BetAutoBuyService {
 		BetAutoBuy betAutoBuy = betAutoBuyDao.find(account);
 		if (betAutoBuy != null) {
 			betAutoBuy.setIseff(isEff);
+			betAutoBuy.setStopByrule(IsEff.INEFFECTIVE); 
 			betAutoBuy.setIs_login(IsEff.INEFFECTIVE);
 			betAutoBuy.setPhone(phone);
 			baseDao.update(betAutoBuy);
