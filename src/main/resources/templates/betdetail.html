@@ -48,7 +48,7 @@
             	} */
             	var d = this.date.substring(0,4)+"-"+this.date.substring(4,6)+"-"+this.date.substring(6,8);
             	var url = 'report/betdetail.op?date='+d;
-            	if(!this.account && this.account != null)
+            	if(this.account != null)
             		url += '&account='+this.account; 
                 //发送get请求
                 this.$http.get(url).then(function(res){
