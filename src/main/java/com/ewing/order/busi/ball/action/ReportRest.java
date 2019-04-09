@@ -48,7 +48,7 @@ public class ReportRest extends BaseRest {
 	public RestResult<List<BetDetailDto>> betdetail() throws Exception {
 		String date=request.getParameter("date");
 		String account=request.getParameter("account"); 
-		checkRequired(account, "account");
+		//checkRequired(account, "account");
 		checkRequired(date, "date");
 		List<BetDetailDto> totalList = reportDao.findBetDetail(account, date);
 		return RestResult.successResult(totalList);
