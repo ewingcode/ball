@@ -71,7 +71,7 @@ public class BetDetailDto implements java.io.Serializable {
 	@Column(name = "result")
 	private String result;
 	@Column(name = "match_status")
-	private String match_status;
+	private String matchStatus;
 	@Column(name = "total")
 	private String total;
 
@@ -221,12 +221,11 @@ public class BetDetailDto implements java.io.Serializable {
 	public void setResult(String result) {
 		this.result = result;
 	}
-	public String getMatch_status() {
-		return match_status;
+	public String getMatchStatus() {
+		return matchStatus;
 	}
-	public void setMatch_status(String match_status) {
-		this.match_status = match_status;
+	public void setMatchStatus(String matchStatus) {
+		this.matchStatus = matchStatus;
 	}
 	 
- 
 }
