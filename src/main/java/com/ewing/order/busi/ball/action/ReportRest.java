@@ -48,9 +48,10 @@ public class ReportRest extends BaseRest {
 	@RequestMapping(value = "/report/win.op", method = RequestMethod.GET)
 	@ResponseBody
 	public RestResult<List<BetAutoBuyDto>> win() throws Exception {
-		String date = request.getParameter("date");
-		checkRequired(date, "date");
-		List<TotalBillDto> totalList = reportDao.findTotalWin(date);
+		String startDate = request.getParameter("startDate");
+		String endDate = request.getParameter("endDate");
+		checkRequired(startDate, "date");
+		List<TotalBillDto> totalList = reportDao.findTotalWin(startDate,endDate);
 		List<BetAutoBuy> betAutoBuyList = betAutoBuyService.findAll();
 		List<BetAutoBuyDto> betAutoBuyDtoList = Lists.newArrayList();
 		for (BetAutoBuy betAutoBuy : betAutoBuyList) {

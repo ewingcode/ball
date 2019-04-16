@@ -500,6 +500,9 @@ public class BKRollAutoSideStrategy2 extends BetStrategy {
 					}
 					ftBetResp = BetResp.debugBetResp();
 					ftBetResp.setTicket_id(BizGenerator.generateBizNum());
+					ftBetResp.setLeague(betInfo.getLeague());
+					ftBetResp.setTeam_c(betInfo.getTeam_c());
+					ftBetResp.setTeam_h(betInfo.getTeam_h());
 					ftBetResp.setGid(betInfo.getGid());
 					ftBetResp.setGold(betMoney);
 					ftBetResp.setGtype(gtype);

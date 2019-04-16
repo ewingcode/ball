@@ -4,10 +4,11 @@
 <body>
 <div id="app">
 <div id="box">
-    开始时间：<input type="text" v-model="date" />
+    开始时间：<input type="text" v-model="startDate" />
+     结束时间：<input type="text" v-model="endDate" />
 	<input type="button" @click="get()" value="查询账单">
 </div>
-  <ol> 
+  <ol style="font-size: 16px;font-weight: bold;"> 
     <li v-for="bill in list">
       {{ bill.account }}  <span v-if="bill.iseff === '1'">
       	进行
@@ -21,8 +22,8 @@
      <span v-else>
                      场数：0 金额:0
 	    </span>
-       --
-     <span style="color:gray;">金额:{{bill.money}} 追加:{{bill.continueMaxMatch}} 计划:{{bill.continuePlanMoney}} 赢停:{{bill.stopWingold}} 输停:{{bill.stopLosegold}}</span>
+      <br> --
+     <span style="color:gray;font-size: 4px;font-weight: normal;">金额:{{bill.money}}追加:{{bill.continueMaxMatch}}计划:{{bill.continuePlanMoney}}赢停:{{bill.stopWingold}}输停:{{bill.stopLosegold}}</span>
     </li>
   </ol>
 </div>
@@ -31,19 +32,24 @@
   new Vue({
         el:'#app',
         data:{ 
-        	date:null,
+        	startDate:null,
+        	endDate:null,
             list:[]
         },
         methods:{
             get:function(){
-            	if(!this.date){
+            	if(!this.startDate){
             		alert("请填写日期，格式如20190101");
             		return;
             	}
-            	var d = this.date.substring(0,4)+"-"+this.date.substring(4,6)+"-"+this.date.substring(6,8);
-            	 
+            	var sdate = this.startDate.substring(0,4)+"-"+this.startDate.substring(4,6)+"-"+this.startDate.substring(6,8);
+            	var url =  'report/win.op?startDate='+sdate;
+            	if(this.endDate!=null){
+            		var edate = this.endDate.substring(0,4)+"-"+this.endDate.substring(4,6)+"-"+this.endDate.substring(6,8);
+            		url += '&endDate='+edate;
+            	}
                 //发送get请求
-                this.$http.get('report/win.op?date='+d).then(function(res){
+                this.$http.get(url).then(function(res){
                     this.list = res.data.data;    
                 },function(){
                     console.log('请求失败处理');

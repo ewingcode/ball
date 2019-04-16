@@ -24,10 +24,14 @@ public class ReportDao {
 	private BaseDao baseDao;
 
 	@Transactional
-	public List<TotalBillDto> findTotalWin(String date) {
-		String sql = "SELECT account,COUNT(1) AS matchCount ,SUM(win_gold) AS totalWin FROM `bet_bill` "
-				+ "WHERE SUBSTR(w_id,3) IN (SELECT ticket_id FROM bet_log WHERE bet_rule_id IS NOT NULL) "
-				+ "AND  CONCAT(`date`,' ',`addtime`) >= '" + date + "' GROUP BY account";
+	public List<TotalBillDto> findTotalWin(String startDate,String endDate) {
+		String sql = "SELECT account,COUNT(1) AS matchCount ,SUM(win_gold) AS totalWin FROM `bet_bill` ";
+				sql += "WHERE SUBSTR(w_id,3) IN (SELECT ticket_id FROM bet_log WHERE bet_rule_id IS NOT NULL) ";
+				if(StringUtils.isNotEmpty(startDate))
+					sql +=" AND  CONCAT(`date`,' ',`addtime`) >= '" + startDate + "'  ";
+				if(StringUtils.isNotEmpty(endDate))
+					sql +=" AND  CONCAT(`date`,' ',`addtime`) <= '" + endDate + "'  ";
+			    sql +=" GROUP BY account";
 		return baseDao.noMappedObjectQuery(sql, TotalBillDto.class);
 	}
 
