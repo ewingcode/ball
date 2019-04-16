@@ -7,9 +7,22 @@
     开始时间：<input type="text" v-model="date" />
 	<input type="button" @click="get()" value="查询账单">
 </div>
-  <ol>
+  <ol> 
     <li v-for="bill in list">
-      {{ bill.account }} 场数：{{bill.matchCount}} 金额:{{bill.totalWin}}
+      {{ bill.account }}  <span v-if="bill.iseff === '1'">
+      	进行
+	</span> 
+	<span v-else>
+	      停止
+	</span> 
+	 <span v-if="bill.totalBillDto != null ">
+	    场数：{{bill.totalBillDto.matchCount}} 金额:{{bill.totalBillDto.totalWin}} 
+	     </span>
+     <span v-else>
+                     场数：0 金额:0
+	    </span>
+       --
+     <span style="color:gray;">金额:{{bill.money}} 追加:{{bill.continueMaxMatch}} 计划:{{bill.continuePlanMoney}} 赢停:{{bill.stopWingold}} 输停:{{bill.stopLosegold}}</span>
     </li>
   </ol>
 </div>

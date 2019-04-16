@@ -25,8 +25,18 @@ public class BetAutoBuyDto {
 	private String continuePlanMoney;
 	private Timestamp createTime;
 	private Timestamp lastUpdate;
+	private TotalBillDto totalBillDto;
+	
 
 	
+	public TotalBillDto getTotalBillDto() {
+		return totalBillDto;
+	}
+
+	public void setTotalBillDto(TotalBillDto totalBillDto) {
+		this.totalBillDto = totalBillDto;
+	}
+
 	public String getContinuePlanMoney() {
 		return continuePlanMoney;
 	}
