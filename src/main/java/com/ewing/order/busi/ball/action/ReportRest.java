@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.assertj.core.util.Lists;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,6 +26,7 @@ import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.core.web.base.BaseRest;
 import com.ewing.order.core.web.common.RestResult;
 import com.ewing.order.util.BeanCopy;
+import com.google.common.collect.Lists;
 
 /**
  *
