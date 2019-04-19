@@ -5,11 +5,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.StringUtils;
 
 import com.ewing.order.Door;
 import com.ewing.order.busi.ball.ddl.BetRule;
@@ -39,8 +39,9 @@ public class BetRuleDaoTest {
 	}
 	@Test 
 	public void testQuery(){
-		List<BetRule> ruleList = betRuleService.findRule("tansonLAM38", "1", "BK", "ROLL");
+		List<BetRule> ruleList = betRuleService.findRule("tsLAM338", "0", "BK", "ROLL");
 		BetRule betRule = ruleList.get(0);
+		String[] planMoneyArray = StringUtils.split(betRule.getContinuePlanMoney(), ",");
 		HashMap<String,String> paramMap = GsonUtil.getGson().fromJson(betRule.getParam(), HashMap.class);
 		String execludeLeague = paramMap.get("EXCLUDE_LEAGUE");
 		String league = "欧洲女子篮球杯赛";

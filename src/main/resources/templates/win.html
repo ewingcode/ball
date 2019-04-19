@@ -4,8 +4,11 @@
 <body>
 <div id="app">
 <div id="box">
-    开始时间：<input type="text" v-model="startDate" />
-     结束时间：<input type="text" v-model="endDate" />
+<div>
+    开始时间：<input type="text" v-model="startDate" /></div>
+     <div>  结束时间：<input type="text" v-model="endDate" /></div>
+     <div>      账号：<input type="text" id="account" v-model="account" /></div>
+
 	<input type="button" @click="get()" value="查询账单">
 </div>
   <ol style="font-size: 16px;font-weight: bold;"> 
@@ -26,6 +29,7 @@
      <span style="color:gray;font-size: 8px;font-weight: normal;">金额:{{bill.money}}追加:{{bill.continueMaxMatch}}计划:{{bill.continuePlanMoney}}赢停:{{bill.stopWingold}}输停:{{bill.stopLosegold}}</span>
     </li>
   </ol>
+     <span>总赢：</span><span >{{totalWin}}</span>
 </div>
  
 <script>
@@ -34,6 +38,8 @@
         data:{ 
         	startDate:null,
         	endDate:null,
+        	account:null,
+        	totalWin:0,
             list:[]
         },
         methods:{
@@ -48,9 +54,20 @@
             		var edate = this.endDate.substring(0,4)+"-"+this.endDate.substring(4,6)+"-"+this.endDate.substring(6,8);
             		url += '&endDate='+edate;
             	}
+            	if(this.account!=null){
+            		url += '&account='+this.account;
+            	}
                 //发送get请求
                 this.$http.get(url).then(function(res){
-                    this.list = res.data.data;    
+                    this.list = res.data.data;  
+                    this.totalWin = 0;
+                    if(this.list){
+                    	for(var i=0;i< this.list.length;i++){
+                    		var bill = this.list[i];
+                    		if(bill.totalBillDto!=null)
+                    		this.totalWin += bill.totalBillDto.totalWin;
+                    	}
+                    }
                 },function(){
                     console.log('请求失败处理');
                 });

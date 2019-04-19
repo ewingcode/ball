@@ -143,7 +143,7 @@ public class BallAutoBet {
 			return;
 		Map<String, TotalBillDto> totalWinMap = Maps.newConcurrentMap();
 		Map<String, BetRule> allRuleMap = Maps.newConcurrentMap();
-		List<TotalBillDto> totalWinList = reportDao.findTotalWin(getStartDayOfWeek(),null);
+		List<TotalBillDto> totalWinList = reportDao.findTotalWin(getStartDayOfWeek(),null,null);
 		List<BetRule> allRule = betRuleDao.findAll();
 		if (CollectionUtils.isNotEmpty(totalWinList)) {
 			for (TotalBillDto totalBillDto : totalWinList) {

@@ -1,6 +1,8 @@
 package com.ewing.order.busi.ball.action;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aliyuncs.utils.StringUtils;
 import com.ewing.order.ball.BallMember;
 import com.ewing.order.ball.shared.BetRuleStatus;
 import com.ewing.order.ball.shared.GtypeStatus;
@@ -45,17 +48,30 @@ public class ReportRest extends BaseRest {
 	@Resource
 	private BetRuleService betRuleService;
 
+	public static void main(String[] args) {
+		String likeType = "ts[^,]*";
+		String sourceStr = "tsLAM83";
+		//likeType = likeType.replaceAll("%", "\\\\d").replaceAll("\\*", "\\\\d\\*");
+		System.out.println(likeType);
+		System.out.println(sourceStr.matches(likeType));
+ 
+	}
+	
 	@RequestMapping(value = "/report/win.op", method = RequestMethod.GET)
 	@ResponseBody
 	public RestResult<List<BetAutoBuyDto>> win() throws Exception {
 		String startDate = request.getParameter("startDate");
 		String endDate = request.getParameter("endDate");
+		String requestAccount = request.getParameter("account");
 		checkRequired(startDate, "date");
-		List<TotalBillDto> totalList = reportDao.findTotalWin(startDate,endDate);
+		List<TotalBillDto> totalList = reportDao.findTotalWin(startDate,endDate,requestAccount);
 		List<BetAutoBuy> betAutoBuyList = betAutoBuyService.findAll();
 		List<BetAutoBuyDto> betAutoBuyDtoList = Lists.newArrayList();
 		for (BetAutoBuy betAutoBuy : betAutoBuyList) {
 			String account = betAutoBuy.getAccount();
+			 if(StringUtils.isNotEmpty(requestAccount) && !account.matches(requestAccount+"[^,]*")){
+				 continue;
+			 }
 			List<BetRule> ruleList = betRuleService.findRule(account, BetRuleStatus.NOTSUCCESS,
 					GtypeStatus.BK, PtypeStatus.ROLL);
 			if (betAutoBuy != null) { 

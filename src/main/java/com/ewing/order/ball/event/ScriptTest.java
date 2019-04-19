@@ -16,5 +16,34 @@ public class ScriptTest {
 		} catch (ScriptException e) {
 			e.printStackTrace();
 		}
+		 returnStr() ;
+	
+	}
+	
+	public static void returnStr()  {
+		try { 
+			ScriptEngineManager manager = new ScriptEngineManager();
+			ScriptEngine engine = manager.getEngineByName( "JavaScript" );
+			System.out.println( engine.getClass().getName() );
+			String function="function f(code) "
+					+ "{ "
+					+ "if(code.indexOf('#')>-1){ "
+					+ "var str = code.substring(code.indexOf('#')+1); "
+					+ "var effStr = str.substring(0,4);"
+					+ " if( effStr=='FZ01'){"
+				    + "	  return str;"
+					+ "}else{ "
+				    + "   return str.substring(4,8)" 
+				    + "}"
+					+ "}else{"
+					+ "return 'error' "
+					+ "}"
+					+ "}; "
+					+ "f('3344#FZ08890909');" ;
+			System.out.println( "Result:" + engine.eval(function));
+		} catch (ScriptException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
