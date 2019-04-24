@@ -12,8 +12,11 @@ import org.springframework.stereotype.Component;
 
 import com.ewing.order.ball.shared.BetRuleStatus;
 import com.ewing.order.busi.ball.dao.BetRuleDao;
+import com.ewing.order.busi.ball.dao.BetRulePoolDao;
 import com.ewing.order.busi.ball.dao.BwContinueDao;
 import com.ewing.order.busi.ball.ddl.BetRule;
+import com.ewing.order.busi.ball.ddl.BetRulePool;
+import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.core.jpa.BaseDao;
 
 /**
@@ -29,15 +32,38 @@ public class BetRuleService {
 	private BaseDao baseDao;
 	@Resource
 	private BwContinueDao bwContinueDao;
+	@Resource
+	private BetRulePoolDao betRulePoolDao;
 
 	@Transactional
 	public void updateRule(String account, String gtype, String ptype, String money, Integer isTest,
-			Integer continueMaxMatch, Integer continueStartLostnum,Float stopWingold,Float stopLosegold,String continuePlanMoney)
-			throws IllegalAccessException, InvocationTargetException {
+			Integer continueMaxMatch, Integer continueStartLostnum,Float stopWingold,Float stopLosegold,String continuePlanMoney,String ruleName)
+			throws  Exception {
 		List<BetRule> ruleList = betRuleDao.findRule(account, BetRuleStatus.NOTSUCCESS, gtype,
 				ptype);
+		BetRulePool betRulePool = betRulePoolDao.findRuleByName(ruleName);
+		if(betRulePool==null){
+			throw new Exception("没有对应的下注规则");
+		}
 		if (CollectionUtils.isEmpty(ruleList)) {
-			copyNewRule(account, gtype, ptype, money);
+			BetRule betRule = new BetRule();
+			betRule.setAccount(account);
+			betRule.setMoney(money);
+			betRule.setStatus(BetRuleStatus.NOTSUCCESS);
+			betRule.setGtype(gtype);
+			betRule.setPtype(ptype);
+			betRule.setIsTest(isTest);
+			betRule.setContinueMaxMatch(continueMaxMatch);
+			betRule.setContinueStartLostnum(continueStartLostnum); 
+			betRule.setContinuePlanMoney(continuePlanMoney);
+			betRule.setStopLosegold(stopLosegold);
+			betRule.setStopWingold(stopWingold);
+			betRule.setRulePoolId(betRulePool.getId());
+			betRule.setIseff(IsEff.EFFECTIVE);
+			betRule.setName(betRulePool.getName());
+			betRule.setParam(betRulePool.getParam());
+			betRule.setImpl_code(betRulePool.getImpl_code());
+			baseDao.save(betRule);
 		} else {
 			BetRule betRule = ruleList.get(0);
 			betRule.setMoney(money);
@@ -47,6 +73,10 @@ public class BetRuleService {
 			betRule.setContinuePlanMoney(continuePlanMoney);
 			betRule.setStopLosegold(stopLosegold);
 			betRule.setStopWingold(stopWingold);
+			betRule.setRulePoolId(betRulePool.getId());
+			betRule.setName(betRulePool.getName());
+			betRule.setParam(betRulePool.getParam());
+			betRule.setImpl_code(betRulePool.getImpl_code());
 			baseDao.update(betRule);
 			if(continueMaxMatch==0)
 				bwContinueDao.update2Cancel(betRule.getId());

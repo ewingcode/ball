@@ -18,6 +18,7 @@ import com.ewing.order.busi.ball.ddl.BetAutoBuy;
 import com.ewing.order.busi.ball.ddl.BetRule;
 import com.ewing.order.busi.ball.dto.BetAutoBuyDto;
 import com.ewing.order.busi.ball.service.BetAutoBuyService;
+import com.ewing.order.busi.ball.service.BetRulePoolService;
 import com.ewing.order.busi.ball.service.BetRuleService;
 import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.core.web.base.BaseRest;
@@ -31,13 +32,15 @@ import com.ewing.order.util.BeanCopy;
  * @create 2018年8月10日
  */
 @RestController
-public class BetaAutoRest extends BaseRest {
+public class BetAutoRest extends BaseRest {
 	@Resource
 	private BetAutoBuyService betAutoBuyService;
 	@Resource
 	private BallMember ballMember;
 	@Resource
 	private BetRuleService betRuleService;
+	@Resource
+	private BetRulePoolService betRulePoolService;
 	/**
 	 * 更新自動投注賬戶狀態
 	 * 
@@ -56,11 +59,12 @@ public class BetaAutoRest extends BaseRest {
 		String continueStartLostnum = requestJson.getString("continueStartLostnum"); 
 		String stopWingold = requestJson.getString("stopWingold"); 
 		String stopLosegold = requestJson.getString("stopLosegold");  
-		String continuePlanMoney = requestJson.getString("continuePlanMoney");  
+		String continuePlanMoney = requestJson.getString("continuePlanMoney"); 
+		String ruleName = requestJson.getString("ruleName"); 
 		checkRequired(account, "account");
 		checkRequired(iseff, "iseff");
 		betAutoBuyService.updateIsEff(account, iseff, phone, money,Integer.valueOf(isTest),
-				Integer.valueOf(continueMaxMatch),Integer.valueOf(continueStartLostnum),Float.valueOf(stopWingold),Float.valueOf(stopLosegold),continuePlanMoney);
+				Integer.valueOf(continueMaxMatch),Integer.valueOf(continueStartLostnum),Float.valueOf(stopWingold),Float.valueOf(stopLosegold),continuePlanMoney,ruleName);
 		return RestResult.successResult(true);
 	}
 	
@@ -88,9 +92,11 @@ public class BetaAutoRest extends BaseRest {
 		checkRequired(account, "account");
 		BetAutoBuy betAutoBuy = betAutoBuyService.find(account); 
 		 List<BetRule> ruleList = betRuleService.findRule(account, BetRuleStatus.NOTSUCCESS, GtypeStatus.BK, PtypeStatus.ROLL);
+		 List<String> ruleNameList = betRulePoolService.findAllRuleName();
 		if (betAutoBuy != null) {
 			BetAutoBuyDto dto = new BetAutoBuyDto();
 			BeanCopy.copy(dto, betAutoBuy, true);
+			dto.setRuleNameList(ruleNameList);
 			if(CollectionUtils.isNotEmpty(ruleList)){
 				dto.setMoney(ruleList.get(0).getMoney());
 				dto.setContinueMaxMatch(ruleList.get(0).getContinueMaxMatch()==null?"0":ruleList.get(0).getContinueMaxMatch().toString());
@@ -99,12 +105,18 @@ public class BetaAutoRest extends BaseRest {
 				dto.setStopWingold(ruleList.get(0).getStopWingold()==null?"0":String.valueOf(ruleList.get(0).getStopWingold().intValue()));
 				dto.setStopLosegold(ruleList.get(0).getStopLosegold()==null?"0":String.valueOf(ruleList.get(0).getStopLosegold().intValue()));
 				dto.setIsTest(ruleList.get(0).getIsTest()==null?"0":ruleList.get(0).getIsTest().toString());
-			}
+			    dto.setRuleName(ruleList.get(0).getName());  
+			} 
 			// 如果不是活跃中的用户则设置为失效用户，让前台可以更新用户状态来激活自动下注
 			dto.setIseff(ballMember.isActiveAccount(account) ? IsEff.EFFECTIVE : IsEff.INEFFECTIVE);
 
 			return RestResult.successResult(dto);
+		}else{
+			BetAutoBuyDto dto = new BetAutoBuyDto();
+			dto.setRuleName(ruleNameList.get(0));
+			dto.setRuleNameList(betRulePoolService.findAllRuleName());
+			return RestResult.successResult(dto);
 		}
-		return RestResult.successResult(null);
+		
 	} 
 }

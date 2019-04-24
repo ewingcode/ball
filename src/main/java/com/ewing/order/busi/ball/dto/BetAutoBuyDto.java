@@ -1,8 +1,9 @@
 package com.ewing.order.busi.ball.dto;
 
 import java.sql.Timestamp;
+import java.util.List;
 
-import javax.persistence.Column;
+import com.ewing.order.busi.ball.ddl.BetRulePool;
 
 public class BetAutoBuyDto {
  
@@ -25,10 +26,29 @@ public class BetAutoBuyDto {
 	private String continuePlanMoney;
 	private Timestamp createTime;
 	private Timestamp lastUpdate;
+	private String ruleName;
+	private List<String> ruleNameList;
 	private TotalBillDto totalBillDto;
 	
 
 	
+	public List<String> getRuleNameList() {
+		return ruleNameList;
+	}
+
+	public void setRuleNameList(List<String> ruleNameList) {
+		this.ruleNameList = ruleNameList;
+	}
+
+	public String getRuleName() {
+		return ruleName;
+	}
+
+	public void setRuleName(String ruleName) {
+		this.ruleName = ruleName;
+	}
+ 
+
 	public TotalBillDto getTotalBillDto() {
 		return totalBillDto;
 	}

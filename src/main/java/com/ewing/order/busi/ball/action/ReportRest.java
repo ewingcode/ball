@@ -91,6 +91,7 @@ public class ReportRest extends BaseRest {
 							: String.valueOf(ruleList.get(0).getStopLosegold().intValue()));
 					dto.setIsTest(ruleList.get(0).getIsTest() == null ? "0"
 							: ruleList.get(0).getIsTest().toString());
+					dto.setRuleName(ruleList.get(0).getName());
 				}
 				// 如果不是活跃中的用户则设置为失效用户，让前台可以更新用户状态来激活自动下注
 				dto.setIseff(

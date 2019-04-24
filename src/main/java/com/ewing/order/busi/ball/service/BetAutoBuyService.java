@@ -65,8 +65,8 @@ public class BetAutoBuyService {
 
 	@Transactional
 	public void updateIsEff(String account, String isEff, String phone, String money,Integer isTest,Integer continueMaxMatch,
-			Integer continueStartLostnum,Float stopWingold,Float stopLosegold,String continuePlanMoney)
-			throws IllegalAccessException, InvocationTargetException {
+			Integer continueStartLostnum,Float stopWingold,Float stopLosegold,String continuePlanMoney,String ruleName)
+			throws Exception {
 		BetAutoBuy betAutoBuy = betAutoBuyDao.find(account);
 		if (betAutoBuy != null) {
 			betAutoBuy.setIseff(isEff);
@@ -87,7 +87,7 @@ public class BetAutoBuyService {
 			}
 		}
 		betRuleService.updateRule(account, GtypeStatus.BK, PtypeStatus.ROLL, money,isTest,continueMaxMatch,
-				continueStartLostnum,stopWingold,stopLosegold,continuePlanMoney);
+				continueStartLostnum,stopWingold,stopLosegold,continuePlanMoney,ruleName);
 	}
 	
 	@Transactional

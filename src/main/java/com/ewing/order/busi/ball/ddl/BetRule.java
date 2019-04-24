@@ -33,6 +33,8 @@ public class BetRule implements java.io.Serializable {
 	private Integer id;
 	@Column(name = "account")
 	private String account;
+	@Column(name = "rule_pool_id")
+	private Integer rulePoolId; 
 	@Column(name = "name")
 	private String name;
 	@Column(name = "long_desc")
@@ -87,6 +89,14 @@ public class BetRule implements java.io.Serializable {
 	private String continuePlanMoney;
 	
 	
+	public Integer getRulePoolId() {
+		return rulePoolId;
+	}
+
+	public void setRulePoolId(Integer rulePoolId) {
+		this.rulePoolId = rulePoolId;
+	}
+
 	public String getContinuePlanMoney() {
 		return continuePlanMoney;
 	}
