@@ -160,7 +160,7 @@ public class BallAutoBet {
 			BetRule betRule = allRuleMap.get(betAutoBuy.getAccount());
 			TotalBillDto totalBillDto = totalWinMap.get(betAutoBuy.getAccount());
 			//恢复由于规则停止的下注账户
-			if(betAutoBuy.getIseff().equals(IsEff.INEFFECTIVE) && betAutoBuy.getStopByrule().equals(IsEff.EFFECTIVE)){
+			if(betAutoBuy.getIseff().equals(IsEff.INEFFECTIVE) && (betAutoBuy.getStopByrule()!=null && betAutoBuy.getStopByrule().equals(IsEff.EFFECTIVE))){
 				if(totalBillDto==null || (totalBillDto.getTotalWin()==null && totalBillDto.getTotalWin() == 0 )){
 					betAutoBuyService.recoverByRule(account);
 					continue;
