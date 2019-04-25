@@ -63,14 +63,14 @@ public class BallMember {
 	public void addBkListener(Boolean isAuto, String account, String pwd, String uid) {
 		activeAccounts.put(account, account);
 		this.addBkRollListener(isAuto, account, uid);
-		this.addBkTodayListener(isAuto, account, uid);
+		//this.addBkTodayListener(isAuto, account, uid);
 		this.startHeartBeat(isAuto, account, pwd, uid);
 	}
 
 	public void stopBkListener(String account) {
 		activeAccounts.remove(account);
 		BallSource.getBKRoll().stopBallListener(account);
-		BallSource.getBKCurrent().stopBallListener(account);
+		//BallSource.getBKCurrent().stopBallListener(account);
 		Timer timer = heartBeatTimers.get(account);
 		if (timer != null)
 			timer.cancel();

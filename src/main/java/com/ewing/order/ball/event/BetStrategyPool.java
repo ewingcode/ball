@@ -3,7 +3,6 @@ package com.ewing.order.ball.event;
 import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,14 +15,11 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 
 import com.ewing.order.ball.dto.BetInfoDto;
 import com.ewing.order.ball.logger.BetStrategyErrorLogger;
 import com.ewing.order.ball.logger.BetStrategyLogger;
 import com.ewing.order.busi.ball.ddl.BetLog;
-import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.common.exception.BusiException;
 import com.ewing.order.util.BeanCopy;
 import com.ewing.order.util.GsonUtil;
