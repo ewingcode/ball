@@ -33,6 +33,8 @@ public class BetAutoBuy implements java.io.Serializable {
 	private Integer id;
 	@Column(name = "account")
 	private String account;
+	@Column(name = "ball_account")
+	private String ballAccount; 
 	@Column(name = "pwd")
 	private String pwd;
 	@Column(name = "is_login")
@@ -49,6 +51,14 @@ public class BetAutoBuy implements java.io.Serializable {
 	private Timestamp createTime;
 	@Column(name = "lastUpdate")
 	private Timestamp lastUpdate;
+
+	public String getBallAccount() {
+		return ballAccount;
+	}
+
+	public void setBallAccount(String ballAccount) {
+		this.ballAccount = ballAccount;
+	}
 
 	public String getStopByrule() {
 		return stopByrule;

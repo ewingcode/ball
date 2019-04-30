@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ewing.order.ball.BallAutoBet;
+import com.ewing.order.ball.BallLoginCache;
 import com.ewing.order.ball.BallMember;
 import com.ewing.order.ball.login.LoginResp;
 import com.ewing.order.ball.util.RequestTool;
@@ -47,11 +48,11 @@ public class LoginRest extends BaseRest {
 		checkRequired(account, "账号");
 		checkRequired(pwd, "密码");
 		LoginResp loginResp = null;
-		if (ballAutoBet.getLoginResp(account) != null ){
+		if (BallLoginCache.getLoginResp(account) != null ){
 			if(ballAutoBet.getPwd4Cache(account)==null || !ballAutoBet.getPwd4Cache(account).equals(pwd)){
 				return RestResult.errorResult("密码错误");
 			}
-			loginResp = ballAutoBet.getLoginResp(account);
+			loginResp = BallLoginCache.getLoginResp(account);
 	    }else {
 			loginResp = RequestTool.login(account, pwd); 
 		}

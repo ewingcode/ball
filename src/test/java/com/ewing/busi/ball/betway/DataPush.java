@@ -41,8 +41,8 @@ public class DataPush {
 	DecimalFormat fnum3 = new DecimalFormat("##0.000");
 
 	@Test
-	public void pushData() {
-		ballAutoBet.start("tansonLAM38", "523123ZX");
+	public void pushData() throws Exception {
+		ballAutoBet.start("tansonLAM38", "523123ZX","tansonLAM38");
 		String[] gIds = { "2732844" };
 		Map<String, List<BetRollInfo>> rollMaps = Maps.newConcurrentMap();
 		Map<String, BetInfoDto> betInfoDtoMaps = Maps.newConcurrentMap();

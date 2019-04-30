@@ -32,8 +32,8 @@ public class BallMemberBillTest {
 
 		try {
 
-			LoginResp loginResp = ballMember.login("tansonLAM83", "523123ZX");
-			ballMember.addBkListener(false,"tansonLAM83","523123ZX", loginResp.getUid());
+			LoginResp loginResp = ballMember.login("ts2LAM338", "523123ZX");
+			ballMember.addBkListener(false,"tansonLAM83"  , loginResp.getUid());
 			collectBetInfo.login("tansonLAM48", "523123ZX");
 			collectBetInfo.startCollectBasketInfo();
 			TimeUnit.HOURS.sleep(24);

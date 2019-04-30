@@ -26,9 +26,9 @@ public class ReportDao {
 	@Transactional
 	public List<TotalBillDto> findTotalWin(String startDate,String endDate,String account) {
 		String sql = "SELECT account,COUNT(1) AS matchCount ,SUM(win_gold) AS totalWin FROM `bet_bill` ";
-				sql += "WHERE SUBSTR(w_id,3) IN (SELECT ticket_id FROM bet_log WHERE bet_rule_id IS NOT NULL) ";
+				sql += "WHERE SUBSTR(w_id,3) IN (SELECT ticket_id FROM bet_log  WHERE  bet_rule_id IS NOT NULL) ";
 				if(StringUtils.isNotEmpty(account)){
-					sql +=" AND account like '"+account+"%'";
+					sql +=" AND  account like '"+account+"%'";
 				}
 				if(StringUtils.isNotEmpty(startDate))
 					sql +=" AND  CONCAT(`date`,' ',`addtime`) >= '" + startDate + "'  ";
@@ -37,6 +37,19 @@ public class ReportDao {
 			    sql +=" GROUP BY account";
 		return baseDao.noMappedObjectQuery(sql, TotalBillDto.class);
 	}
+	
+	@Transactional
+	public List<TotalBillDto> findOneAccountTotalWin(String account ,String startDate) {
+		String sql = "SELECT account,COUNT(1) AS matchCount ,SUM(win_gold) AS totalWin FROM `bet_bill` ";
+				sql += "WHERE SUBSTR(w_id,3) IN (SELECT ticket_id FROM bet_log l WHERE l.bet_rule_id IS NOT NULL ";
+				sql += " and code='560' and l.account ='"+account+"' and l.create_time >='"
+				+ startDate + "' )";
+				if(StringUtils.isNotEmpty(startDate))
+					sql +=" AND  CONCAT(`date`,' ',`addtime`) >= '" + startDate + "'  "; 
+			    sql +=" GROUP BY account";
+		return baseDao.noMappedObjectQuery(sql, TotalBillDto.class);
+	}
+
 
 	public List<TotalBillDto> findTotalWinDetail(String date) {
 		String sql = "SELECT * FROM ("

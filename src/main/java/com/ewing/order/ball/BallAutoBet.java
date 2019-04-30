@@ -59,7 +59,7 @@ public class BallAutoBet {
 
 	private long crc32RuleValue = 0l;
 
-	private static Map<String, LoginResp> loginCache = Maps.newConcurrentMap();
+	
 
 	private static Map<String, String> loginPwdCache = Maps.newConcurrentMap();
 	static int i = 0;
@@ -88,9 +88,13 @@ public class BallAutoBet {
 		for (BetAutoBuy betAutoBuy : list) {
 			if (betAutoBuy.getIseff().equals(IsEff.EFFECTIVE)
 					&& betAutoBuy.getIsallow().equals(IsEff.EFFECTIVE)) {
-				if (getLoginResp(betAutoBuy.getAccount()) == null) {
-					log.info("start autoBuy for " + betAutoBuy.getAccount());
-					start(betAutoBuy.getAccount(), betAutoBuy.getPwd());
+				try {
+					if (!ballMember.isActiveAccount(betAutoBuy.getAccount()) ) {
+						log.info("start autoBuy for " + betAutoBuy.getAccount());
+						start(betAutoBuy.getAccount(), betAutoBuy.getPwd(),betAutoBuy.getBallAccount());
+					}
+				} catch (Exception e) {
+					log.error(e.getMessage(),e);
 				}
 			} else {
 				stop(betAutoBuy.getAccount());
@@ -120,10 +124,10 @@ public class BallAutoBet {
 		 */
 		List<BetAutoBuy> list = betAutoBuyService.findAll();
 		if (list == null)
-			return;
+			return; 
 		for (BetAutoBuy betAutoBuy : list) {
 			if (betAutoBuy.getIsallow().equals(IsEff.EFFECTIVE)) {
-				LoginResp loginResp = getLoginResp(betAutoBuy.getAccount());
+				LoginResp loginResp = BallLoginCache.getLoginResp(betAutoBuy.getAccount());
 				if (loginResp != null) {
 					updateAccountBill(betAutoBuy.getAccount(), loginResp.getUid());
 				}
@@ -140,16 +144,11 @@ public class BallAutoBet {
 			return;
 		List<BetAutoBuy> list = betAutoBuyService.findAll();
 		if (list == null)
-			return;
-		Map<String, TotalBillDto> totalWinMap = Maps.newConcurrentMap();
+			return; 
 		Map<String, BetRule> allRuleMap = Maps.newConcurrentMap();
-		List<TotalBillDto> totalWinList = reportDao.findTotalWin(getStartDayOfWeek(),null,null);
+	 
 		List<BetRule> allRule = betRuleDao.findAll();
-		if (CollectionUtils.isNotEmpty(totalWinList)) {
-			for (TotalBillDto totalBillDto : totalWinList) {
-				totalWinMap.put(totalBillDto.getAccount(), totalBillDto);
-			}
-		}
+		 
 		if (CollectionUtils.isNotEmpty(allRule)) {
 			for (BetRule betRule : allRule) {
 				allRuleMap.put(betRule.getAccount(), betRule);
@@ -158,7 +157,11 @@ public class BallAutoBet {
 		for (BetAutoBuy betAutoBuy : list) {
 			String account = betAutoBuy.getAccount();
 			BetRule betRule = allRuleMap.get(betAutoBuy.getAccount());
-			TotalBillDto totalBillDto = totalWinMap.get(betAutoBuy.getAccount());
+			TotalBillDto totalBillDto = null ;
+			List<TotalBillDto> totalWinList = reportDao.findOneAccountTotalWin(account,getStartDayOfWeek() );
+			if(CollectionUtils.isNotEmpty(totalWinList)){
+				totalBillDto = totalWinList.get(0);
+			}
 			//恢复由于规则停止的下注账户
 			if(betAutoBuy.getIseff().equals(IsEff.INEFFECTIVE) && (betAutoBuy.getStopByrule()!=null && betAutoBuy.getStopByrule().equals(IsEff.EFFECTIVE))){
 				if(totalBillDto==null || (totalBillDto.getTotalWin()==null && totalBillDto.getTotalWin() == 0 )){
@@ -273,27 +276,30 @@ public class BallAutoBet {
 		return tmpcrc32RuleValue;
 	}
 
-	public void start(String account, String pwd) {
-		LoginResp loginResp = ballMember.login(account, pwd);
-		log.info("login for account:"+account+",message:"+loginResp.getCode_message());
+	public void start(String account, String pwd,String ballAccount) throws Exception { 
+		BallLoginCache.account2BallAccountCache(account, ballAccount);
+		LoginResp loginResp = BallLoginCache.getLoginResp(account);
+		if(loginResp == null){
+		     loginResp = ballMember.login(ballAccount, pwd);
+		     log.info("login for account:"+account+",message:"+loginResp.getCode_message());
+		}
 		if (loginResp != null && !StringUtils.isEmpty(loginResp.getUid())) {
-			loginCache.put(account, loginResp);
+			BallLoginCache.cacheLoginResp(account, loginResp);
 			updateLoginPwdCache(account, pwd);
-			ballMember.addBkListener(true, account, pwd, loginResp.getUid());
+			ballMember.addBkListener(true, account, loginResp.getUid());
 			betAutoBuyService.updateLoginIn(account);
 		} 
 	}
 
-	public void stop(String account) {
-		if (getLoginResp(account) == null)
+	 
+	public void stop(String account) { 
+		if (BallLoginCache.getLoginResp(account) == null)
 			return;
 		log.info("stop autoBuy for " + account);
-		loginCache.remove(account);
+		BallLoginCache.removeLoginResp(account); 
 		ballMember.stopBkListener(account);
 		betAutoBuyService.updateLoginOut(account);
 	}
 
-	public LoginResp getLoginResp(String account) {
-		return loginCache.get(account);
-	}
+	
 }

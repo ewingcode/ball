@@ -60,11 +60,11 @@ public class BallMember {
 		return loginResp;
 	}
 
-	public void addBkListener(Boolean isAuto, String account, String pwd, String uid) {
+	public void addBkListener(Boolean isAuto, String account, String uid) {
 		activeAccounts.put(account, account);
 		this.addBkRollListener(isAuto, account, uid);
 		//this.addBkTodayListener(isAuto, account, uid);
-		this.startHeartBeat(isAuto, account, pwd, uid);
+		this.startHeartBeat(isAuto, account,  uid);
 	}
 
 	public void stopBkListener(String account) {
@@ -123,7 +123,7 @@ public class BallMember {
 	/**
 	 * 登陆后的心跳，保持在线连接
 	 */
-	public void startHeartBeat(final boolean isAuto, final String account, String pwd,
+	public void startHeartBeat(final boolean isAuto, final String account,
 			final String uid) {
 		Timer timer = new Timer();
 		heartBeatTimers.put(account, timer);
