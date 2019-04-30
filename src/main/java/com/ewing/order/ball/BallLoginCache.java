@@ -1,8 +1,13 @@
 package com.ewing.order.ball;
 
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
+
+import com.aliyuncs.utils.StringUtils;
 import com.ewing.order.ball.login.LoginResp;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -15,6 +20,24 @@ private static Map<String, LoginResp> ballAccountLoginCache = Maps.newConcurrent
 	
 	private static Map<String, String> account2BallAccountCache = Maps.newConcurrentMap();
 	
+	/**
+	 * 根据相同球网账号查找有关联的账号
+	 * @param account
+	 * @return
+	 */
+	public static List<String> getAccountByBallAccount(String account){
+		 String ballAccount = getBallAccount4Cache(account);
+		 if(StringUtils.isEmpty(ballAccount))
+			 return Lists.newArrayList();
+		 List<String> relAccountList = Lists.newArrayList();
+		 for(String key : account2BallAccountCache.keySet()){
+			 String value = account2BallAccountCache.get(key);
+			 if(value.equals(ballAccount)){ 
+				 relAccountList.add(value);
+			 } 
+		 }
+		 return relAccountList;
+	}
 	public static void account2BallAccountCache(String account,String ballAccount){
 		account2BallAccountCache.put(account, ballAccount);
 	}

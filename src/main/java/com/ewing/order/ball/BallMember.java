@@ -7,6 +7,7 @@ import java.util.TimerTask;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -137,7 +138,13 @@ public class BallMember {
 					if (e != null && !StringUtils.isEmpty(e.getMessage())
 							&& e.getMessage().indexOf(RequestTool.ErrorCode.doubleLogin) > -1) {
 						log.error("stop listener for account:" + account, e);
-						ballAutoBet.stop(account);
+						List<String> relAccountList = BallLoginCache.getAccountByBallAccount(account);
+						if(CollectionUtils.isNotEmpty(relAccountList)){
+							for(String relAccount : relAccountList){
+								ballAutoBet.stop(relAccount);
+							} 
+						}
+						
 					}
 				}
 			}
