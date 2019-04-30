@@ -129,7 +129,7 @@ public class BallAutoBet {
 			if (betAutoBuy.getIsallow().equals(IsEff.EFFECTIVE)) {
 				LoginResp loginResp = BallLoginCache.getLoginResp(betAutoBuy.getAccount());
 				if (loginResp != null) {
-					updateAccountBill(betAutoBuy.getAccount(), loginResp.getUid());
+					updateAccountBill(betAutoBuy.getBallAccount(), loginResp.getUid());
 				}
 			}
 		}
