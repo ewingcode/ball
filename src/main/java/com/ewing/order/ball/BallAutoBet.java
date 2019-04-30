@@ -84,7 +84,9 @@ public class BallAutoBet {
 			return;
 		List<BetAutoBuy> list = betAutoBuyService.findAll();
 		if (list == null)
-			return;
+			return; 
+	 
+		
 		for (BetAutoBuy betAutoBuy : list) {
 			if (betAutoBuy.getIseff().equals(IsEff.EFFECTIVE)
 					&& betAutoBuy.getIsallow().equals(IsEff.EFFECTIVE)) {
@@ -279,12 +281,10 @@ public class BallAutoBet {
 	public void start(String account, String pwd,String ballAccount) throws Exception { 
 		BallLoginCache.account2BallAccountCache(account, ballAccount);
 		LoginResp loginResp = BallLoginCache.getLoginResp(account);
-		if(loginResp == null){
-		     loginResp = ballMember.login(ballAccount, pwd);
-		     log.info("login for account:"+account+",message:"+loginResp.getCode_message());
+		if(loginResp == null){ 
+		     log.info("can not start autobet for account:"+account+",ballaccount need to login");
 		}
-		if (loginResp != null && !StringUtils.isEmpty(loginResp.getUid())) {
-			BallLoginCache.cacheLoginResp(account, loginResp);
+		if (loginResp != null && !StringUtils.isEmpty(loginResp.getUid())) { 
 			updateLoginPwdCache(account, pwd);
 			ballMember.addBkListener(true, account, loginResp.getUid());
 			betAutoBuyService.updateLoginIn(account);
@@ -295,8 +295,7 @@ public class BallAutoBet {
 	public void stop(String account) { 
 		if (BallLoginCache.getLoginResp(account) == null)
 			return;
-		log.info("stop autoBuy for " + account);
-		BallLoginCache.removeLoginResp(account); 
+		log.info("stop autoBuy for " + account); 
 		ballMember.stopBkListener(account);
 		betAutoBuyService.updateLoginOut(account);
 	}

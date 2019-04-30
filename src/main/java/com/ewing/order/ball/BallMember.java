@@ -27,7 +27,6 @@ import com.ewing.order.busi.ball.service.BetBillService;
 import com.ewing.order.busi.ball.service.BetLogService;
 import com.ewing.order.busi.ball.service.BetRuleService;
 import com.ewing.order.busi.ball.service.BwContinueService;
-import com.ewing.order.util.HttpUtils;
 import com.google.common.collect.Maps;
 
 /**
@@ -37,7 +36,7 @@ import com.google.common.collect.Maps;
  */
 @Component
 public class BallMember {
-	private static Logger log = LoggerFactory.getLogger(HttpUtils.class);
+	private static Logger log = LoggerFactory.getLogger(BallMember.class);
 
 	@Resource
 	private BetBillService betBillService;
@@ -137,14 +136,8 @@ public class BallMember {
 				} catch (Exception e) {
 					if (e != null && !StringUtils.isEmpty(e.getMessage())
 							&& e.getMessage().indexOf(RequestTool.ErrorCode.doubleLogin) > -1) {
-						log.error("stop listener for account:" + account, e);
-						List<String> relAccountList = BallLoginCache.getAccountByBallAccount(account);
-						if(CollectionUtils.isNotEmpty(relAccountList)){
-							for(String relAccount : relAccountList){
-								ballAutoBet.stop(relAccount);
-							} 
-						}
-						
+						log.error("stop listener for account:" + account, e); 
+						ballAutoBet.stop(account); 
 					}
 				}
 			}

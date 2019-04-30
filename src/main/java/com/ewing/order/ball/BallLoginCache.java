@@ -46,11 +46,7 @@ private static Map<String, LoginResp> ballAccountLoginCache = Maps.newConcurrent
 		return account2BallAccountCache.get(account);
 	}
 	
-	public static void removeLoginResp(String account) {
-		String ballAccount = account2BallAccountCache.get(account);
-		if(ballAccount==null){
-			return;
-		}
+	public static void removeLoginResp(String ballAccount) { 
 		ballAccountLoginCache.remove(ballAccount);
 	}
 	
@@ -62,11 +58,11 @@ private static Map<String, LoginResp> ballAccountLoginCache = Maps.newConcurrent
 		return ballAccountLoginCache.get(ballAccount);
 	}
 	
-	public static void cacheLoginResp(String account,LoginResp loginResp) throws Exception{
-		String ballAccount = account2BallAccountCache.get(account);
-		if(ballAccount==null){
-			throw new Exception("没有找到匹配的球网登录账号");
-		}
+	public static LoginResp getLoginRespByBallAccount(String ballAccount) { 
+		return ballAccountLoginCache.get(ballAccount);
+	}
+	
+	public static void cacheLoginResp(String ballAccount,LoginResp loginResp) throws Exception{ 
 		ballAccountLoginCache.put(ballAccount, loginResp);
 	}
 }
