@@ -52,6 +52,7 @@ public class BetRuleService {
 			betRule.setStatus(BetRuleStatus.NOTSUCCESS);
 			betRule.setGtype(gtype);
 			betRule.setPtype(ptype);
+			betRule.setLevel("1");
 			betRule.setIsTest(isTest);
 			betRule.setContinueMaxMatch(continueMaxMatch);
 			betRule.setContinueStartLostnum(continueStartLostnum); 

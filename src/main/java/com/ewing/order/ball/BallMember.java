@@ -7,7 +7,6 @@ import java.util.TimerTask;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -60,9 +59,9 @@ public class BallMember {
 		return loginResp;
 	}
 
-	public void addBkListener(Boolean isAuto, String account, String uid) {
+	public void addBkListener(Boolean isAuto, String account, String uid,String ballAccount) {
 		activeAccounts.put(account, account);
-		this.addBkRollListener(isAuto, account, uid);
+		this.addBkRollListener(isAuto, account, uid ,ballAccount);
 		//this.addBkTodayListener(isAuto, account, uid);
 		this.startHeartBeat(isAuto, account,  uid);
 	}
@@ -103,9 +102,10 @@ public class BallMember {
 	/**
 	 * 添加滚球篮球的监听器
 	 */
-	public void addBkRollListener(Boolean isAuto, String account, String uid) {
+	public void addBkRollListener(Boolean isAuto, String account, String uid,String ballAccount) {
 		BetStrategyPool betStrategyPool = new BetStrategyPool();
 		betStrategyPool.getBetStrategyContext().setBetLogService(betLogService)
+				.setBallAccount(ballAccount)
 				.setBwContinueService(bwContinueService)
 				.setBetRuleService(betRuleService).setAccount(account).setUid(uid)
 				.setGtype(GtypeStatus.BK).setPtype(PtypeStatus.ROLL)

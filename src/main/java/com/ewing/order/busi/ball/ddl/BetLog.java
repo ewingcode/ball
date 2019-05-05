@@ -34,6 +34,8 @@ public class BetLog implements java.io.Serializable {
 	private Integer bet_rule_id;
 	@Column(name = "account")
 	private String account;
+	@Column(name = "ball_account")
+	private String ballAccount;
 	@Column(name = "code")
 	private String code;
 	@Column(name = "ticket_id")
@@ -112,6 +114,14 @@ public class BetLog implements java.io.Serializable {
 	private String is_notify; 
 	
 	 
+	public String getBallAccount() {
+		return ballAccount;
+	}
+
+	public void setBallAccount(String ballAccount) {
+		this.ballAccount = ballAccount;
+	}
+
 	public String getIs_notify() {
 		return is_notify;
 	}

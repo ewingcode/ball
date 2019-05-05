@@ -1,8 +1,6 @@
 package com.ewing.order.busi.ball.action;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -64,7 +62,7 @@ public class ReportRest extends BaseRest {
 		String endDate = request.getParameter("endDate");
 		String requestAccount = request.getParameter("account");
 		checkRequired(startDate, "date");
-		List<TotalBillDto> totalList = reportDao.findTotalWin(startDate,endDate,requestAccount);
+		 
 		List<BetAutoBuy> betAutoBuyList = betAutoBuyService.findAll();
 		List<BetAutoBuyDto> betAutoBuyDtoList = Lists.newArrayList();
 		for (BetAutoBuy betAutoBuy : betAutoBuyList) {
@@ -96,11 +94,10 @@ public class ReportRest extends BaseRest {
 				// 如果不是活跃中的用户则设置为失效用户，让前台可以更新用户状态来激活自动下注
 				dto.setIseff(
 						ballMember.isActiveAccount(account) ? IsEff.EFFECTIVE : IsEff.INEFFECTIVE);
-				for(TotalBillDto totalBillDto : totalList){
-					if(totalBillDto.getAccount().equals(account)){
-						dto.setTotalBillDto(totalBillDto);
-					}
-				}
+				List<TotalBillDto> totalWinList = reportDao.findTotalWinByTicketIds(startDate, endDate, account);
+					if(CollectionUtils.isNotEmpty(totalWinList)){
+						dto.setTotalBillDto(totalWinList.get(0));
+					} 
 			}
 		}
 	

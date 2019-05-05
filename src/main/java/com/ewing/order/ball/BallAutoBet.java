@@ -286,7 +286,7 @@ public class BallAutoBet {
 		}
 		if (loginResp != null && !StringUtils.isEmpty(loginResp.getUid())) { 
 			updateLoginPwdCache(account, pwd);
-			ballMember.addBkListener(true, account, loginResp.getUid());
+			ballMember.addBkListener(true, account, loginResp.getUid(),ballAccount);
 			betAutoBuyService.updateLoginIn(account);
 		} 
 	}

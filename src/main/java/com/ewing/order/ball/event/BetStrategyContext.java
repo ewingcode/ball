@@ -17,6 +17,8 @@ public class BetStrategyContext {
 	private BwContinueService bwContinueService;
 
 	private String account;
+	
+	private String ballAccount;
 
 	private String uid;
 
@@ -69,6 +71,15 @@ public class BetStrategyContext {
 
 	public BetStrategyContext setUid(String uid) {
 		this.uid = uid;
+		return this;
+	}
+	
+	public String getBallAccount() {
+		return ballAccount;
+	}
+
+	public BetStrategyContext setBallAccount(String ballAccount) {
+		this.ballAccount = ballAccount;
 		return this;
 	}
 

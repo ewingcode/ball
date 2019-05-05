@@ -189,6 +189,7 @@ public class BetStrategyPool {
 								BetLog betLog = new BetLog();
 								BeanCopy.copy(betLog, betResp, true);
 								betLog.setBet_rule_id(betStrategy.getRuleId());
+								betLog.setBallAccount(this.getBetStrategyContext().getBallAccount());
 								betStrategyContext.getBetLogService()
 										.save(betStrategyContext.getAccount(), betLog);
 								//对追加的策略，在批次投注表追加投注日志明细
