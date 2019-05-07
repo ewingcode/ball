@@ -3,7 +3,7 @@ package com.ewing.order.busi.ball.dto;
 import java.sql.Timestamp;
 import java.util.List;
 
-import com.ewing.order.busi.ball.ddl.BetRulePool;
+import com.ewing.order.busi.ball.ddl.BwContinue;
 
 public class BetAutoBuyDto {
  
@@ -29,9 +29,16 @@ public class BetAutoBuyDto {
 	private String ruleName;
 	private List<String> ruleNameList;
 	private TotalBillDto totalBillDto;
+	private BwContinue bwContinue; 
 	
+	public BwContinue getBwContinue() {
+		return bwContinue;
+	}
 
-	
+	public void setBwContinue(BwContinue bwContinue) {
+		this.bwContinue = bwContinue;
+	}
+
 	public List<String> getRuleNameList() {
 		return ruleNameList;
 	}

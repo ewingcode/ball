@@ -25,8 +25,11 @@
      <span v-else>
                      场数：0 金额:0
 	    </span>
-      <br> --
-     <span style="color:gray;font-size: 8px;font-weight: normal;">下注规则:【{{bill.ruleName}}】金额:{{bill.money}}追加:{{bill.continueMaxMatch}}计划:{{bill.continuePlanMoney}}赢停:{{bill.stopWingold}}输停:{{bill.stopLosegold}}</span>
+      <br>
+     <span style="color:gray;font-size: 8px;font-weight: normal;">-- 下注规则:【{{bill.ruleName}}】金额:{{bill.money}}追加:{{bill.continueMaxMatch}}计划:{{bill.continuePlanMoney}}赢停:{{bill.stopWingold}}输停:{{bill.stopLosegold}}</span>
+      <br v-if="bill.bwContinue != null"> 
+     <span  v-if="bill.bwContinue != null" style="color:gray;font-size: 8px;font-weight: normal;">-- 追加进行中 当前第【{{bill.bwContinue.totalMatch}}】场</span>
+    
     </li>
   </ol>
      <span>总赢：</span><span >{{totalWin}}</span>

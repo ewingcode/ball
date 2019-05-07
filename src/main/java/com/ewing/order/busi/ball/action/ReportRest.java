@@ -15,9 +15,11 @@ import com.ewing.order.ball.BallMember;
 import com.ewing.order.ball.shared.BetRuleStatus;
 import com.ewing.order.ball.shared.GtypeStatus;
 import com.ewing.order.ball.shared.PtypeStatus;
+import com.ewing.order.busi.ball.dao.BwContinueDao;
 import com.ewing.order.busi.ball.dao.ReportDao;
 import com.ewing.order.busi.ball.ddl.BetAutoBuy;
 import com.ewing.order.busi.ball.ddl.BetRule;
+import com.ewing.order.busi.ball.ddl.BwContinue;
 import com.ewing.order.busi.ball.dto.BetAutoBuyDto;
 import com.ewing.order.busi.ball.dto.BetDetailDto;
 import com.ewing.order.busi.ball.dto.TotalBillDto;
@@ -45,6 +47,8 @@ public class ReportRest extends BaseRest {
 	private BallMember ballMember;
 	@Resource
 	private BetRuleService betRuleService;
+	@Resource
+	private BwContinueDao bwContinueDao;
 
 	public static void main(String[] args) {
 		String likeType = "ts[^,]*";
@@ -64,6 +68,7 @@ public class ReportRest extends BaseRest {
 		checkRequired(startDate, "date");
 		 
 		List<BetAutoBuy> betAutoBuyList = betAutoBuyService.findAll();
+		List<BwContinue> bwContinueList = bwContinueDao.findAllRunning();
 		List<BetAutoBuyDto> betAutoBuyDtoList = Lists.newArrayList();
 		for (BetAutoBuy betAutoBuy : betAutoBuyList) {
 			String account = betAutoBuy.getAccount();
@@ -98,6 +103,11 @@ public class ReportRest extends BaseRest {
 					if(CollectionUtils.isNotEmpty(totalWinList)){
 						dto.setTotalBillDto(totalWinList.get(0));
 					} 
+				for(BwContinue bwContinue : bwContinueList){
+					if(bwContinue.getAccount().equals(account)){
+						dto.setBwContinue(bwContinue);
+					}
+				}
 			}
 		}
 	
