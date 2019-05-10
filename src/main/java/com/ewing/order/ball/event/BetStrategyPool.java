@@ -4,8 +4,6 @@ import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
@@ -46,9 +44,7 @@ public class BetStrategyPool {
 
 	private BetRuleParser betRuleParser;
 
-	private AtomicBoolean isLoad = new AtomicBoolean(false);
-
-	private Timer ruleTimer = new Timer();
+	private AtomicBoolean isLoad = new AtomicBoolean(false); 
 
 	private WeakHashMap<String, Timestamp> gameMap = new WeakHashMap<>();
 
@@ -60,9 +56,7 @@ public class BetStrategyPool {
 		return betStrategyContext;
 	}
 
-	public void stop() {
-		ruleTimer.cancel();
-	}
+	 
 
 	public void setBetStrategyContext(BetStrategyContext betStrategyContext) {
 		this.betStrategyContext = betStrategyContext;
@@ -75,18 +69,13 @@ public class BetStrategyPool {
 		betRuleParser = new BetRuleParser(betStrategyContext.getAccount(),
 				betStrategyContext.getGtype(), betStrategyContext.getPtype(),
 				betStrategyContext.getUid(), betStrategyContext.getBetRuleService());
+		checkNewBetStrategyConf(); 
 
-		ruleTimer.schedule(new TimerTask() {
-			public void run() {
-				try {
-					List<BetStrategy> betStrategyList = betRuleParser.hasNewBetStrategy();
-					reload(betStrategyList);
-				} catch (Exception e) {
-					log.error(e.getMessage(), e);
-				}
-			}
-		}, 1000, 10000);
-
+	}
+	
+	public void checkNewBetStrategyConf(){
+		List<BetStrategy> betStrategyList = betRuleParser.hasNewBetStrategy();
+		reload(betStrategyList);
 	}
 
 	/**

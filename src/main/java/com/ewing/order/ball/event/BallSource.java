@@ -62,29 +62,19 @@ public class BallSource {
 		listeners.put(eventListener.getAccount(), eventListener);
 	}
 
+	public BetInfoListener getBetInfoListener(String account){
+		return  listeners.get(account);
+	}
+	
+	public Map<String, BetInfoListener> getAllListener(){
+		return listeners;
+	} 
+	
 	public void stopBallListener(String account) {
 		BetInfoListener existListener = listeners.get(account);
 		if (existListener != null) {
 			existListener.stopListener();
 		}
 		listeners.remove(account);
-	}
-
-	/**
-	 * 当事件发生时，通知注册在事件源上的所有事件做出相应的反映
-	 */
-	private void notifyListener(BallEvent ballEvent) {
-		for (String account : listeners.keySet()) {
-			try {
-				listeners.get(account).handleEvent(ballEvent);
-			} catch (Exception e) {
-				log.error(e.getMessage(), e);
-			}
-		}
-	}
-
-	public void receiveBallEvent(BallEvent e) {
-		notifyListener(e);
-	}
-
+	} 
 }

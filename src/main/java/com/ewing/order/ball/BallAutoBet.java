@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 
 import com.aliyuncs.utils.StringUtils;
 import com.ewing.order.ball.bill.DailyBillResp;
+import com.ewing.order.ball.event.BallSource;
+import com.ewing.order.ball.event.BetInfoListener;
 import com.ewing.order.ball.login.LoginResp;
 import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.busi.ball.dao.BetRuleDao;
@@ -94,13 +96,64 @@ public class BallAutoBet {
 					if (!ballMember.isActiveAccount(betAutoBuy.getAccount()) ) {
 						log.info("start autoBuy for " + betAutoBuy.getAccount());
 						start(betAutoBuy.getAccount(), betAutoBuy.getPwd(),betAutoBuy.getBallAccount());
-					}
+					} 
 				} catch (Exception e) {
 					log.error(e.getMessage(),e);
 				}
 			} else {
 				stop(betAutoBuy.getAccount());
 			}
+		}
+	}
+	
+	
+	@Scheduled(cron = "0 0/5 * * * * ")
+	public void checkAccountHealthy() {
+		if (!BallmatchProp.allowrunautobet)
+			return;
+		List<BetAutoBuy> list = betAutoBuyService.findAll();
+		if (list == null)
+			return; 
+	 
+	 
+		for (BetAutoBuy betAutoBuy : list) {
+			String account =betAutoBuy.getAccount();
+			if (betAutoBuy.getIseff().equals(IsEff.EFFECTIVE)
+					&& betAutoBuy.getIsallow().equals(IsEff.EFFECTIVE)) {
+				try {
+					if ( ballMember.isActiveAccount(betAutoBuy.getAccount()) ) { 
+						try {
+							LoginResp loginResp = BallLoginCache.getLoginResp(betAutoBuy.getAccount());
+							if(loginResp ==null || StringUtils.isEmpty(loginResp.getUid())){
+								break;
+							}
+							RequestTool.getLeaguesCount(loginResp.getUid());
+						} catch (Exception e) {
+							if (e != null && !StringUtils.isEmpty(e.getMessage())
+									&& e.getMessage().indexOf(RequestTool.ErrorCode.doubleLogin) > -1) {
+								log.error("stop listener for account:" + account, e); 
+								stop(account); 
+							}
+						} 
+					} 
+				} catch (Exception e) {
+					log.error(e.getMessage(),e);
+				}
+			}  
+		}
+	}
+	
+	@Scheduled(cron = "0/30 * * * * * ")
+	public void checkAccountBetRule() {
+		if (!BallmatchProp.allowrunautobet)
+			return;
+		Map<String,BetInfoListener> listeners = BallSource.getBKRoll().getAllListener();
+		if(listeners.isEmpty()){
+			return;
+		}
+		for(String account : listeners.keySet()){
+			BetInfoListener betInfoListener = listeners.get(account);
+			betInfoListener.getBetStrategyPool().checkNewBetStrategyConf();
 		}
 	}
 
@@ -294,6 +347,8 @@ public class BallAutoBet {
 	 
 	public void stop(String account) { 
 		if (BallLoginCache.getLoginResp(account) == null)
+			return;
+		if(!ballMember.isActiveAccount(account))
 			return;
 		log.info("stop autoBuy for " + account); 
 		ballMember.stopBkListener(account);

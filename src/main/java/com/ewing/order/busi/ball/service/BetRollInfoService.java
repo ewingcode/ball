@@ -10,6 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import com.ewing.order.ball.BallInfoCache;
 import com.ewing.order.ball.dto.BetInfoDto;
 import com.ewing.order.ball.shared.GameStatus;
 import com.ewing.order.busi.ball.dao.BetInfoDao;
@@ -55,6 +56,7 @@ public class BetRollInfoService {
 			if (StringUtils.isEmpty(betRollInfo.getGid()))
 				continue;
 			rollGIds.add(betRollInfo.getGid());
+			BallInfoCache.addGid(betRollInfo.getGid());
 			// 计算滚球变化数据
 			if (betRollInfo.getGtype().equals("BK")) {
 				calBasketball(betRollInfo);
@@ -68,7 +70,7 @@ public class BetRollInfoService {
 		List<BetInfo> runningMatchList = betInfoDao.findRunning();
 		if(CollectionUtils.isNotEmpty(runningMatchList)){
 			for(BetInfo betInfo : runningMatchList){
-				if(!rollGIds.contains(betInfo.getGid())){
+				if(!rollGIds.contains(betInfo.getGid()) && BallInfoCache.addMissingTime(betInfo.getGid())){ 
 					betInfo.setStatus(GameStatus.OVER);
 					betInfoDao.update(betInfo);
 				}

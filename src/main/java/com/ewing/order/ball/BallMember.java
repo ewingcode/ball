@@ -63,16 +63,16 @@ public class BallMember {
 		activeAccounts.put(account, account);
 		this.addBkRollListener(isAuto, account, uid ,ballAccount);
 		//this.addBkTodayListener(isAuto, account, uid);
-		this.startHeartBeat(isAuto, account,  uid);
+		//this.startHeartBeat(isAuto, account,  uid);
 	}
 
 	public void stopBkListener(String account) {
 		activeAccounts.remove(account);
 		BallSource.getBKRoll().stopBallListener(account);
 		//BallSource.getBKCurrent().stopBallListener(account);
-		Timer timer = heartBeatTimers.get(account);
-		if (timer != null)
-			timer.cancel();
+//		Timer timer = heartBeatTimers.get(account);
+//		if (timer != null)
+//			timer.cancel();
 	}
 
 	public Boolean isActiveAccount(String account) {
@@ -129,9 +129,7 @@ public class BallMember {
 		heartBeatTimers.put(account, timer);
 		timer.schedule(new TimerTask() {
 			public void run() {
-				try {
-					/*log.info("startHeartBeat account:" + account + ",timer:"
-							+ Thread.currentThread().getName());*/
+				try { 
 					RequestTool.getLeaguesCount(uid);
 				} catch (Exception e) {
 					if (e != null && !StringUtils.isEmpty(e.getMessage())
