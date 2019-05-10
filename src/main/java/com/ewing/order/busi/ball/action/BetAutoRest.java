@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ewing.order.ball.BallMember;
+import com.ewing.order.ball.BetCollector;
+import com.ewing.order.ball.event.strategy.BKRollAutoSideStrategy;
 import com.ewing.order.ball.shared.BetRuleStatus;
 import com.ewing.order.ball.shared.GtypeStatus;
 import com.ewing.order.ball.shared.PtypeStatus;
@@ -41,6 +43,8 @@ public class BetAutoRest extends BaseRest {
 	private BetRuleService betRuleService;
 	@Resource
 	private BetRulePoolService betRulePoolService;
+	@Resource
+	private BetCollector betCollector;
 	/**
 	 * 更新自動投注賬戶狀態
 	 * 
@@ -87,6 +91,19 @@ public class BetAutoRest extends BaseRest {
 		checkRequired(account, "account"); 
 		checkRequired(iseff, "iseff"); 
 		betAutoBuyService.changeAccountStatus(account,iseff);
+		return RestResult.successResult(true);
+	}
+	
+	@RequestMapping(value = "/ballauto/param.op", method = RequestMethod.GET)
+	@ResponseBody
+	public RestResult<Boolean> changeParam() throws Exception { 
+		String collectTime = request.getParameter("collectTime"); 
+		String maxMatchEachDay = request.getParameter("maxMatchEachDay"); 
+		checkRequired(collectTime, "collectTime"); 
+		checkRequired(maxMatchEachDay, "maxMatchEachDay"); 
+		BetCollector.rollDataCollectTime = Long.valueOf(collectTime);
+		betCollector.restartTimer();
+		BKRollAutoSideStrategy.SYSMAXEACHDAY = Integer.valueOf(maxMatchEachDay);
 		return RestResult.successResult(true);
 	}
 

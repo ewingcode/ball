@@ -68,12 +68,12 @@ public class BetCollector {
 
 	private final static long todayDataCollectTime = 120 * 1000;
 
-	private final static long rollDataCollectTime = 10 * 1000;
+	public static long rollDataCollectTime = 30 * 1000;
 
 	private final static long heartbeatTime = 30 * 1000;
 	
 	private Lock uidLock = new ReentrantLock(); 
-
+	private static Timer timer2 = new Timer();
 	public static class CollectDataPool {
 		public static List<BetInfoDto> bkRollList = Lists.newArrayList();
 		private static List<BetInfoDto> bkTodayList = Lists.newArrayList();
@@ -294,7 +294,21 @@ public class BetCollector {
 			}
 		}, 1000, todayDataCollectTime);
 
-		Timer timer2 = new Timer();
+		
+		timer2.schedule(new TimerTask() {
+			public void run() {
+				 log.info("收集滚球的篮球信息：");
+				try {
+					collectRollingBasketball();
+				} catch (Throwable e) {
+					log.error("收集滚球的篮球失败:"+e.getMessage(), e);
+				}
+			}
+		}, 1000, rollDataCollectTime);
+	}
+	
+	public void restartTimer(){
+		timer2.cancel();
 		timer2.schedule(new TimerTask() {
 			public void run() {
 				 log.info("收集滚球的篮球信息：");

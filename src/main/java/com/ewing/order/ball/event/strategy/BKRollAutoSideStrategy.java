@@ -37,6 +37,8 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 	 * 每天下注场数
 	 */
 	private int MAXEACHDAY = 20;
+	
+	public static int SYSMAXEACHDAY=0;
 	/**
 	 * 每场比赛下注次数
 	 */
@@ -126,6 +128,8 @@ public class BKRollAutoSideStrategy extends BetStrategy {
 			SCORERATE_ALLMATCH = getIntegerParamValue(paramMap, "SCORERATE_ALLMATCH");
 		if (getIntegerParamValue(paramMap, "MAXEACHDAY") != null)
 			MAXEACHDAY = getIntegerParamValue(paramMap, "MAXEACHDAY");
+		if(SYSMAXEACHDAY>0)
+			MAXEACHDAY = SYSMAXEACHDAY;
 		maxInterval = computeMaxInterval();
 	}
 	private Float computeScoreSec4Alltime(BetRollInfo betRollInfo) {
