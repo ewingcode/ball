@@ -308,7 +308,9 @@ public class BetCollector {
 	}
 	
 	public void restartTimer(){
+		log.info("change collect time:"+rollDataCollectTime);
 		timer2.cancel();
+		timer2 = new Timer();
 		timer2.schedule(new TimerTask() {
 			public void run() {
 				 log.info("收集滚球的篮球信息：");
