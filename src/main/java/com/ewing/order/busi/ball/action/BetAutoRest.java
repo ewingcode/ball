@@ -78,6 +78,17 @@ public class BetAutoRest extends BaseRest {
 		betAutoBuyService.activeAccount(account,isAllow);
 		return RestResult.successResult(true);
 	}
+	
+	@RequestMapping(value = "/ballauto/status.op", method = RequestMethod.GET)
+	@ResponseBody
+	public RestResult<Boolean> changeAccountStatus() throws Exception { 
+		String account = request.getParameter("account"); 
+		String iseff = request.getParameter("iseff"); 
+		checkRequired(account, "account"); 
+		checkRequired(iseff, "iseff"); 
+		betAutoBuyService.changeAccountStatus(account,iseff);
+		return RestResult.successResult(true);
+	}
 
 	/**
 	 * 查看自动投注账户的状态

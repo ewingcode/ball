@@ -99,6 +99,16 @@ public class BetAutoBuyService {
 			baseDao.update(betAutoBuy);
 		} 
 	}
+	
+	@Transactional
+	public void changeAccountStatus(String account,String isEff)
+			throws IllegalAccessException, InvocationTargetException {
+		BetAutoBuy betAutoBuy = betAutoBuyDao.find(account);
+		if (betAutoBuy != null) {
+			betAutoBuy.setIseff(isEff);
+			baseDao.update(betAutoBuy);
+		} 
+	}
 
 	@Transactional
 	public void updateLoginOut(String account) {
