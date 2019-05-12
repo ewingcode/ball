@@ -248,6 +248,7 @@ public abstract class BetStrategy {
 				bkPreOrderViewResp = RequestTool.getbkPreOrderView(uid, gid, gtype, wtype, side);
 			} catch (Exception e) {
 				log("获取投注信息失败,gid:" + gid);
+				BetLogger.logger.error("获取投注信息失败,gid:" + gid,e);
 			}
 			if (bkPreOrderViewResp != null
 					&& StringUtils.isEmpty(bkPreOrderViewResp.getErrormsg())) {

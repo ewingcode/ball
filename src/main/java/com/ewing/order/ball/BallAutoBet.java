@@ -264,7 +264,7 @@ public class BallAutoBet {
 					betBillService.saveBill(account, date, betBillList);
 				}
 			} catch (Exception e) {
-				log.error("获取历史账单出错,account:" + account + ",日期:" + date);
+				log.error("获取历史账单出错,account:" + account + ",日期:" + date,e);
 			}
 			cal.add(Calendar.DATE, -1);
 		}
