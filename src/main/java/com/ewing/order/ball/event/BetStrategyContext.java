@@ -2,6 +2,7 @@ package com.ewing.order.ball.event;
 
 import java.util.List;
 
+import com.ewing.order.ball.BallLoginCache;
 import com.ewing.order.ball.dto.BetInfoDto;
 import com.ewing.order.busi.ball.service.BetLogService;
 import com.ewing.order.busi.ball.service.BetRuleService;
@@ -66,7 +67,7 @@ public class BetStrategyContext {
 	}
 
 	public String getUid() {
-		return uid;
+		return BallLoginCache.getLoginResp(account).getUid();
 	}
 
 	public BetStrategyContext setUid(String uid) {

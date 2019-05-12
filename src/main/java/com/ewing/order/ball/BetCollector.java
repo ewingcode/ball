@@ -68,7 +68,7 @@ public class BetCollector {
 
 	private final static long todayDataCollectTime = 120 * 1000;
 
-	public static long rollDataCollectTime = 30 * 1000;
+	public static long rollDataCollectTime = 60 * 1000;
 
 	private final static long heartbeatTime = 30 * 1000;
 	
