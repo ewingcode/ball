@@ -19,6 +19,7 @@ import com.ewing.order.core.app.bean.UserInfo;
 import com.ewing.order.core.app.session.SessionControl;
 import com.ewing.order.core.web.common.RequestJson;
 import com.ewing.order.core.web.common.RestResult;
+import com.ewing.order.util.HttpUtils;
 import com.ewing.order.util.SignManage;
 import com.google.gson.Gson;
 
@@ -58,6 +59,7 @@ public abstract class BaseRest {
 
 	@ExceptionHandler({ Exception.class })
 	public void exception(Exception e) {
+		logger.error(e.getMessage(),e);
 		outErrorResult(e.getMessage());
 	}
 
