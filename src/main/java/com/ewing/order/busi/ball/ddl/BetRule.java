@@ -83,12 +83,22 @@ public class BetRule implements java.io.Serializable {
 	private Float stopWingold;
 	@Column(name = "stop_losegold")
 	private Float stopLosegold;
+	@Column(name = "max_eachday")
+	private Integer maxEachday;
 	@Column(name = "is_cover")
 	private Integer isCover;
 	@Column(name = "continue_plan_money")
 	private String continuePlanMoney;
 	
 	
+	public Integer getMaxEachday() {
+		return maxEachday;
+	}
+
+	public void setMaxEachday(Integer maxEachday) {
+		this.maxEachday = maxEachday;
+	}
+
 	public Integer getRulePoolId() {
 		return rulePoolId;
 	}

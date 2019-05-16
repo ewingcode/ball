@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ewing.order.ball.BallMember;
 import com.ewing.order.ball.BetCollector;
-import com.ewing.order.ball.event.strategy.BKRollAutoSideStrategy;
+import com.ewing.order.ball.event.strategy.BKRollAutoSideStrategy2;
 import com.ewing.order.ball.shared.BetRuleStatus;
 import com.ewing.order.ball.shared.GtypeStatus;
 import com.ewing.order.ball.shared.PtypeStatus;
@@ -65,10 +65,11 @@ public class BetAutoRest extends BaseRest {
 		String stopLosegold = requestJson.getString("stopLosegold");  
 		String continuePlanMoney = requestJson.getString("continuePlanMoney"); 
 		String ruleName = requestJson.getString("ruleName"); 
+		String maxEachDay = requestJson.getString("maxEachDay"); 
 		checkRequired(account, "account");
 		checkRequired(iseff, "iseff");
 		betAutoBuyService.updateIsEff(account, iseff, phone, money,Integer.valueOf(isTest),
-				Integer.valueOf(continueMaxMatch),Integer.valueOf(continueStartLostnum),Float.valueOf(stopWingold),Float.valueOf(stopLosegold),continuePlanMoney,ruleName);
+				Integer.valueOf(continueMaxMatch),Integer.valueOf(continueStartLostnum),Float.valueOf(stopWingold),Float.valueOf(stopLosegold),continuePlanMoney,ruleName,Integer.valueOf(maxEachDay));
 		return RestResult.successResult(true);
 	}
 	
@@ -103,7 +104,7 @@ public class BetAutoRest extends BaseRest {
 		checkRequired(maxMatchEachDay, "maxMatchEachDay"); 
 		BetCollector.rollDataCollectTime = Long.valueOf(collectTime);
 		betCollector.restartTimer();
-		BKRollAutoSideStrategy.SYSMAXEACHDAY = Integer.valueOf(maxMatchEachDay);
+		BKRollAutoSideStrategy2.SYSMAXEACHDAY = Integer.valueOf(maxMatchEachDay);
 		return RestResult.successResult(true);
 	}
 
@@ -134,6 +135,7 @@ public class BetAutoRest extends BaseRest {
 				dto.setStopLosegold(ruleList.get(0).getStopLosegold()==null?"0":String.valueOf(ruleList.get(0).getStopLosegold().intValue()));
 				dto.setIsTest(ruleList.get(0).getIsTest()==null?"0":ruleList.get(0).getIsTest().toString());
 			    dto.setRuleName(ruleList.get(0).getName());  
+			    dto.setMaxEachDay(ruleList.get(0).getMaxEachday());
 			} 
 			// 如果不是活跃中的用户则设置为失效用户，让前台可以更新用户状态来激活自动下注
 			dto.setIseff(ballMember.isActiveAccount(account) ? IsEff.EFFECTIVE : IsEff.INEFFECTIVE);

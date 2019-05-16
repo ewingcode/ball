@@ -18,12 +18,14 @@ import com.ewing.order.ball.shared.PtypeStatus;
 import com.ewing.order.busi.ball.dao.BwContinueDao;
 import com.ewing.order.busi.ball.dao.ReportDao;
 import com.ewing.order.busi.ball.ddl.BetAutoBuy;
+import com.ewing.order.busi.ball.ddl.BetLog;
 import com.ewing.order.busi.ball.ddl.BetRule;
 import com.ewing.order.busi.ball.ddl.BwContinue;
 import com.ewing.order.busi.ball.dto.BetAutoBuyDto;
 import com.ewing.order.busi.ball.dto.BetDetailDto;
 import com.ewing.order.busi.ball.dto.TotalBillDto;
 import com.ewing.order.busi.ball.service.BetAutoBuyService;
+import com.ewing.order.busi.ball.service.BetLogService;
 import com.ewing.order.busi.ball.service.BetRuleService;
 import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.core.web.base.BaseRest;
@@ -49,6 +51,8 @@ public class ReportRest extends BaseRest {
 	private BetRuleService betRuleService;
 	@Resource
 	private BwContinueDao bwContinueDao;
+	@Resource
+	private BetLogService betLogService;
 
 	public static void main(String[] args) {
 		String likeType = "ts[^,]*";
@@ -77,6 +81,7 @@ public class ReportRest extends BaseRest {
 			 }
 			List<BetRule> ruleList = betRuleService.findRule(account, BetRuleStatus.NOTSUCCESS,
 					GtypeStatus.BK, PtypeStatus.ROLL);
+			List<BetLog> betLogList = betLogService.findEachDay(account, GtypeStatus.BK);
 			if (betAutoBuy != null) { 
 				BetAutoBuyDto dto = new BetAutoBuyDto();
 				betAutoBuyDtoList.add(dto);
@@ -94,8 +99,11 @@ public class ReportRest extends BaseRest {
 							: String.valueOf(ruleList.get(0).getStopLosegold().intValue()));
 					dto.setIsTest(ruleList.get(0).getIsTest() == null ? "0"
 							: ruleList.get(0).getIsTest().toString());
-					dto.setRuleName(ruleList.get(0).getName());
+					dto.setRuleName(ruleList.get(0).getName()); 
+					dto.setMaxEachDay(ruleList.get(0).getMaxEachday());
 				}
+				
+				dto.setTodayTotalMatch(CollectionUtils.isEmpty(betLogList)?0:betLogList.size());
 				// 如果不是活跃中的用户则设置为失效用户，让前台可以更新用户状态来激活自动下注
 				dto.setIseff(
 						ballMember.isActiveAccount(account) ? IsEff.EFFECTIVE : IsEff.INEFFECTIVE);

@@ -2,6 +2,7 @@ package com.ewing.order.busi.ball.action;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,9 +13,12 @@ import com.ewing.order.ball.BallLoginCache;
 import com.ewing.order.ball.BallMember;
 import com.ewing.order.ball.login.LoginResp;
 import com.ewing.order.ball.util.RequestTool;
+import com.ewing.order.busi.ball.dao.BetAutoBuyDao;
+import com.ewing.order.busi.ball.ddl.BetAutoBuy;
 import com.ewing.order.core.web.base.BaseRest;
 import com.ewing.order.core.web.common.RequestJson;
 import com.ewing.order.core.web.common.RestResult;
+ 
 
 /**
  * 登陆接口
@@ -29,6 +33,8 @@ public class LoginRest extends BaseRest {
 	private BallMember ballMember;
 	@Resource
 	private BallAutoBet ballAutoBet;
+	@Resource
+	private BetAutoBuyDao betAutoBuyDao;
 
 	public interface InputParameter {
 		public final static String SHOPID = "shopId";
@@ -54,10 +60,13 @@ public class LoginRest extends BaseRest {
 			}
 			loginResp = BallLoginCache.getLoginResp(account);
 	    }else {
-			loginResp = RequestTool.login(account, pwd); 
+	    	BetAutoBuy betAutoBuy = betAutoBuyDao.find(account);
+	    	if(betAutoBuy==null || StringUtils.isEmpty(betAutoBuy.getBallAccount())){
+	    		return RestResult.errorResult("不存在账户信息");
+	    	}
+			loginResp = RequestTool.login(betAutoBuy.getBallAccount(), pwd); 
 		}
-		ballAutoBet.updateLoginPwdCache(account, pwd);
-		// ballMember.addBkListener(account, loginResp.getUid());
+		ballAutoBet.updateLoginPwdCache(account, pwd); 
 		loginResp.setAccount(account);
 		return RestResult.successResult(loginResp);
 	}

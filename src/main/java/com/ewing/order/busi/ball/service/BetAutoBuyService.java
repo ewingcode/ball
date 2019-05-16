@@ -65,7 +65,7 @@ public class BetAutoBuyService {
 
 	@Transactional
 	public void updateIsEff(String account, String isEff, String phone, String money,Integer isTest,Integer continueMaxMatch,
-			Integer continueStartLostnum,Float stopWingold,Float stopLosegold,String continuePlanMoney,String ruleName)
+			Integer continueStartLostnum,Float stopWingold,Float stopLosegold,String continuePlanMoney,String ruleName,Integer maxEachDay)
 			throws Exception {
 		BetAutoBuy betAutoBuy = betAutoBuyDao.find(account);
 		if (betAutoBuy != null) {
@@ -87,7 +87,7 @@ public class BetAutoBuyService {
 			}
 		}
 		betRuleService.updateRule(account, GtypeStatus.BK, PtypeStatus.ROLL, money,isTest,continueMaxMatch,
-				continueStartLostnum,stopWingold,stopLosegold,continuePlanMoney,ruleName);
+				continueStartLostnum,stopWingold,stopLosegold,continuePlanMoney,ruleName,maxEachDay);
 	}
 	
 	@Transactional

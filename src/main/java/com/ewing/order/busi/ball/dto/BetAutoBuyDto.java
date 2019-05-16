@@ -14,6 +14,7 @@ public class BetAutoBuyDto {
 
 	private Integer id;
 	private String account;
+	private String ballAccount;
 	private String is_login;
 	private String iseff;
 	private String money;
@@ -24,6 +25,8 @@ public class BetAutoBuyDto {
 	private String stopWingold; 
 	private String stopLosegold;
 	private String continuePlanMoney;
+	private Integer maxEachDay;
+	private Integer todayTotalMatch;
 	private Timestamp createTime;
 	private Timestamp lastUpdate;
 	private String ruleName;
@@ -31,6 +34,30 @@ public class BetAutoBuyDto {
 	private TotalBillDto totalBillDto;
 	private BwContinue bwContinue; 
 	
+	public String getBallAccount() {
+		return ballAccount;
+	}
+
+	public void setBallAccount(String ballAccount) {
+		this.ballAccount = ballAccount;
+	}
+
+	public Integer getMaxEachDay() {
+		return maxEachDay;
+	}
+
+	public void setMaxEachDay(Integer maxEachDay) {
+		this.maxEachDay = maxEachDay;
+	}
+
+	public Integer getTodayTotalMatch() {
+		return todayTotalMatch;
+	}
+
+	public void setTodayTotalMatch(Integer todayTotalMatch) {
+		this.todayTotalMatch = todayTotalMatch;
+	}
+
 	public BwContinue getBwContinue() {
 		return bwContinue;
 	}

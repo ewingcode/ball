@@ -42,10 +42,20 @@ public abstract class BetStrategy {
 	private Integer isTest;
 
 	private Integer isCover;
+	
+	private Integer maxEachday;
 
 	private Map<String, String> paramMap;
 
 	private BwContinue bwContinue;
+
+	public Integer getMaxEachday() {
+		return maxEachday;
+	}
+
+	public void setMaxEachday(Integer maxEachday) {
+		this.maxEachday = maxEachday;
+	}
 
 	public String getContinuePlanMoney() {
 		return continuePlanMoney;

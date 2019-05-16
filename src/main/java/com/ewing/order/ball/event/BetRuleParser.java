@@ -61,6 +61,7 @@ public class BetRuleParser {
 			betStrategy.setIseff(betRule.getIseff().equals(IsEff.EFFECTIVE));
 			betStrategy.setgId(betRule.getGid()); 
 			betStrategy.setRuleId(betRule.getId());
+			betStrategy.setMaxEachday(betRule.getMaxEachday());
 			list.add(betStrategy);
 		}
 		return list;

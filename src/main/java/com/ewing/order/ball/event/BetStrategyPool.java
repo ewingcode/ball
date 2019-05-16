@@ -151,6 +151,7 @@ public class BetStrategyPool {
 				betStrategy.setIsTest(betStrategyTemplate.getIsTest());
 				betStrategy.setIsCover(betStrategyTemplate.getIsCover());
 				betStrategy.setContinuePlanMoney(betStrategyTemplate.getContinuePlanMoney());
+				betStrategy.setMaxEachday(betStrategyTemplate.getMaxEachday());
 				betStrategy.setContinueMaxMatch(betStrategyTemplate.getContinueMaxMatch());
 				betStrategy.initParam(betStrategyTemplate.getParamMap());
 				betStrategy.setLevel(betStrategyTemplate.getLevel());

@@ -37,7 +37,10 @@ public class BKRollAutoSideStrategy2 extends BetStrategy {
 	/**
 	 * 每天下注场数
 	 */
-	private int MAXEACHDAY = 20;
+	private int MAXEACHDAY = 3;
+	
+	public static int SYSMAXEACHDAY=0;
+	 
 	/**
 	 * 每场比赛下注次数
 	 */
@@ -123,9 +126,10 @@ public class BKRollAutoSideStrategy2 extends BetStrategy {
 		LEFT_TIME = getIntegerParamValue(paramMap, "LEFT_TIME");
 		 
 		if( getIntegerParamValue(paramMap, "SCORERATE_ALLMATCH")!=null)
-			SCORERATE_ALLMATCH = getIntegerParamValue(paramMap, "SCORERATE_ALLMATCH");
-		if (getIntegerParamValue(paramMap, "MAXEACHDAY") != null)
-			MAXEACHDAY = getIntegerParamValue(paramMap, "MAXEACHDAY");
+			SCORERATE_ALLMATCH = getIntegerParamValue(paramMap, "SCORERATE_ALLMATCH"); 
+		MAXEACHDAY = this.getMaxEachday();
+		if(SYSMAXEACHDAY >0 )
+			MAXEACHDAY = SYSMAXEACHDAY;
 		maxInterval = computeMaxInterval();
 		if( getParamValue(paramMap, "FIX_SIDE")!=null)
 			FIX_SIDE= getParamValue(paramMap, "FIX_SIDE");
