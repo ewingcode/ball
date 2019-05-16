@@ -54,14 +54,14 @@ public class BetRuleParser {
 			betStrategy.setIsTest(betRule.getIsTest());
 			betStrategy.setContinuePlanMoney(betRule.getContinuePlanMoney());
 			betStrategy.setIsCover(betRule.getIsCover());
-			betStrategy.setContinueMaxMatch(betRule.getContinueMaxMatch());
-			betStrategy.initParam(GsonUtil.getGson().fromJson(betRule.getParam(), HashMap.class));
+			betStrategy.setContinueMaxMatch(betRule.getContinueMaxMatch()); 
+			betStrategy.setMaxEachday(betRule.getMaxEachday()); 
 			betStrategy.setLevel(Integer.valueOf(betRule.getLevel()));
 			betStrategy.setBetStrategyName(betRule.getName()); 
 			betStrategy.setIseff(betRule.getIseff().equals(IsEff.EFFECTIVE));
 			betStrategy.setgId(betRule.getGid()); 
 			betStrategy.setRuleId(betRule.getId());
-			betStrategy.setMaxEachday(betRule.getMaxEachday());
+			betStrategy.initParam(GsonUtil.getGson().fromJson(betRule.getParam(), HashMap.class));
 			list.add(betStrategy);
 		}
 		return list;
