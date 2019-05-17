@@ -5,12 +5,15 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aliyuncs.utils.StringUtils;
+import com.ewing.order.ball.BallAccountCenter;
 import com.ewing.order.ball.BallMember;
 import com.ewing.order.ball.shared.BetRuleStatus;
 import com.ewing.order.ball.shared.GtypeStatus;
@@ -40,7 +43,7 @@ import com.google.common.collect.Lists;
  */
 @RestController
 public class ReportRest extends BaseRest {
-
+	private static Logger log = LoggerFactory.getLogger(ReportRest.class);
 	@Resource
 	private BetAutoBuyService betAutoBuyService;
 	@Resource
@@ -71,52 +74,57 @@ public class ReportRest extends BaseRest {
 		String requestAccount = request.getParameter("account");
 		checkRequired(startDate, "date");
 		 
-		List<BetAutoBuy> betAutoBuyList = betAutoBuyService.findAll();
-		List<BwContinue> bwContinueList = bwContinueDao.findAllRunning();
-		List<BetAutoBuyDto> betAutoBuyDtoList = Lists.newArrayList();
-		for (BetAutoBuy betAutoBuy : betAutoBuyList) {
-			String account = betAutoBuy.getAccount();
-			 if(StringUtils.isNotEmpty(requestAccount) && !account.matches(requestAccount+"[^,]*")){
-				 continue;
-			 }
-			List<BetRule> ruleList = betRuleService.findRule(account, BetRuleStatus.NOTSUCCESS,
-					GtypeStatus.BK, PtypeStatus.ROLL);
-			List<BetLog> betLogList = betLogService.findEachDay(account, GtypeStatus.BK);
-			if (betAutoBuy != null) { 
-				BetAutoBuyDto dto = new BetAutoBuyDto();
-				betAutoBuyDtoList.add(dto);
-				BeanCopy.copy(dto, betAutoBuy, true);
-				if (CollectionUtils.isNotEmpty(ruleList)) {
-					dto.setMoney(ruleList.get(0).getMoney());
-					dto.setContinueMaxMatch(ruleList.get(0).getContinueMaxMatch() == null ? "0"
-							: ruleList.get(0).getContinueMaxMatch().toString());
-					dto.setContinueStartLostnum(ruleList.get(0).getContinueStartLostnum() == null
-							? "1" : ruleList.get(0).getContinueStartLostnum().toString());
-					dto.setContinuePlanMoney(ruleList.get(0).getContinuePlanMoney());
-					dto.setStopWingold(ruleList.get(0).getStopWingold() == null ? "0"
-							: String.valueOf(ruleList.get(0).getStopWingold().intValue()));
-					dto.setStopLosegold(ruleList.get(0).getStopLosegold() == null ? "0"
-							: String.valueOf(ruleList.get(0).getStopLosegold().intValue()));
-					dto.setIsTest(ruleList.get(0).getIsTest() == null ? "0"
-							: ruleList.get(0).getIsTest().toString());
-					dto.setRuleName(ruleList.get(0).getName()); 
-					dto.setMaxEachDay(ruleList.get(0).getMaxEachday().toString());
-				}
-				
-				dto.setTodayTotalMatch(CollectionUtils.isEmpty(betLogList)?0:betLogList.size());
-				// 如果不是活跃中的用户则设置为失效用户，让前台可以更新用户状态来激活自动下注
-				dto.setIseff(
-						ballMember.isActiveAccount(account) ? IsEff.EFFECTIVE : IsEff.INEFFECTIVE);
-				List<TotalBillDto> totalWinList = reportDao.findTotalWinByTicketIds(startDate, endDate, account);
-					if(CollectionUtils.isNotEmpty(totalWinList)){
-						dto.setTotalBillDto(totalWinList.get(0));
-					} 
-				for(BwContinue bwContinue : bwContinueList){
-					if(bwContinue.getAccount().equals(account)){
-						dto.setBwContinue(bwContinue);
+		List<BetAutoBuyDto> betAutoBuyDtoList=Lists.newArrayList();
+		try {
+			List<BetAutoBuy> betAutoBuyList = betAutoBuyService.findAll();
+			List<BwContinue> bwContinueList = bwContinueDao.findAllRunning();
+			betAutoBuyDtoList = Lists.newArrayList();
+			for (BetAutoBuy betAutoBuy : betAutoBuyList) {
+				String account = betAutoBuy.getAccount();
+				 if(StringUtils.isNotEmpty(requestAccount) && !account.matches(requestAccount+"[^,]*")){
+					 continue;
+				 }
+				List<BetRule> ruleList = betRuleService.findRule(account, BetRuleStatus.NOTSUCCESS,
+						GtypeStatus.BK, PtypeStatus.ROLL);
+				List<BetLog> betLogList = betLogService.findEachDay(account, GtypeStatus.BK);
+				if (betAutoBuy != null) { 
+					BetAutoBuyDto dto = new BetAutoBuyDto();
+					betAutoBuyDtoList.add(dto);
+					BeanCopy.copy(dto, betAutoBuy, true);
+					if (CollectionUtils.isNotEmpty(ruleList)) {
+						dto.setMoney(ruleList.get(0).getMoney());
+						dto.setContinueMaxMatch(ruleList.get(0).getContinueMaxMatch() == null ? "0"
+								: ruleList.get(0).getContinueMaxMatch().toString());
+						dto.setContinueStartLostnum(ruleList.get(0).getContinueStartLostnum() == null
+								? "1" : ruleList.get(0).getContinueStartLostnum().toString());
+						dto.setContinuePlanMoney(ruleList.get(0).getContinuePlanMoney());
+						dto.setStopWingold(ruleList.get(0).getStopWingold() == null ? "0"
+								: String.valueOf(ruleList.get(0).getStopWingold().intValue()));
+						dto.setStopLosegold(ruleList.get(0).getStopLosegold() == null ? "0"
+								: String.valueOf(ruleList.get(0).getStopLosegold().intValue()));
+						dto.setIsTest(ruleList.get(0).getIsTest() == null ? "0"
+								: ruleList.get(0).getIsTest().toString());
+						dto.setRuleName(ruleList.get(0).getName()); 
+						dto.setMaxEachDay(ruleList.get(0).getMaxEachday().toString());
+					}
+					
+					dto.setTodayTotalMatch(CollectionUtils.isEmpty(betLogList)?0:betLogList.size());
+					// 如果不是活跃中的用户则设置为失效用户，让前台可以更新用户状态来激活自动下注
+					dto.setIseff(
+							ballMember.isActiveAccount(account) ? IsEff.EFFECTIVE : IsEff.INEFFECTIVE);
+					List<TotalBillDto> totalWinList = reportDao.findTotalWinByTicketIds(startDate, endDate, account);
+						if(CollectionUtils.isNotEmpty(totalWinList)){
+							dto.setTotalBillDto(totalWinList.get(0));
+						} 
+					for(BwContinue bwContinue : bwContinueList){
+						if(bwContinue.getAccount().equals(account)){
+							dto.setBwContinue(bwContinue);
+						}
 					}
 				}
 			}
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
 		}
 	
 		return RestResult.successResult(betAutoBuyDtoList);
