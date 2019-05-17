@@ -135,7 +135,7 @@ public class BetAutoRest extends BaseRest {
 				dto.setStopLosegold(ruleList.get(0).getStopLosegold()==null?"0":String.valueOf(ruleList.get(0).getStopLosegold().intValue()));
 				dto.setIsTest(ruleList.get(0).getIsTest()==null?"0":ruleList.get(0).getIsTest().toString());
 			    dto.setRuleName(ruleList.get(0).getName());  
-			    dto.setMaxEachDay(ruleList.get(0).getMaxEachday());
+			    dto.setMaxEachDay(ruleList.get(0).getMaxEachday()==null?"3":ruleList.get(0).getMaxEachday().toString());
 			} 
 			// 如果不是活跃中的用户则设置为失效用户，让前台可以更新用户状态来激活自动下注
 			dto.setIseff(ballMember.isActiveAccount(account) ? IsEff.EFFECTIVE : IsEff.INEFFECTIVE);

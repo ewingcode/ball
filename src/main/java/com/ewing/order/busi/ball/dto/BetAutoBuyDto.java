@@ -25,7 +25,7 @@ public class BetAutoBuyDto {
 	private String stopWingold; 
 	private String stopLosegold;
 	private String continuePlanMoney;
-	private Integer maxEachDay;
+	private String maxEachDay;
 	private Integer todayTotalMatch;
 	private Timestamp createTime;
 	private Timestamp lastUpdate;
@@ -42,11 +42,11 @@ public class BetAutoBuyDto {
 		this.ballAccount = ballAccount;
 	}
 
-	public Integer getMaxEachDay() {
+	public String getMaxEachDay() {
 		return maxEachDay;
 	}
 
-	public void setMaxEachDay(Integer maxEachDay) {
+	public void setMaxEachDay(String maxEachDay) {
 		this.maxEachDay = maxEachDay;
 	}
 

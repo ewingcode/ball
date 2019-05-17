@@ -44,6 +44,8 @@ public abstract class BetStrategy {
 	private Integer isCover;
 	
 	private Integer maxEachday;
+	
+	private Integer betNumber;
 
 	private Map<String, String> paramMap;
 
@@ -301,9 +303,10 @@ public abstract class BetStrategy {
 		if (bwContinue.getTotalMatch() >= this.continueMaxMatch) {
 			return false;
 		}
+		
 		return true;
-	}
-
+	} 
+	 
 	protected String computeBetMoney(Float betRadio, Float betMoney) {
 		if (this.continueMaxMatch == null || this.continueMaxMatch == 0) {
 			return String.valueOf(betMoney.intValue());
