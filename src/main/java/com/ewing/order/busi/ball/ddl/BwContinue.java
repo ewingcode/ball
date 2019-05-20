@@ -45,6 +45,8 @@ public class BwContinue implements java.io.Serializable {
 	private Integer continueMaxMatch;
 	@Column(name = "continue_start_lostnum")
 	private Integer continueStartLostnum;
+	@Column(name = "continue_plan_money")
+	private String continuePlanMoney; 
 	@Column(name = "win_gold")
 	private Float winGold;
 	@Column(name = "total_match")
@@ -57,6 +59,14 @@ public class BwContinue implements java.io.Serializable {
 	private Timestamp createTime;
 	@Column(name = "lastUpdate")
 	private Timestamp lastUpdate;
+
+	public String getContinuePlanMoney() {
+		return continuePlanMoney;
+	}
+
+	public void setContinuePlanMoney(String continuePlanMoney) {
+		this.continuePlanMoney = continuePlanMoney;
+	}
 
 	public Float getWinGold() {
 		return winGold;

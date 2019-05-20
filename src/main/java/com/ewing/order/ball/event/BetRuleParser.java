@@ -53,6 +53,7 @@ public class BetRuleParser {
 			betStrategy.setMoney(betRule.getMoney());
 			betStrategy.setIsTest(betRule.getIsTest());
 			betStrategy.setContinuePlanMoney(betRule.getContinuePlanMoney());
+			betStrategy.setWinRule(betRule.getWinRule());
 			betStrategy.setIsCover(betRule.getIsCover());
 			betStrategy.setContinueMaxMatch(betRule.getContinueMaxMatch()); 
 			betStrategy.setMaxEachday(betRule.getMaxEachday()); 

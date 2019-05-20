@@ -1,11 +1,14 @@
 package com.ewing.order.ball.util;
 
 import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.ewing.order.ball.dto.BetInfoDto;
 import com.ewing.order.busi.ball.ddl.BetRollInfo;
+import com.ewing.order.util.DataFormat;
 
 public class CalUtil {
 
@@ -112,5 +115,21 @@ public class CalUtil {
 			return 0f;
 		}
 	}
+	
+	public static String getStartDayOfWeek() {
+		Calendar cal = Calendar.getInstance();
+		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+		String nowDate = DataFormat.DateToString(cal.getTime(), DataFormat.DATE_FORMAT);
+		Date endTimeOfWeek = DataFormat.stringToDate(nowDate + " 11:59:59",
+				DataFormat.DATETIME_FORMAT);
+		int reduceDay = 0;
+		if (dayOfWeek == 1 || (dayOfWeek == 2 && cal.getTime().before(endTimeOfWeek))) {
+			reduceDay = 5 + cal.get(Calendar.DAY_OF_WEEK);
+		} else {
+			reduceDay = cal.get(Calendar.DAY_OF_WEEK) - 2;
+		}
+		cal.add(Calendar.DATE, Math.negateExact(reduceDay));
+		return DataFormat.DateToString(cal.getTime(), DataFormat.DATE_FORMAT);
+	} 
 
 }

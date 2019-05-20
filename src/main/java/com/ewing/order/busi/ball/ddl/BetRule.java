@@ -89,8 +89,17 @@ public class BetRule implements java.io.Serializable {
 	private Integer isCover;
 	@Column(name = "continue_plan_money")
 	private String continuePlanMoney;
+	@Column(name = "win_rule")
+	private String winRule;
 	
-	
+	public String getWinRule() {
+		return winRule;
+	}
+
+	public void setWinRule(String winRule) {
+		this.winRule = winRule;
+	}
+
 	public Integer getMaxEachday() {
 		return maxEachday;
 	}

@@ -19,6 +19,7 @@ import com.ewing.order.ball.bill.DailyBillResp;
 import com.ewing.order.ball.event.BallSource;
 import com.ewing.order.ball.event.BetInfoListener;
 import com.ewing.order.ball.login.LoginResp;
+import com.ewing.order.ball.util.CalUtil;
 import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.busi.ball.dao.BetRuleDao;
 import com.ewing.order.busi.ball.dao.ReportDao;
@@ -215,7 +216,7 @@ public class BallAutoBet {
 				String account = betAutoBuy.getAccount(); 
 				BetRule betRule = allRuleMap.get(betAutoBuy.getAccount());
 				TotalBillDto totalBillDto = null ;
-				List<TotalBillDto> totalWinList = reportDao.findOneAccountTotalWin(account,getStartDayOfWeek() );
+				List<TotalBillDto> totalWinList = reportDao.findOneAccountTotalWin(account,CalUtil.getStartDayOfWeek() );
 				if(CollectionUtils.isNotEmpty(totalWinList)){
 					totalBillDto = totalWinList.get(0);
 				}
@@ -294,21 +295,7 @@ public class BallAutoBet {
 
 	}
 
-	public String getStartDayOfWeek() {
-		Calendar cal = Calendar.getInstance();
-		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-		String nowDate = DataFormat.DateToString(cal.getTime(), DataFormat.DATE_FORMAT);
-		Date endTimeOfWeek = DataFormat.stringToDate(nowDate + " 11:59:59",
-				DataFormat.DATETIME_FORMAT);
-		int reduceDay = 0;
-		if (dayOfWeek == 1 || (dayOfWeek == 2 && cal.getTime().before(endTimeOfWeek))) {
-			reduceDay = 5 + cal.get(Calendar.DAY_OF_WEEK);
-		} else {
-			reduceDay = cal.get(Calendar.DAY_OF_WEEK) - 2;
-		}
-		cal.add(Calendar.DATE, Math.negateExact(reduceDay));
-		return DataFormat.DateToString(cal.getTime(), DataFormat.DATE_FORMAT);
-	} 
+	
 
 	public List<BetAutoBuy> hasNewBetAccount() {
 		List<BetAutoBuy> list = betAutoBuyService.findAll();

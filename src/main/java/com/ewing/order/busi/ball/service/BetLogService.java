@@ -9,7 +9,9 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 import com.ewing.order.busi.ball.dao.BetLogDao;
+import com.ewing.order.busi.ball.dao.ReportDao;
 import com.ewing.order.busi.ball.ddl.BetLog;
+import com.ewing.order.busi.ball.dto.BetDetailDto;
 import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.core.jpa.BaseDao;
 import com.ewing.order.util.DataFormat;
@@ -25,7 +27,8 @@ public class BetLogService {
 	private BetLogDao betLogDao;
 	@Resource
 	private BaseDao baseDao;
-	
+	@Resource
+	private ReportDao reportDao;
 	
 
 	@Transactional(rollbackOn = { Exception.class })
@@ -55,4 +58,9 @@ public class BetLogService {
 		String endTime = DataFormat.DateToString(new Date(), DataFormat.DATE_FULLTIME_FORMAT);
 		return betLogDao.findEachDay(account, gtype, startTime, endTime);
 	}
+	@Transactional(rollbackOn = { Exception.class })
+	public List<BetDetailDto> findSucBetDetail(String account, String startDate,Integer num) {
+		return reportDao.findSucBetDetail(account, startDate, num);
+	}
+	
 }

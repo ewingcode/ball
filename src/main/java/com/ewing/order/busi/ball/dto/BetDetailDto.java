@@ -70,6 +70,8 @@ public class BetDetailDto implements java.io.Serializable {
 	private String createTime; 
 	@Column(name = "result")
 	private String result;
+	@Column(name = "n_result")
+	private String nResult;
 	@Column(name = "match_status")
 	private String matchStatus;
 	@Column(name = "total")
@@ -77,6 +79,12 @@ public class BetDetailDto implements java.io.Serializable {
 
 	private String wingold;
 	
+	public String getnResult() {
+		return nResult;
+	}
+	public void setnResult(String nResult) {
+		this.nResult = nResult;
+	}
 	public String getWingold() {
 		return wingold;
 	}

@@ -1,7 +1,9 @@
 package com.ewing.order.ball.event;
 
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,11 +11,14 @@ import org.slf4j.LoggerFactory;
 import com.ewing.order.ball.bk.bet.BetResp;
 import com.ewing.order.ball.bk.bet.BkPreOrderViewResp;
 import com.ewing.order.ball.logger.BetLogger;
+import com.ewing.order.ball.shared.BetLogResult;
 import com.ewing.order.ball.shared.BwContinueAllowBet;
 import com.ewing.order.ball.shared.BwContinueStatus;
+import com.ewing.order.ball.util.CalUtil;
 import com.ewing.order.ball.util.RequestTool;
 import com.ewing.order.busi.ball.ddl.BetRule;
 import com.ewing.order.busi.ball.ddl.BwContinue;
+import com.ewing.order.busi.ball.dto.BetDetailDto;
 
 public abstract class BetStrategy {
 	private static Logger log = LoggerFactory.getLogger(BetStrategy.class);
@@ -45,11 +50,19 @@ public abstract class BetStrategy {
 	
 	private Integer maxEachday;
 	
-	private Integer betNumber;
+	private String winRule;
 
 	private Map<String, String> paramMap;
 
 	private BwContinue bwContinue;
+
+	public String getWinRule() {
+		return winRule;
+	}
+
+	public void setWinRule(String winRule) {
+		this.winRule = winRule;
+	}
 
 	public Integer getMaxEachday() {
 		return maxEachday;
@@ -292,6 +305,10 @@ public abstract class BetStrategy {
 		}
 		bwContinue = this.betStrategyContext.getBwContinueService().findRunning(account, ruleId);
 		if (bwContinue == null) {
+			Integer loseTotal = loseTotalAfterWinRule();
+			bwContinue = this.betStrategyContext.getBwContinueService().newBwContinue(account, ruleId, loseTotal);
+		}
+		if (bwContinue == null) {
 			return true;
 		}
 		if (bwContinue.getAllowBet().equals(BwContinueAllowBet.NOTALLOW)) {
@@ -304,6 +321,10 @@ public abstract class BetStrategy {
 			return false;
 		}
 		
+		if(StringUtils.isNotEmpty(bwContinue.getContinuePlanMoney())){
+			this.continuePlanMoney= bwContinue.getContinuePlanMoney();
+			this.continueMaxMatch = bwContinue.getContinueMaxMatch();
+		}
 		return true;
 	} 
 	 
@@ -311,7 +332,8 @@ public abstract class BetStrategy {
 		if (this.continueMaxMatch == null || this.continueMaxMatch == 0) {
 			return String.valueOf(betMoney.intValue());
 		}
-
+		
+		
 		Float totalBetMoney = betMoney;
 		if(!StringUtils.isEmpty(this.continuePlanMoney)){
 			String[] planMoneyArray = StringUtils.split(this.continuePlanMoney, ",");
@@ -338,6 +360,26 @@ public abstract class BetStrategy {
 		}
 	}
 
+	protected Integer loseTotalAfterWinRule(){
+		if(StringUtils.isEmpty(this.winRule))
+			return 0;
+		String[] winRuleArray = StringUtils.split(this.winRule, ",");
+		if(winRuleArray==null || winRuleArray.length!=2)
+			return 0;
+		Integer winTotal = Integer.valueOf(winRuleArray[0]);
+		Integer loseTotal = Integer.valueOf(winRuleArray[1]);
+		List<BetDetailDto> betLogList = this.betStrategyContext.getBetLogService().findSucBetDetail(betStrategyContext.getAccount(), CalUtil.getStartDayOfWeek(), winTotal);
+		if(CollectionUtils.isEmpty(betLogList) || betLogList.size()<winTotal)
+			return 0;
+		 
+		for(BetDetailDto betDetailDto : betLogList){
+			if(!betDetailDto.getnResult().equals(BetLogResult.WIN)){
+				return 0;
+			}
+		}
+		return loseTotal;
+	}
+	
 	protected Boolean isAllowBuy() {
 		return getIsTest() == null || getIsTest() == 0;
 	}

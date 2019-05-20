@@ -83,19 +83,29 @@ public class ReportDao {
 	}
 
 	public List<BetDetailDto> findBetDetail(String account, String date) {
-		String sql = "SELECT account,match_status as matchStatus, CAST(r.ioratio*r.gold AS DECIMAL(10,1)) as wingold,date_format(r.create_time, '%Y%m%d%H') as createTime,r.gold,r.total,r.type,r.spread,r.result,r.league,r.team_c,r.team_h";
+		String sql = "SELECT account,match_status as matchStatus, CAST(r.ioratio*r.gold AS DECIMAL(10,1)) as wingold,date_format(r.create_time, '%Y%m%d%H') as createTime,r.gold,r.total,r.type,r.spread,r.result,r.n_result,r.league,r.team_c,r.team_h";
 		sql += " FROM bet_log_result r WHERE 1=1 AND CODE=560 ";
 		if (StringUtils.isNotEmpty(account)) {
 			sql += "and account ='" + account + "'  ";
 		}
 		sql += "and r.create_time >='" + date + "'  ORDER BY id DESC ";
 		return baseDao.noMappedObjectQuery(sql, BetDetailDto.class);
-	}
+	} 
 
 	public List<BetDetailDto> findBetDetailIncludeError(String account, String date) {
 		String sql = "SELECT   match_status as matchStatus,CAST(r.ioratio*r.gold AS DECIMAL(10,1)) as wingold,date_format(r.create_time, '%Y%m%d%H') as createTime,r.gold,r.total,r.type,r.spread,r.result,r.league,r.team_c,r.team_h";
 		sql += " FROM bet_log_result r WHERE account ='" + account + "'  and r.create_time >='"
 				+ date + "'  GROUP BY account,gid ORDER BY id DESC ";
+		return baseDao.noMappedObjectQuery(sql, BetDetailDto.class);
+	}
+	
+	public List<BetDetailDto> findSucBetDetail(String account, String startDate,Integer num) {
+		String sql = "SELECT account,match_status as matchStatus, CAST(r.ioratio*r.gold AS DECIMAL(10,1)) as wingold,date_format(r.create_time, '%Y%m%d%H') as createTime,r.gold,r.total,r.type,r.spread,r.result,r.n_result,r.league,r.team_c,r.team_h";
+		sql += " FROM bet_log_result r WHERE 1=1 AND CODE=560 and (errormsg IS NULL or gold>0) ";
+		if (StringUtils.isNotEmpty(account)) {
+			sql += "and account ='" + account + "'  ";
+		}
+		sql += "and r.create_time >='" + startDate + "'  ORDER BY id DESC limit  "+num;
 		return baseDao.noMappedObjectQuery(sql, BetDetailDto.class);
 	}
 }

@@ -88,16 +88,25 @@ public class BwContinueService {
 		}
 		
 	}
-
-	public BwContinue newBwContinue(String account, Integer betRuleId) {
+	@Transactional(rollbackOn={Exception.class})
+	public BwContinue newBwContinue(String account, Integer betRuleId,Integer loseTotal) {
 		BetRule betRule = betRuleDao.findById(betRuleId);
 		if (betRule != null && betRule.getContinueMaxMatch() != null) {
+			StringBuffer lostTotalPlanMoney=new StringBuffer();
+			String continuePlanMoney = betRule.getContinuePlanMoney();
+			for(int i=0;i<loseTotal;i++){
+				lostTotalPlanMoney.append("0").append(",");
+			}
+			if(lostTotalPlanMoney.length()>0){
+				continuePlanMoney =lostTotalPlanMoney.toString()+continuePlanMoney;
+			}
 			BwContinue bwContinue = new BwContinue();
 			bwContinue.setAccount(account);
 			bwContinue.setAllowBet(BwContinueAllowBet.ALLOW);
 			bwContinue.setBetRuleId(betRuleId);
-			bwContinue.setContinueMaxMatch(betRule.getContinueMaxMatch());
+			bwContinue.setContinueMaxMatch(betRule.getContinueMaxMatch()+loseTotal);
 			bwContinue.setContinueStartLostnum(betRule.getContinueStartLostnum());
+			bwContinue.setContinuePlanMoney(continuePlanMoney);
 			bwContinue.setStatus(BwContinueStatus.RUNNING);
 			bwContinue.setTargetMoney(Float.valueOf(betRule.getMoney()));
 			bwContinue.setTotalBetMoney(0f);
@@ -107,18 +116,15 @@ public class BwContinueService {
 		}
 		return null;
 	}
-	@Transactional(rollbackOn={Exception.class})
+	 
 	public BwContinue findRunning(String account, Integer betRuleId) {
-		BwContinue bwContinue = bwContinueDao.findRunning(account, betRuleId);
-		if (bwContinue == null) {
-			return newBwContinue(account, betRuleId);
-		}
-		return bwContinue;
-	}
+		return bwContinueDao.findRunning(account, betRuleId); 
+	}  
 
 	public List<BwContinue> findAllRunning() {
 		return bwContinueDao.findAllRunning();
 	}
+	
 	@Transactional(rollbackOn={Exception.class})
 	public int addNewMatch(BwContinue lastBwContinue, Integer betLogId, Float betMoney) {
 		BwBetDetail bwBetDetail = new BwBetDetail();
