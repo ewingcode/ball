@@ -181,11 +181,12 @@ public class BallAutoBet {
 		if (list == null)
 			return; 
 		for (BetAutoBuy betAutoBuy : list) {
-			if (betAutoBuy.getIsallow().equals(IsEff.EFFECTIVE)) {
+			if (betAutoBuy.getIsallow().equals(IsEff.EFFECTIVE)) { 
 				LoginResp loginResp = BallLoginCache.getLoginResp(betAutoBuy.getAccount());
 				if (loginResp != null) {
 					updateAccountBill(betAutoBuy.getBallAccount(), loginResp.getUid());
 				}
+				 
 			}
 		}
 	}
@@ -210,7 +211,7 @@ public class BallAutoBet {
 			}
 		}
 		for (BetAutoBuy betAutoBuy : list) {
-			String account = betAutoBuy.getAccount();
+			String account = betAutoBuy.getAccount(); 
 			BetRule betRule = allRuleMap.get(betAutoBuy.getAccount());
 			TotalBillDto totalBillDto = null ;
 			List<TotalBillDto> totalWinList = reportDao.findOneAccountTotalWin(account,getStartDayOfWeek() );
@@ -219,7 +220,7 @@ public class BallAutoBet {
 			}
 			//恢复由于规则停止的下注账户
 			if(betAutoBuy.getIseff().equals(IsEff.INEFFECTIVE) && (betAutoBuy.getStopByrule()!=null && betAutoBuy.getStopByrule().equals(IsEff.EFFECTIVE))){
-				if(totalBillDto==null || (totalBillDto.getTotalWin()==null && totalBillDto.getTotalWin() == 0 )){
+				if(totalBillDto==null || (totalBillDto.getTotalWin()==null || totalBillDto.getTotalWin() == 0 )){
 					betAutoBuyService.recoverByRule(account);
 					continue;
 				}
