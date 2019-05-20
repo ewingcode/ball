@@ -211,43 +211,47 @@ public class BallAutoBet {
 			}
 		}
 		for (BetAutoBuy betAutoBuy : list) {
-			String account = betAutoBuy.getAccount(); 
-			BetRule betRule = allRuleMap.get(betAutoBuy.getAccount());
-			TotalBillDto totalBillDto = null ;
-			List<TotalBillDto> totalWinList = reportDao.findOneAccountTotalWin(account,getStartDayOfWeek() );
-			if(CollectionUtils.isNotEmpty(totalWinList)){
-				totalBillDto = totalWinList.get(0);
-			}
-			//恢复由于规则停止的下注账户
-			if(betAutoBuy.getIseff().equals(IsEff.INEFFECTIVE) && (betAutoBuy.getStopByrule()!=null && betAutoBuy.getStopByrule().equals(IsEff.EFFECTIVE))){
-				if(totalBillDto==null || (totalBillDto.getTotalWin()==null || totalBillDto.getTotalWin() == 0 )){
-					betAutoBuyService.recoverByRule(account);
-					continue;
+			try {
+				String account = betAutoBuy.getAccount(); 
+				BetRule betRule = allRuleMap.get(betAutoBuy.getAccount());
+				TotalBillDto totalBillDto = null ;
+				List<TotalBillDto> totalWinList = reportDao.findOneAccountTotalWin(account,getStartDayOfWeek() );
+				if(CollectionUtils.isNotEmpty(totalWinList)){
+					totalBillDto = totalWinList.get(0);
 				}
-			}
-			//按照设置规则为账户停止下注
-			if (betAutoBuy.getIseff().equals(IsEff.EFFECTIVE)
-					&& betAutoBuy.getIsallow().equals(IsEff.EFFECTIVE)) {
-				
-				if (betRule == null || totalBillDto == null || totalBillDto.getTotalWin()==null) {
-					continue;
-				}
-				if (totalBillDto.getTotalWin() < 0) {
-					if (betRule.getStopLosegold() != null && betRule.getStopLosegold() > 0
-							&& Math.abs(totalBillDto.getTotalWin())>=betRule.getStopLosegold()) {
-						log.info("exceed stoplosegold:"+betRule.getStopLosegold()+",winTotal:"+totalBillDto.getTotalWin()+",start autoBuy for " + betAutoBuy.getAccount());
-						betAutoBuyService.stopByRule(account); 
-						stop(account);
-					} 
-				}else if(totalBillDto.getTotalWin() > 0){ 
-					if (betRule.getStopWingold() != null && betRule.getStopWingold() > 0
-							&& totalBillDto.getTotalWin()>=betRule.getStopWingold()) {
-						log.info("exceed stopWingold:"+betRule.getStopWingold()+",winTotal:"+totalBillDto.getTotalWin()+",start autoBuy for " + betAutoBuy.getAccount());
-						betAutoBuyService.stopByRule(account);
-						stop(account);
+				//恢复由于规则停止的下注账户
+				if(betAutoBuy.getIseff().equals(IsEff.INEFFECTIVE) && (betAutoBuy.getStopByrule()!=null && betAutoBuy.getStopByrule().equals(IsEff.EFFECTIVE))){
+					if(totalBillDto==null || (totalBillDto.getTotalWin()==null || totalBillDto.getTotalWin() == 0 )){
+						betAutoBuyService.recoverByRule(account);
+						continue;
 					}
-
 				}
+				//按照设置规则为账户停止下注
+				if (betAutoBuy.getIseff().equals(IsEff.EFFECTIVE)
+						&& betAutoBuy.getIsallow().equals(IsEff.EFFECTIVE)) {
+					
+					if (betRule == null || totalBillDto == null || totalBillDto.getTotalWin()==null) {
+						continue;
+					}
+					if (totalBillDto.getTotalWin() < 0) {
+						if (betRule.getStopLosegold() != null && betRule.getStopLosegold() > 0
+								&& Math.abs(totalBillDto.getTotalWin())>=betRule.getStopLosegold()) {
+							log.info("exceed stoplosegold:"+betRule.getStopLosegold()+",winTotal:"+totalBillDto.getTotalWin()+",start autoBuy for " + betAutoBuy.getAccount());
+							betAutoBuyService.stopByRule(account); 
+							stop(account);
+						} 
+					}else if(totalBillDto.getTotalWin() > 0){ 
+						if (betRule.getStopWingold() != null && betRule.getStopWingold() > 0
+								&& totalBillDto.getTotalWin()>=betRule.getStopWingold()) {
+							log.info("exceed stopWingold:"+betRule.getStopWingold()+",winTotal:"+totalBillDto.getTotalWin()+",start autoBuy for " + betAutoBuy.getAccount());
+							betAutoBuyService.stopByRule(account);
+							stop(account);
+						}
+
+					}
+				}
+			} catch (Exception e) {
+			     log.error("停止账户出错"+e.getMessage(),e);
 			}
 		}
 	}
