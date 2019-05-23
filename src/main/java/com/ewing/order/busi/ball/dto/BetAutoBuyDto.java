@@ -33,7 +33,16 @@ public class BetAutoBuyDto {
 	private List<String> ruleNameList;
 	private TotalBillDto totalBillDto;
 	private BwContinue bwContinue; 
+	private String winRule;
 	
+	public String getWinRule() {
+		return winRule;
+	}
+
+	public void setWinRule(String winRule) {
+		this.winRule = winRule;
+	}
+
 	public String getBallAccount() {
 		return ballAccount;
 	}

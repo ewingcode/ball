@@ -106,6 +106,7 @@ public class ReportRest extends BaseRest {
 								: ruleList.get(0).getIsTest().toString());
 						dto.setRuleName(ruleList.get(0).getName()); 
 						dto.setMaxEachDay(ruleList.get(0).getMaxEachday().toString());
+						dto.setWinRule(ruleList.get(0).getWinRule());
 					}
 					
 					dto.setTodayTotalMatch(CollectionUtils.isEmpty(betLogList)?0:betLogList.size());
