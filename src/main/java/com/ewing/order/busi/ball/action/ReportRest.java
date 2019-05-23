@@ -106,7 +106,7 @@ public class ReportRest extends BaseRest {
 								: ruleList.get(0).getIsTest().toString());
 						dto.setRuleName(ruleList.get(0).getName()); 
 						dto.setMaxEachDay(ruleList.get(0).getMaxEachday().toString());
-						dto.setWinRule(ruleList.get(0).getWinRule());
+						dto.setWinRule(StringUtils.isEmpty(ruleList.get(0).getWinRule())?"无": ruleList.get(0).getWinRule());
 					}
 					
 					dto.setTodayTotalMatch(CollectionUtils.isEmpty(betLogList)?0:betLogList.size());
@@ -121,7 +121,7 @@ public class ReportRest extends BaseRest {
 						if(bwContinue.getAccount().equals(account)){
 							dto.setBwContinue(bwContinue);
 							if(StringUtils.isNotEmpty(bwContinue.getContinuePlanMoney()))
-								dto.setContinuePlanMoney(bwContinue.getContinuePlanMoney());
+								dto.setContinuePlanMoney("[连赢后计划变更]"+bwContinue.getContinuePlanMoney());
 						}
 					}
 				}

@@ -37,7 +37,7 @@ public class BetRuleService {
 
 	@Transactional
 	public void updateRule(String account, String gtype, String ptype, String money, Integer isTest,
-			Integer continueMaxMatch, Integer continueStartLostnum,Float stopWingold,Float stopLosegold,String continuePlanMoney,String ruleName,Integer maxEachDay)
+			Integer continueMaxMatch, Integer continueStartLostnum,Float stopWingold,Float stopLosegold,String continuePlanMoney,String ruleName,Integer maxEachDay,String winRule)
 			throws  Exception {
 		List<BetRule> ruleList = betRuleDao.findRule(account, BetRuleStatus.NOTSUCCESS, gtype,
 				ptype);
@@ -65,6 +65,7 @@ public class BetRuleService {
 			betRule.setParam(betRulePool.getParam());
 			betRule.setImpl_code(betRulePool.getImpl_code());
 			betRule.setMaxEachday(maxEachDay);
+			betRule.setWinRule(winRule);
 			baseDao.save(betRule);
 		} else {
 			BetRule betRule = ruleList.get(0);
@@ -80,6 +81,7 @@ public class BetRuleService {
 			betRule.setParam(betRulePool.getParam());
 			betRule.setImpl_code(betRulePool.getImpl_code());
 			betRule.setMaxEachday(maxEachDay);
+			betRule.setWinRule(winRule);
 			baseDao.update(betRule);
 			if(continueMaxMatch==0)
 				bwContinueDao.update2Cancel(betRule.getId());

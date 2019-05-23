@@ -66,10 +66,11 @@ public class BetAutoRest extends BaseRest {
 		String continuePlanMoney = requestJson.getString("continuePlanMoney"); 
 		String ruleName = requestJson.getString("ruleName"); 
 		String maxEachDay = requestJson.getString("maxEachDay"); 
+		String winRule = requestJson.getString("winRule"); 
 		checkRequired(account, "account");
 		checkRequired(iseff, "iseff");
 		betAutoBuyService.updateIsEff(account, iseff, phone, money,Integer.valueOf(isTest),
-				Integer.valueOf(continueMaxMatch),Integer.valueOf(continueStartLostnum),Float.valueOf(stopWingold),Float.valueOf(stopLosegold),continuePlanMoney,ruleName,Integer.valueOf(maxEachDay));
+				Integer.valueOf(continueMaxMatch),Integer.valueOf(continueStartLostnum),Float.valueOf(stopWingold),Float.valueOf(stopLosegold),continuePlanMoney,ruleName,Integer.valueOf(maxEachDay),winRule);
 		return RestResult.successResult(true);
 	}
 	
