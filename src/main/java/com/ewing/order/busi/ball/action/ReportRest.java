@@ -120,8 +120,10 @@ public class ReportRest extends BaseRest {
 					for(BwContinue bwContinue : bwContinueList){
 						if(bwContinue.getAccount().equals(account)){
 							dto.setBwContinue(bwContinue);
-							if(StringUtils.isNotEmpty(bwContinue.getContinuePlanMoney()))
+							if(StringUtils.isNotEmpty(bwContinue.getContinuePlanMoney())){
 								dto.setContinuePlanMoney("[连赢后计划变更]"+bwContinue.getContinuePlanMoney());
+								dto.setContinueMaxMatch(String.valueOf(bwContinue.getContinueMaxMatch()));
+							}
 						}
 					}
 				}
