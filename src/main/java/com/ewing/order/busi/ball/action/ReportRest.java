@@ -119,6 +119,8 @@ public class ReportRest extends BaseRest {
 					for(BwContinue bwContinue : bwContinueList){
 						if(bwContinue.getAccount().equals(account)){
 							dto.setBwContinue(bwContinue);
+							if(StringUtils.isNotEmpty(bwContinue.getContinuePlanMoney()))
+								dto.setContinuePlanMoney(bwContinue.getContinuePlanMoney());
 						}
 					}
 				}
