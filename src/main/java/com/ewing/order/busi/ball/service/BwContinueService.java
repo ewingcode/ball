@@ -107,9 +107,9 @@ public class BwContinueService {
 			bwContinue.setContinueMaxMatch(betRule.getContinueMaxMatch());
 			if(loseTotal>0){
 				bwContinue.setContinueMaxMatch(betRule.getContinueMaxMatch()+loseTotal);
+				bwContinue.setContinuePlanMoney(continuePlanMoney);
 			}
-			bwContinue.setContinueStartLostnum(betRule.getContinueStartLostnum());
-			bwContinue.setContinuePlanMoney(continuePlanMoney);
+			bwContinue.setContinueStartLostnum(betRule.getContinueStartLostnum());  
 			bwContinue.setStatus(BwContinueStatus.RUNNING);
 			bwContinue.setTargetMoney(Float.valueOf(betRule.getMoney()));
 			bwContinue.setTotalBetMoney(0f);
