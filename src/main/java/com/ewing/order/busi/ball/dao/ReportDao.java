@@ -27,7 +27,7 @@ public class ReportDao {
 	@Transactional
 	public List<TotalBillDto> findTotalWin(String startDate,String endDate,String account) {
 		String sql = "SELECT account,COUNT(1) AS matchCount ,SUM(win_gold) AS totalWin FROM `bet_bill` ";
-				sql += "WHERE SUBSTR(w_id,3) IN (SELECT ticket_id FROM bet_log  WHERE  bet_rule_id IS NOT NULL) ";
+				sql += " WHERE SUBSTR(w_id,3) IN (SELECT ticket_id FROM bet_log  WHERE  bet_rule_id IS NOT NULL) ";
 				if(StringUtils.isNotEmpty(account)){
 					sql +=" AND  account like '"+account+"%'";
 				}
@@ -61,7 +61,7 @@ public class ReportDao {
 	@Transactional
 	public List<TotalBillDto> findOneAccountTotalWin(String account ,String startDate) {
 		String sql = "SELECT  COUNT(1) AS matchCount ,SUM(win_gold) AS totalWin FROM `bet_bill` ";
-				sql += "WHERE SUBSTR(w_id,3) IN (SELECT ticket_id FROM bet_log l WHERE l.bet_rule_id IS NOT NULL ";
+				sql += " WHERE SUBSTR(w_id,3) IN (SELECT ticket_id FROM bet_log l WHERE l.bet_rule_id IS NOT NULL ";
 				sql += " and code='560' and l.account ='"+account+"' and l.create_time >='"
 				+ startDate + "' )";
 				if(StringUtils.isNotEmpty(startDate))
@@ -88,7 +88,7 @@ public class ReportDao {
 		if (StringUtils.isNotEmpty(account)) {
 			sql += "and account ='" + account + "'  ";
 		}
-		sql += "and r.create_time >='" + date + "'  ORDER BY id DESC ";
+		sql += " and r.create_time >='" + date + "'  ORDER BY id DESC ";
 		return baseDao.noMappedObjectQuery(sql, BetDetailDto.class);
 	} 
 
@@ -101,11 +101,24 @@ public class ReportDao {
 	
 	public List<BetDetailDto> findSucBetDetail(String account, String startDate,Integer num) {
 		String sql = "SELECT account,match_status as matchStatus, CAST(r.ioratio*r.gold AS DECIMAL(10,1)) as wingold,date_format(r.create_time, '%Y%m%d%H') as createTime,r.gold,r.total,r.type,r.spread,r.result,r.n_result,r.league,r.team_c,r.team_h";
-		sql += " FROM bet_log_result r WHERE 1=1 AND CODE='560'";
+		sql += " FROM bet_log_result r WHERE 1=1 AND CODE='560' and errormsg is null";
 		if (StringUtils.isNotEmpty(account)) {
-			sql += "and account ='" + account + "'  ";
+			sql += " and account ='" + account + "'  ";
 		}
-		sql += "and r.create_time >='" + startDate + "'  ORDER BY id DESC limit  "+num;
+		sql += " and r.create_time >='" + startDate + "'  ORDER BY id DESC limit  "+num;
+		return baseDao.noMappedObjectQuery(sql, BetDetailDto.class);
+	}
+	
+	public List<BetDetailDto> findTestBetDetail(String account, String startDate,Integer lastestId) {
+		String sql = "SELECT account,match_status as matchStatus, CAST(r.ioratio*r.gold AS DECIMAL(10,1)) as wingold,date_format(r.create_time, '%Y%m%d%H') as createTime,r.gold,r.total,r.type,r.spread,r.result,r.n_result,r.league,r.team_c,r.team_h";
+		sql += " FROM bet_log_result r WHERE 1=1 AND CODE='560' and  errormsg ='test bet.'";
+		if(lastestId!=null){
+			sql +=" and id > "+lastestId;
+		}
+		if (StringUtils.isNotEmpty(account)) {
+			sql += " and account ='" + account + "'  ";
+		}
+		sql += " and r.create_time >='" + startDate + "'  ORDER BY id DESC ";
 		return baseDao.noMappedObjectQuery(sql, BetDetailDto.class);
 	}
 }

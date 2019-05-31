@@ -41,6 +41,7 @@ public class BetLogService {
 	public List<BetLog> findSucBet(String account, String gId) {
 		return betLogDao.findSucBet(account, gId);
 	}
+	
 
 	@Transactional(rollbackOn = { Exception.class })
 	public void update2Notify(Integer id) {
@@ -61,6 +62,11 @@ public class BetLogService {
 	@Transactional(rollbackOn = { Exception.class })
 	public List<BetDetailDto> findSucBetDetail(String account, String startDate,Integer num) {
 		return reportDao.findSucBetDetail(account, startDate, num);
+	}
+	
+	@Transactional(rollbackOn = { Exception.class })
+	public List<BetDetailDto> findTestBetDetail(String account, String startDate,Integer lastestId) {
+		return reportDao.findTestBetDetail(account, startDate, lastestId);
 	}
 	
 }
