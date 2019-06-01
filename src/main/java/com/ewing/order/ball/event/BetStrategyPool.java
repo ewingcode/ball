@@ -121,7 +121,7 @@ public class BetStrategyPool {
 	}
 
 	private boolean isNewBallEvent(Integer ruleId, String gId, Timestamp lastUpdate) {
-		return gameMap.get(ruleId + "_" + gId) != null && gameMap.get(ruleId + "_" + gId).before(lastUpdate);
+		return gameMap.get(ruleId + "_" + gId) == null || (gameMap.get(ruleId + "_" + gId) != null && gameMap.get(ruleId + "_" + gId).before(lastUpdate));
 	}
 
 	/**
