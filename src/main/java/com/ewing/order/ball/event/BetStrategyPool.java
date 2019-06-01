@@ -44,7 +44,7 @@ public class BetStrategyPool {
 
 	private BetRuleParser betRuleParser;
 
-	private AtomicBoolean isLoad = new AtomicBoolean(false); 
+	private AtomicBoolean isLoad = new AtomicBoolean(false);
 
 	private WeakHashMap<String, Timestamp> gameMap = new WeakHashMap<>();
 
@@ -56,8 +56,6 @@ public class BetStrategyPool {
 		return betStrategyContext;
 	}
 
-	 
-
 	public void setBetStrategyContext(BetStrategyContext betStrategyContext) {
 		this.betStrategyContext = betStrategyContext;
 	}
@@ -66,14 +64,13 @@ public class BetStrategyPool {
 		if (isLoad.get())
 			return;
 		isLoad.set(true);
-		betRuleParser = new BetRuleParser(betStrategyContext.getAccount(),
-				betStrategyContext.getGtype(), betStrategyContext.getPtype(),
-				betStrategyContext.getUid(), betStrategyContext.getBetRuleService());
-		checkNewBetStrategyConf(); 
+		betRuleParser = new BetRuleParser(betStrategyContext.getAccount(), betStrategyContext.getGtype(),
+				betStrategyContext.getPtype(), betStrategyContext.getUid(), betStrategyContext.getBetRuleService());
+		checkNewBetStrategyConf();
 
 	}
-	
-	public void checkNewBetStrategyConf(){
+
+	public void checkNewBetStrategyConf() {
 		List<BetStrategy> betStrategyList = betRuleParser.hasNewBetStrategy();
 		reload(betStrategyList);
 	}
@@ -124,8 +121,7 @@ public class BetStrategyPool {
 	}
 
 	private boolean isNewBallEvent(Integer ruleId, String gId, Timestamp lastUpdate) {
-		return gameMap.get(ruleId + "_" + gId) == null
-				|| gameMap.get(ruleId + "_" + gId).before(lastUpdate);
+		return gameMap.get(ruleId + "_" + gId) != null && gameMap.get(ruleId + "_" + gId).before(lastUpdate);
 	}
 
 	/**
@@ -133,7 +129,7 @@ public class BetStrategyPool {
 	 */
 	public void runAutoStratgeys() {
 		List<BetInfoDto> betList = this.getBetStrategyContext().getBetInfoList();
-		if(CollectionUtils.isEmpty(betList)){
+		if (CollectionUtils.isEmpty(betList)) {
 			return;
 		}
 		// 处理全局规则设置
@@ -143,7 +139,7 @@ public class BetStrategyPool {
 			if (!betStrategyTemplate.getIseff()) {
 				continue;
 			}
-			
+
 			for (BetInfoDto betInfoDto : betList) {
 				BetStrategy betStrategy = BetStrategyRegistCenter
 						.newBetStrategy(betStrategyTemplate.getClass().getSimpleName());
@@ -163,15 +159,12 @@ public class BetStrategyPool {
 				betStrategy.setRuleId(betStrategyTemplate.getRuleId());
 				betStrategy.setBetStrategyContext(betStrategyContext);
 				BallEvent ballEvent = new BallEvent(betInfoDto.getGid(), betInfoDto);
-				if (!isNewBallEvent(betStrategy.getRuleId(), ballEvent.getGameId(),
-						betInfoDto.getLastUpdate())) {
+				if (!isNewBallEvent(betStrategy.getRuleId(), ballEvent.getGameId(), betInfoDto.getLastUpdate())) {
 					// log.info("球赛信息没有变化，球赛ID：" + ballEvent.getGameId());
 					continue;
 				}
-				log.info("执行全局投注规则比较，规则ID：" + betStrategy.getRuleId() + ",球赛ID："
-						+ ballEvent.getGameId());
-				refreshGameMapTime(betStrategy.getRuleId(), ballEvent.getGameId(),
-						betInfoDto.getLastUpdate());
+				log.info("执行全局投注规则比较，规则ID：" + betStrategy.getRuleId() + ",球赛ID：" + ballEvent.getGameId());
+				refreshGameMapTime(betStrategy.getRuleId(), ballEvent.getGameId(), betInfoDto.getLastUpdate());
 				if (betStrategy.isSatisfy(ballEvent)) {
 					try {
 						if (betLock.tryLock(lockTimeOutInSec, TimeUnit.SECONDS)) {
@@ -181,20 +174,19 @@ public class BetStrategyPool {
 								BeanCopy.copy(betLog, betResp, true);
 								betLog.setBet_rule_id(betStrategy.getRuleId());
 								betLog.setBallAccount(this.getBetStrategyContext().getBallAccount());
-								betStrategyContext.getBetLogService()
-										.save(betStrategyContext.getAccount(), betLog);
-								//对追加的策略，在批次投注表追加投注日志明细
-								if (betStrategy.getContinueMaxMatch() != null
-										&& betStrategy.getBwContinue() != null && betLog.getCode().equals("560")) {
-									betStrategy.getBetStrategyContext().getBwContinueService()
-											.addNewMatch(betStrategy.getBwContinue(),
-													betLog.getId(),
-													Float.valueOf(betLog.getGold()));
+								betStrategyContext.getBetLogService().save(betStrategyContext.getAccount(), betLog);
+								// 对追加的策略，在批次投注表追加投注日志明细
+								if (betStrategy.getContinueMaxMatch() != null && betStrategy.getBwContinue() != null
+										&& betLog.getCode().equals("560")) {
+									betStrategy.getBetStrategyContext().getBwContinueService().addNewMatch(
+											betStrategy.getBwContinue(), betLog.getId(),
+											Float.valueOf(betLog.getGold()));
 								}
 							}
 						}
 					} catch (Exception e) {
-						BetStrategyErrorLogger.logger.error(e.getMessage(), e);
+						BetStrategyErrorLogger.logger.error("account:" + this.getBetStrategyContext().getAccount()
+								+ ",gid:" + betInfoDto.getGid() + "," + e.getMessage(), e);
 					} finally {
 						betLock.unlock();
 					}
@@ -210,8 +202,7 @@ public class BetStrategyPool {
 	 */
 	public void runHalfAutoStratgeys() {
 		log.info(String.format("betStrategyList size:%s ,%s ,%s ,%s", betStrategys.size(),
-				betStrategyContext.getAccount(), betStrategyContext.getGtype(),
-				betStrategyContext.getPtype()));
+				betStrategyContext.getAccount(), betStrategyContext.getGtype(), betStrategyContext.getPtype()));
 		List<BetInfoDto> betList = this.getBetStrategyContext().getBetInfoList();
 		// 处理单场规则设置
 		for (BetStrategy betStrategy : betStrategys) {
@@ -223,22 +214,18 @@ public class BetStrategyPool {
 			for (BetInfoDto betInfoDto : betList) {
 				BallEvent ballEvent = new BallEvent(betInfoDto.getGid(), betInfoDto);
 				if (ballEvent.getGameId().equals(betStrategy.getgId())) {
-					if (!isNewBallEvent(betStrategy.getRuleId(), ballEvent.getGameId(),
-							betInfoDto.getLastUpdate())) {
+					if (!isNewBallEvent(betStrategy.getRuleId(), ballEvent.getGameId(), betInfoDto.getLastUpdate())) {
 						// log.info("球赛信息没有变化，球赛ID：" + ballEvent.getGameId());
 						continue;
 					}
-					log.info("执行单场投注规则比较，规则ID：" + betStrategy.getRuleId() + ",球赛ID："
-							+ ballEvent.getGameId());
-					refreshGameMapTime(betStrategy.getRuleId(), ballEvent.getGameId(),
-							betInfoDto.getLastUpdate());
+					log.info("执行单场投注规则比较，规则ID：" + betStrategy.getRuleId() + ",球赛ID：" + ballEvent.getGameId());
+					refreshGameMapTime(betStrategy.getRuleId(), ballEvent.getGameId(), betInfoDto.getLastUpdate());
 					Boolean isSatisfy = false;
 					try {
 						isSatisfy = betStrategy.isSatisfy(ballEvent);
 					} catch (BusiException e1) {
 						log.info(e1.getMessage());
-						betStrategyContext.getBetRuleService().updateDesc(betStrategy.getRuleId(),
-								e1.getMessage());
+						betStrategyContext.getBetRuleService().updateDesc(betStrategy.getRuleId(), e1.getMessage());
 					}
 					if (isSatisfy) {
 						try {
@@ -252,10 +239,9 @@ public class BetStrategyPool {
 									BetLog betLog = new BetLog();
 									BeanCopy.copy(betLog, betResp, true);
 									betLog.setBet_rule_id(betStrategy.getRuleId());
-									betStrategyContext.getBetLogService()
-											.save(betStrategyContext.getAccount(), betLog);
-									betStrategyContext.getBetRuleService().update2Success(
-											betStrategy.getRuleId(), betLog.getId());
+									betStrategyContext.getBetLogService().save(betStrategyContext.getAccount(), betLog);
+									betStrategyContext.getBetRuleService().update2Success(betStrategy.getRuleId(),
+											betLog.getId());
 								} else {
 									log.info("下注失败，球赛ID：" + ballEvent.getGameId());
 								}
