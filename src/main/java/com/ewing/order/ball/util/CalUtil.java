@@ -17,7 +17,7 @@ public class CalUtil {
 	private static final Integer nbaQuartsSec = 720;
 
 	public static void main(String[] args) {
-		System.out.println(fnum.format(0f));
+		System.out.println(getStartTimeOfWeek());
 	}
 
 	public static Integer getFixTcount(String tCount){
@@ -130,6 +130,21 @@ public class CalUtil {
 		}
 		cal.add(Calendar.DATE, Math.negateExact(reduceDay));
 		return DataFormat.DateToString(cal.getTime(), DataFormat.DATE_FORMAT);
-	} 
-
+	}  
+	
+	public static String getStartTimeOfWeek() {
+		Calendar cal = Calendar.getInstance();
+		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+		String nowDate = DataFormat.DateToString(cal.getTime(), DataFormat.DATE_FORMAT);
+		Date endTimeOfWeek = DataFormat.stringToDate(nowDate + " 11:59:59",
+				DataFormat.DATETIME_FORMAT);
+		int reduceDay = 0;
+		if (dayOfWeek == 1 || (dayOfWeek == 2 && cal.getTime().before(endTimeOfWeek))) {
+			reduceDay = 5 + cal.get(Calendar.DAY_OF_WEEK);
+		} else {
+			reduceDay = cal.get(Calendar.DAY_OF_WEEK) - 2;
+		}
+		cal.add(Calendar.DATE, Math.negateExact(reduceDay));
+		return DataFormat.DateToString(cal.getTime(), DataFormat.DATE_FORMAT)+" 11:59:59";
+	}  
 }

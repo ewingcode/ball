@@ -64,9 +64,15 @@ public class BetLogService {
 		return reportDao.findSucBetDetail(account, startDate, num);
 	}
 	
+	
 	@Transactional(rollbackOn = { Exception.class })
-	public List<BetDetailDto> findTestBetDetail(String account, String startDate,Integer lastestId) {
-		return reportDao.findTestBetDetail(account, startDate, lastestId);
+	public List<BetDetailDto> findAllBetDetailBeforeLastestId(String account, String startDate,Integer lastestId) {
+		return reportDao.findAllBetDetailBeforeLastestId(account, startDate, lastestId);
+	}
+	
+	@Transactional(rollbackOn = { Exception.class })
+	public List<BetDetailDto> findTestBetDetailAfterLastestId(String account, String startDate,Integer lastestId) {
+		return reportDao.findTestBetDetailAfterLastestId(account, startDate, lastestId);
 	}
 	
 }

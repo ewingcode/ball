@@ -109,7 +109,20 @@ public class ReportDao {
 		return baseDao.noMappedObjectQuery(sql, BetDetailDto.class);
 	}
 	
-	public List<BetDetailDto> findTestBetDetail(String account, String startDate,Integer lastestId) {
+	public List<BetDetailDto> findAllBetDetailBeforeLastestId(String account, String startDate,Integer lastestId) {
+		String sql = "SELECT account,match_status as matchStatus, CAST(r.ioratio*r.gold AS DECIMAL(10,1)) as wingold,date_format(r.create_time, '%Y%m%d%H') as createTime,r.gold,r.total,r.type,r.spread,r.result,r.n_result,r.league,r.team_c,r.team_h";
+		sql += " FROM bet_log_result r WHERE 1=1 AND CODE='560' ";
+		if(lastestId!=null){
+			sql +=" and id < "+lastestId;
+		}
+		if (StringUtils.isNotEmpty(account)) {
+			sql += " and account ='" + account + "'  ";
+		}
+		sql += " and r.create_time >='" + startDate + "'  ORDER BY id DESC ";
+		return baseDao.noMappedObjectQuery(sql, BetDetailDto.class);
+	}
+	 
+	public List<BetDetailDto> findTestBetDetailAfterLastestId(String account, String startDate,Integer lastestId) {
 		String sql = "SELECT account,match_status as matchStatus, CAST(r.ioratio*r.gold AS DECIMAL(10,1)) as wingold,date_format(r.create_time, '%Y%m%d%H') as createTime,r.gold,r.total,r.type,r.spread,r.result,r.n_result,r.league,r.team_c,r.team_h";
 		sql += " FROM bet_log_result r WHERE 1=1 AND CODE='560' and  errormsg ='test bet.'";
 		if(lastestId!=null){

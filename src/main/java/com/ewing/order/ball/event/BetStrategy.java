@@ -368,21 +368,31 @@ public abstract class BetStrategy {
 			return 0;
 		Integer planWinTotal = Integer.valueOf(winRuleArray[0]);
 		Integer planLoseTotal = Integer.valueOf(winRuleArray[1]);
-		//1.先计算赢得场数
-		List<BetDetailDto> sucBetLogList = this.betStrategyContext.getBetLogService().findSucBetDetail(betStrategyContext.getAccount(), CalUtil.getStartDayOfWeek(), planWinTotal);
-		if(CollectionUtils.isEmpty(sucBetLogList) || sucBetLogList.size()<planWinTotal)
+		//1.计算最后一条成功下注结果是否赢
+		List<BetDetailDto> sucBetLogList = this.betStrategyContext.getBetLogService().findSucBetDetail(betStrategyContext.getAccount(), CalUtil.getStartTimeOfWeek(), 1);
+		if(CollectionUtils.isEmpty(sucBetLogList))
 			return 0;
 		Integer lastestBetLogId = null;
-		for(BetDetailDto betDetailDto : sucBetLogList){
-			if(lastestBetLogId == null)
-				lastestBetLogId = betDetailDto.getId();
+		BetDetailDto lastBetLog = sucBetLogList.get(0);
+		
+		if(!lastBetLog.getnResult().equals(BetLogResult.WIN)) 
+			return 0;
+		lastestBetLogId = lastBetLog.getId();
+		//2.计算赢比赛之前的投注结果，如果有连赢的则会累计起来，和计划赢得场数进行比较
+		Integer tempSuc = 1;
+		List<BetDetailDto> beforeSucLogList = this.betStrategyContext.getBetLogService().findAllBetDetailBeforeLastestId(betStrategyContext.getAccount(), CalUtil.getStartTimeOfWeek(), lastestBetLogId);
+		for(BetDetailDto betDetailDto : beforeSucLogList){
 			if(!betDetailDto.getnResult().equals(BetLogResult.WIN)){
-				return 0;
+				break;
 			}
+			tempSuc++;
 		}
-		//2.先计算输的场数
+		if(tempSuc < planWinTotal) {
+			return 0;
+		}
+		//3.先计算输的场数
 		if(lastestBetLogId!=null ){
-			List<BetDetailDto> testBetLogList = this.betStrategyContext.getBetLogService().findTestBetDetail(betStrategyContext.getAccount(), CalUtil.getStartDayOfWeek(), lastestBetLogId);
+			List<BetDetailDto> testBetLogList = this.betStrategyContext.getBetLogService().findTestBetDetailAfterLastestId(betStrategyContext.getAccount(), CalUtil.getStartTimeOfWeek(), lastestBetLogId);
 			if(CollectionUtils.isNotEmpty(testBetLogList)){
 				Integer tempLostNum = 0;
 				for(BetDetailDto betDetailDto : testBetLogList){
