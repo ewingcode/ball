@@ -360,7 +360,7 @@ public abstract class BetStrategy {
 		}
 	}
 
-	protected Integer loseTotalAfterWinRule(){
+	public Integer loseTotalAfterWinRule(){
 		if(StringUtils.isEmpty(this.winRule))
 			return 0;
 		String[] winRuleArray = StringUtils.split(this.winRule, ",");
@@ -381,11 +381,13 @@ public abstract class BetStrategy {
 		//2.计算赢比赛之前的投注结果，如果有连赢的则会累计起来，和计划赢得场数进行比较
 		Integer tempSuc = 1;
 		List<BetDetailDto> beforeSucLogList = this.betStrategyContext.getBetLogService().findAllBetDetailBeforeLastestId(betStrategyContext.getAccount(), CalUtil.getStartTimeOfWeek(), lastestBetLogId);
-		for(BetDetailDto betDetailDto : beforeSucLogList){
-			if(!betDetailDto.getnResult().equals(BetLogResult.WIN)){
-				break;
+		if(CollectionUtils.isNotEmpty(beforeSucLogList)) {
+			for(BetDetailDto betDetailDto : beforeSucLogList){
+				if(!betDetailDto.getnResult().equals(BetLogResult.WIN)){
+					break;
+				}
+				tempSuc++;
 			}
-			tempSuc++;
 		}
 		if(tempSuc < planWinTotal) {
 			return 0;
