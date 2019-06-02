@@ -308,6 +308,11 @@ public abstract class BetStrategy {
 			Integer loseTotal = loseTotalAfterWinRule();
 			bwContinue = this.betStrategyContext.getBwContinueService().newBwContinue(account, ruleId, loseTotal);
 		}
+
+		if(StringUtils.isNotEmpty(bwContinue.getContinuePlanMoney())){
+			this.continuePlanMoney= bwContinue.getContinuePlanMoney();
+			this.continueMaxMatch = bwContinue.getContinueMaxMatch();
+		}
 		if (bwContinue == null) {
 			return true;
 		}
@@ -321,10 +326,6 @@ public abstract class BetStrategy {
 			return false;
 		}
 		
-		if(StringUtils.isNotEmpty(bwContinue.getContinuePlanMoney())){
-			this.continuePlanMoney= bwContinue.getContinuePlanMoney();
-			this.continueMaxMatch = bwContinue.getContinueMaxMatch();
-		}
 		return true;
 	} 
 	 

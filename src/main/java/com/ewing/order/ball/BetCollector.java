@@ -97,6 +97,9 @@ public class BetCollector {
 		public static List<BetRollInfo> getRollDetail(String gid, int len) {
 			List<BetRollInfo> result = Lists.newArrayList();
 			List<BetRollInfo> allList = bkRollDetailMap.get(gid); 
+			if(CollectionUtils.isEmpty(allList)) {
+				return null;
+			}
 			List<BetRollInfo> list = Lists.newCopyOnWriteArrayList(allList) ;
 			if (CollectionUtils.isEmpty(list))
 				return null;
