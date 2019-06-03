@@ -24,6 +24,7 @@
 	<span v-else>
 	 大
 	</span>{{bill.spread}} {{bill.total}} {{bill.league}} {{bill.team_c}} {{bill.team_h}}
+	<span v-if="bill.errormsg == 'test bet.'" style="color:red;">测试下单</span>
     </li>
   </ol>
 </div>

@@ -13,12 +13,16 @@
 </div>
   <ol style="font-size: 16px;font-weight: bold;"> 
     <li v-for="bill in list">
-      {{ bill.account }}  【{{ bill.ballAccount }}】<span v-if="bill.iseff === '1'">
+      {{ bill.account }}  【{{ bill.ballAccount }}】
+    <span style="color: green;" v-if="bill.iseff === '1'">
       	进行
 	</span> 
-	<span v-else>
+	<span style="color: black;" v-else>
 	      停止
 	</span> 
+	<span style="color: red;" v-if="bill.isTest == '1'">
+	 (测试下单)
+	</span>
 	 <span v-if="bill.totalBillDto != null ">
 	    场数：{{bill.totalBillDto.matchCount}} 金额:{{bill.totalBillDto.totalWin}} 
 	     </span>
@@ -26,11 +30,11 @@
                      场数：0 金额:0
 	    </span>
       <br>
-     <span style="color:gray;font-size: 8px;font-weight: normal;">-- 下注规则:【{{bill.ruleName}}】金额:{{bill.money}}追加:{{bill.continueMaxMatch}}连赢N场等N场下注:{{bill.winRule}}输连追计划金额:{{bill.continuePlanMoney}}赢停:{{bill.stopWingold}}输停:{{bill.stopLosegold}}</span>
+     <span style="color:gray;font-size: 8px;font-weight: normal;">-- 下注规则:【{{bill.ruleName}}】金额:{{bill.money}} 追加:{{bill.continueMaxMatch}} 连赢N场等N场下注:{{bill.winRule}} 输连追计划金额:{{bill.continuePlanMoney}} 赢停:{{bill.stopWingold}} 输停:{{bill.stopLosegold}}</span>
        <br>
-     <span style="color:gray;font-size: 8px;font-weight: normal;">-- 每天最多下注场数:【{{bill.maxEachDay}}】当天已下注场数:{{bill.todayTotalMatch}}</span>
+     <span style="color:gray;font-size: 8px;font-weight: normal;">-- 每天最多下注场数:【{{bill.maxEachDay}}】当天已下注场数:<span style="color: red;font-size: 16px;font-weight: bold;">{{bill.todayTotalMatch}}</span></span>
       <br v-if="bill.bwContinue != null"> 
-     <span  v-if="bill.bwContinue != null" style="color:gray;font-size: 8px;font-weight: normal;">-- 追加进行中 当前第【{{bill.bwContinue.totalMatch}}】场</span>
+     <span  v-if="bill.bwContinue != null" style="color:gray;font-size: 8px;font-weight: normal;">-- 追加进行中 当前第<span style="color: red;font-size: 16px;font-weight: bold;">{{bill.bwContinue.totalMatch}}</span>场</span>
     
     </li>
   </ol>

@@ -76,9 +76,16 @@ public class BetDetailDto implements java.io.Serializable {
 	private String matchStatus;
 	@Column(name = "total")
 	private String total;
-
+	@Column(name = "errormsg")
+	private String errormsg;
 	private String wingold;
 	
+	public String getErrormsg() {
+		return errormsg;
+	}
+	public void setErrormsg(String errormsg) {
+		this.errormsg = errormsg;
+	}
 	public String getnResult() {
 		return nResult;
 	}
