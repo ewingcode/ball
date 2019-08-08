@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aliyuncs.utils.StringUtils;
-import com.ewing.order.ball.BallAccountCenter;
 import com.ewing.order.ball.BallMember;
+import com.ewing.order.ball.BetCollector;
 import com.ewing.order.ball.shared.BetRuleStatus;
 import com.ewing.order.ball.shared.GtypeStatus;
 import com.ewing.order.ball.shared.PtypeStatus;
@@ -26,6 +26,7 @@ import com.ewing.order.busi.ball.ddl.BetRule;
 import com.ewing.order.busi.ball.ddl.BwContinue;
 import com.ewing.order.busi.ball.dto.BetAutoBuyDto;
 import com.ewing.order.busi.ball.dto.BetDetailDto;
+import com.ewing.order.busi.ball.dto.BetInfoTodayDto;
 import com.ewing.order.busi.ball.dto.TotalBillDto;
 import com.ewing.order.busi.ball.service.BetAutoBuyService;
 import com.ewing.order.busi.ball.service.BetLogService;
@@ -153,5 +154,14 @@ public class ReportRest extends BaseRest {
 		checkRequired(date, "date");
 		List<BetDetailDto> totalList = reportDao.findBetDetail(account, date);
 		return RestResult.successResult(totalList);
+	}
+	
+	@RequestMapping(value = "/report/betinfoToday.op", method = RequestMethod.GET)
+	@ResponseBody
+	public RestResult<BetInfoTodayDto> betinfoToday() throws Exception {
+		BetInfoTodayDto betInfoTodayDto =  new BetInfoTodayDto();
+		betInfoTodayDto.setTodayCount(BetCollector.CollectDataPool.getBkTodayList().size());
+		betInfoTodayDto.setRollCount(BetCollector.CollectDataPool.getBkRollList().size()); 
+		return RestResult.successResult(betInfoTodayDto);
 	}
 }

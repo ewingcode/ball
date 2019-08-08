@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.ewing.order.busi.ball.ddl.BetLogResult;
 import com.ewing.order.busi.ball.dto.BetDetailDto;
+import com.ewing.order.busi.ball.dto.BetFullDetailDto;
 import com.ewing.order.busi.ball.dto.TotalBillDto;
 import com.ewing.order.core.jpa.BaseDao;
 import com.ewing.order.util.SqlUtil;
@@ -80,6 +81,18 @@ public class ReportDao {
 				+ " FROM `bet_bill` WHERE SUBSTR(w_id,3) IN (SELECT ticket_id FROM bet_log WHERE bet_rule_id IS NOT NULL) AND CONCAT(`date`,' ',`addtime`) >= '"
 				+ date + "' AND win_gold<0 GROUP BY account" + " ) a ORDER BY a.account ";
 		return baseDao.noMappedObjectQuery(sql, TotalBillDto.class);
+	}
+	
+	@Transactional
+	public List<BetFullDetailDto> findFullBetDetail(String account, String date) {
+		String sql = "SELECT  r.t_count AS t_count ,r.sc_FT_A AS sc_FT_A,r.sc_FT_H AS sc_FT_H,r.ior_ROUH AS ior_ROUH,r.ior_ROUC AS ior_ROUC,i.sc_FT_A AS end_sc_FT_A,i.sc_FT_H AS end_sc_FT_H,";
+		sql += "l.* FROM bet_log_result l ,bet_roll_info r,bet_info  i WHERE l.roll_id=r.id AND l.gid=i.gid   ";
+		sql += " and l.CODE='560' ";
+		if (StringUtils.isNotEmpty(account)) {
+			sql += " and l.account ='" + account + "'  ";
+		}
+		sql += " and l.create_time >='" + date + "'  ORDER BY id DESC ";
+		return baseDao.noMappedObjectQuery(sql, BetFullDetailDto.class);
 	}
 
 	public List<BetDetailDto> findBetDetail(String account, String date) {
