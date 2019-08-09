@@ -25,7 +25,7 @@ import com.ewing.order.busi.ball.ddl.BetLog;
 import com.ewing.order.busi.ball.ddl.BetRule;
 import com.ewing.order.busi.ball.ddl.BwContinue;
 import com.ewing.order.busi.ball.dto.BetAutoBuyDto;
-import com.ewing.order.busi.ball.dto.BetDetailDto;
+import com.ewing.order.busi.ball.dto.BetFullDetailDto;
 import com.ewing.order.busi.ball.dto.BetInfoTodayDto;
 import com.ewing.order.busi.ball.dto.TotalBillDto;
 import com.ewing.order.busi.ball.service.BetAutoBuyService;
@@ -147,12 +147,12 @@ public class ReportRest extends BaseRest {
 
 	@RequestMapping(value = "/report/betdetail.op", method = RequestMethod.GET)
 	@ResponseBody
-	public RestResult<List<BetDetailDto>> betdetail() throws Exception {
+	public RestResult<List<BetFullDetailDto>> betdetail() throws Exception {
 		String date = request.getParameter("date");
 		String account = request.getParameter("account");
 		// checkRequired(account, "account");
 		checkRequired(date, "date");
-		List<BetDetailDto> totalList = reportDao.findBetDetail(account, date);
+		List<BetFullDetailDto> totalList = reportDao.findFullBetDetail(account, date);
 		return RestResult.successResult(totalList);
 	}
 	

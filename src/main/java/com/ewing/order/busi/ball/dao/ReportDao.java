@@ -85,7 +85,7 @@ public class ReportDao {
 	
 	@Transactional
 	public List<BetFullDetailDto> findFullBetDetail(String account, String date) {
-		String sql = "SELECT  r.t_count AS t_count ,r.sc_FT_A AS sc_FT_A,r.sc_FT_H AS sc_FT_H,r.ior_ROUH AS ior_ROUH,r.ior_ROUC AS ior_ROUC,i.sc_FT_A AS end_sc_FT_A,i.sc_FT_H AS end_sc_FT_H,";
+		String sql = "SELECT  date_format(l.create_time, '%Y%m%d%H') as createTime,match_status as matchStatus,CAST(l.ioratio*l.gold AS DECIMAL(10,1)) as wingold,l.total,r.sc_total,r.t_count AS t_count ,r.sc_FT_A AS sc_FT_A,r.sc_FT_H AS sc_FT_H,r.ior_ROUH AS ior_ROUH,r.ior_ROUC AS ior_ROUC,i.sc_FT_A AS end_sc_FT_A,i.sc_FT_H AS end_sc_FT_H,";
 		sql += "l.* FROM bet_log_result l ,bet_roll_info r,bet_info  i WHERE l.roll_id=r.id AND l.gid=i.gid   ";
 		sql += " and l.CODE='560' ";
 		if (StringUtils.isNotEmpty(account)) {

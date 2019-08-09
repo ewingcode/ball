@@ -87,6 +87,8 @@ public class BetFullDetailDto implements java.io.Serializable {
 	private String nResult;
 	@Column(name = "match_status")
 	private String matchStatus;
+	@Column(name = "sc_total")
+	private String sc_total;
 	@Column(name = "total")
 	private String total;
 	@Column(name = "errormsg")
@@ -97,6 +99,12 @@ public class BetFullDetailDto implements java.io.Serializable {
 	private String orgNResult;
 	
 	
+	public String getSc_total() {
+		return sc_total;
+	}
+	public void setSc_total(String sc_total) {
+		this.sc_total = sc_total;
+	}
 	public String getOrgNResult() {
 		return orgNResult;
 	}
