@@ -8,30 +8,107 @@
     <div>账号：<input type="text" id="account" v-model="account" /></div>
 	<input type="button" @click="get()" value="查询账单">
 </div>
-   <span v-if="betinfoToday != null">
-         滚球：{{betinfoToday.rollCount}} 今日：{{betinfoToday.todayCount}}
- </span> 
-  <ol>
-    <li v-for="bill in list" > 
-        {{ bill.createTime }} 
-         <span v-if="bill.matchStatus === '1'">
+<table class="gridtable">
+<tr>
+    <th>滚球赛事</th>
+    <th>今日赛事</th> 
+</tr>
+<tr v-if="betinfoToday != null">
+    <td>{{betinfoToday.rollCount}}</td>
+    <td>{{betinfoToday.todayCount}}</td> 
+</tr>
+ 
+</table>  
+  
+  <!-- Table goes in the document BODY -->
+<table class="gridtable">
+<tr>
+    <th>时间</th>
+    <th>状态</th>
+    <th>结果</th>
+    <th>下注</th>
+    <th>可赢</th>
+    <th>账号</th>
+    <th>方向</th>
+    <th>买入位</th>
+    <th>即时总分</th> 
+    <th>滚买时</th>
+    <th>滚总分</th>
+    <th>滚大水位</th>
+    <th>滚小水位</th>
+    <th>滚主分</th>
+    <th>滚客分</th>
+    <th>主分</th>
+    <th>客分</th>
+    <th>联赛</th>
+    <th>客队</th>
+    <th>主队</th>
+</tr>
+<tr v-for="bill in list"  v-bind:class="{ sucbet: bill.errormsg != 'test bet.' }" >
+    <td>{{ bill.createTime }}</td>
+    <td> <span v-if="bill.matchStatus === '1'">
       	进行中
 		</span> 
 		<span v-else>
 		结束
-		</span>
-        {{bill.result}} {{bill.gold}} {{bill.wingold}} {{ bill.account }}   
-      <span v-if="bill.type === 'H'">
+		</span></td>
+    <td>{{bill.result}}</td>
+    <td>{{bill.gold}}</td>
+    <td>{{bill.wingold}}</td>
+    <td>{{ bill.account }}</td>
+    <td> <span v-if="bill.type === 'H'">
       	小
 	</span> 
 	<span v-else>
 	 大
-	</span>{{bill.spread}} {{bill.total}} {{bill.league}} {{bill.team_c}} {{bill.team_h}}
-	<span v-if="bill.errormsg == 'test bet.'" style="color:red;">测试下单</span>
-    </li>
-  </ol>
-</div>
+	</span></td>
+    <td>{{bill.spread}}</td>
+    <td>{{bill.total}}</td> 
+    <td>Q4 {{bill.t_count.indexOf(".")>0?bill.t_count.substring(0,bill.t_count.indexOf(".")):bill.t_count}}秒</td>
+    <td>{{bill.sc_total}}</td>
+    <td>{{bill.ior_ROUC}}</td>
+    <td>{{bill.ior_ROUH}}</td>
+    <td>{{bill.sc_FT_H}}</td>
+    <td>{{bill.sc_FT_A}}</td>
+    <td>{{bill.end_sc_FT_H}}</td>
+    <td>{{bill.end_sc_FT_A}}</td>
+    <td>{{bill.league}}</td>
+    <td>{{bill.team_c}}</td>
+    <td>{{bill.team_h}}</td>
+</tr>
  
+</table>
+</div>
+ <!-- CSS goes in the document HEAD or added to your external stylesheet -->
+<style type="text/css">
+.sucbet{
+  color: red;
+}
+table.gridtable {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #666666;
+    border-collapse: collapse;
+}
+table.gridtable th {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #dedede;
+}
+table.gridtable td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #ffffff;
+}
+</style>
+ 
+
 <script>
   new Vue({
         el:'#app',
