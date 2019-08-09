@@ -11,10 +11,36 @@
 
 	<input type="button" @click="get()" value="查询账单">
 </div>
-  <ol style="font-size: 16px;font-weight: bold;"> 
-    <li v-for="bill in list">
-      {{ bill.account }}  【{{ bill.ballAccount }}】
-    <span style="color: red;" v-if="bill.iseff === '1'">
+   <table class="gridtable">
+<tr>
+    <th>总赢金额</th> 
+</tr>
+<tr>
+    <td>{{totalWin}}</td>
+</tr>
+ 
+</table> 
+  <table class="gridtable">
+<tr>
+    <th>账号</th>
+    <th>状态</th>
+    <th>场数</th>
+    <th>已赢</th>
+    <th>单场金额</th> 
+     <th>今日已下注</th>
+    <th>当前追加场数</th>
+    <th>规则</th>
+    <th>追加场数</th>
+    <th>连赢N场等N场输下注</th>
+    <th>输连追计划</th>
+    <th>赢停</th>
+    <th>输停</th>
+    <th>每天最大下注场数</th>
+   
+</tr>
+<tr  v-for="bill in list">
+    <td>{{ bill.account }}【{{ bill.ballAccount }}】</td>
+    <td> <span style="color: red;" v-if="bill.iseff === '1'">
       	进行
 	</span> 
 	<span style="color: black;" v-else>
@@ -22,25 +48,52 @@
 	</span> 
 	<span style="color: red;" v-if="bill.isTest == '1'">
 	 (测试下单)
-	</span>
-	 <span v-if="bill.totalBillDto != null ">
-	    场数：{{bill.totalBillDto.matchCount}} 金额:{{bill.totalBillDto.totalWin}} 
-	     </span>
-     <span v-else>
-                     场数：0 金额:0
-	    </span>
-      <br>
-     <span style="color:gray;font-size: 8px;font-weight: normal;">-- 下注规则:【{{bill.ruleName}}】金额:{{bill.money}} 追加:{{bill.continueMaxMatch}} 连赢N场等N场下注:{{bill.winRule}} 输连追计划金额:{{bill.continuePlanMoney}} 赢停:{{bill.stopWingold}} 输停:{{bill.stopLosegold}}</span>
-       <br>
-     <span style="color:gray;font-size: 8px;font-weight: normal;">-- 每天最多下注场数:【{{bill.maxEachDay}}】当天已下注场数:<span style="color: red;font-size: 16px;font-weight: bold;">{{bill.todayTotalMatch}}</span></span>
-      <br v-if="bill.bwContinue != null"> 
-     <span  v-if="bill.bwContinue != null" style="color:gray;font-size: 8px;font-weight: normal;">-- 追加进行中 当前第<span style="color: red;font-size: 16px;font-weight: bold;">{{bill.bwContinue.totalMatch}}</span>场</span>
-    
-    </li>
-  </ol>
-     <span>总赢：</span><span >{{totalWin}}</span>
-</div>
+	</span></td>
+	<td>{{bill.totalBillDto.matchCount}}</td>
+	<td>{{bill.totalBillDto.totalWin}}</td> 
+	<td>{{bill.money}}</td>
+	<td><span style="color: red;font-size: 16px;font-weight: bold;">{{bill.todayTotalMatch}}</span></td>
+	<td><span style="color: red;font-size: 16px;font-weight: bold;"  v-if="bill.bwContinue != null" >第{{bill.bwContinue.totalMatch}}场</span></td>
+	<td>{{bill.ruleName}}</td>
+	<td>{{bill.continueMaxMatch}}</td>
+	<td>{{bill.winRule}}</td>
+	<td>{{bill.continuePlanMoney}}</td>
+	<td>{{bill.stopWingold}}</td>
+	<td>{{bill.stopLosegold}}</td>
+	<td>{{bill.maxEachDay}}</td>
+	
+</tr>
  
+</table> 
+</div>
+  <!-- CSS goes in the document HEAD or added to your external stylesheet -->
+<style type="text/css">
+.sucbet{
+  color: red;
+}
+table.gridtable {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #666666;
+    border-collapse: collapse;
+}
+table.gridtable th {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #dedede;
+}
+table.gridtable td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #ffffff;
+}
+</style>
 <script>
   new Vue({
         el:'#app',

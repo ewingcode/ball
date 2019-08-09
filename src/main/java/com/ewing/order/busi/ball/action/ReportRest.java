@@ -132,7 +132,7 @@ public class ReportRest extends BaseRest {
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 		}
-	
+		
 		return RestResult.successResult(betAutoBuyDtoList);
 	}
 
