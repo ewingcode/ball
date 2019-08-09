@@ -89,10 +89,15 @@ public class BetAutoRest extends BaseRest {
 	@ResponseBody
 	public RestResult<Boolean> changeAccountStatus() throws Exception { 
 		String account = request.getParameter("account"); 
-		String iseff = request.getParameter("iseff"); 
+		String accountPwd = request.getParameter("accountPwd");  
 		checkRequired(account, "account"); 
-		checkRequired(iseff, "iseff"); 
-		betAutoBuyService.changeAccountStatus(account,iseff);
+		checkRequired(accountPwd, "accountPwd"); 
+		BetAutoBuy betAutoBuy = betAutoBuyService.find(account);
+		if(!betAutoBuy.getPwd().equals(accountPwd)){
+			return  RestResult.errorResult("密码不正确");
+		}
+		String action =betAutoBuy.getIseff().equals("1")?"0" :"1";
+		betAutoBuyService.changeAccountStatus(account,action);
 		return RestResult.successResult(true);
 	}
 	

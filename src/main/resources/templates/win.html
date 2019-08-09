@@ -22,12 +22,13 @@
 </table> 
   <table class="gridtable">
 <tr>
-    <th>账号</th>
-    <th>状态</th>
+    <th>账号</th> 
+    <th>操作</th>
+    <th>状态</th> 
     <th>场数</th>
     <th>已赢</th>
     <th>单场金额</th> 
-     <th>今日已下注</th>
+    <th>今日已下注</th>
     <th>当前追加场数</th>
     <th>规则</th>
     <th>追加场数</th>
@@ -36,11 +37,16 @@
     <th>赢停</th>
     <th>输停</th>
     <th>每天最大下注场数</th>
-   
 </tr>
 <tr  v-for="bill in list">
-    <td>{{ bill.account }}【{{ bill.ballAccount }}】</td>
-    <td> <span style="color: red;" v-if="bill.iseff === '1'">
+    <td>{{ bill.account }}【{{ bill.ballAccount }}】</td> 
+	<td><button @click="statusControl(bill.account)"><span style="color: red;" v-if="bill.iseff === '1'">
+      	停止
+	</span> 
+	<span style="color: black;" v-else>
+	    启动
+	</span></button></a></td>
+	  <td> <span style="color: red;" v-if="bill.iseff === '1'">
       	进行
 	</span> 
 	<span style="color: black;" v-else>
@@ -105,6 +111,20 @@ table.gridtable td {
             list:[]
         },
         methods:{
+			statusControl:function(account){
+				var accountPwd=prompt("请输入账号密码：");
+				var url = '/ballauto/status.op?account='+account+'&accountPwd='+accountPwd; 
+				 this.$http.get(url).then(function(res){
+					    var success = res.data.success;
+					    if(!success){
+					    	 alert(res.data.message);
+					    	 return;
+					    } 
+	                    alert("修改成功"); 
+	                },function(){
+	                	alert('请求失败处理');
+	                });
+			},
             get:function(){
             	if(!this.startDate){
             		alert("请填写日期，格式如20190101");
@@ -131,7 +151,7 @@ table.gridtable td {
                     	}
                     }
                 },function(){
-                    console.log('请求失败处理');
+                	alert('请求失败处理');
                 });
             }
         }
