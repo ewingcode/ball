@@ -23,6 +23,7 @@ import com.ewing.order.busi.ball.service.BetAutoBuyService;
 import com.ewing.order.busi.ball.service.BetRulePoolService;
 import com.ewing.order.busi.ball.service.BetRuleService;
 import com.ewing.order.common.contant.IsEff;
+import com.ewing.order.common.prop.BallmatchProp;
 import com.ewing.order.core.web.base.BaseRest;
 import com.ewing.order.core.web.common.RequestJson;
 import com.ewing.order.core.web.common.RestResult;
@@ -106,11 +107,15 @@ public class BetAutoRest extends BaseRest {
 	public RestResult<Boolean> changeParam() throws Exception { 
 		String collectTime = request.getParameter("collectTime"); 
 		String maxMatchEachDay = request.getParameter("maxMatchEachDay"); 
-		checkRequired(collectTime, "collectTime"); 
-		checkRequired(maxMatchEachDay, "maxMatchEachDay"); 
-		BetCollector.rollDataCollectTime = Long.valueOf(collectTime);
-		betCollector.restartTimer();
-		BKRollAutoSideStrategy2.SYSMAXEACHDAY = Integer.valueOf(maxMatchEachDay);
+		String ballUrl =  request.getParameter("ballUrl");  
+		if(ballUrl!=null)
+			BallmatchProp.url = ballUrl;
+		if(collectTime!=null){
+			BetCollector.rollDataCollectTime = Long.valueOf(collectTime);
+			betCollector.restartTimer();
+		}
+		if(maxMatchEachDay!=null)
+			BKRollAutoSideStrategy2.SYSMAXEACHDAY = Integer.valueOf(maxMatchEachDay);
 		return RestResult.successResult(true);
 	}
 
