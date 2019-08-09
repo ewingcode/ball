@@ -2,6 +2,7 @@ package com.ewing.order.ball;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -74,6 +75,12 @@ public class BetCollector {
 	
 	private Lock uidLock = new ReentrantLock(); 
 	private static Timer timer2 = new Timer();
+	
+	private Date lastUpdateRollBasketBall;
+	
+	private Date lastUpdateTodayBasketBall;
+	
+	
 	public static class CollectDataPool {
 		public static List<BetInfoDto> bkRollList = Lists.newArrayList();
 		private static List<BetInfoDto> bkTodayList = Lists.newArrayList();
@@ -291,7 +298,9 @@ public class BetCollector {
 				log.info("收集当天的篮球信息：");
 				try {
 					collectCurrentBasketball();
+					lastUpdateTodayBasketBall = new Date();
 				} catch (Throwable e) {
+					lastUpdateTodayBasketBall = null;
 					log.error("收集当天的篮球失败:"+e.getMessage(), e);
 				}
 			}
@@ -303,13 +312,23 @@ public class BetCollector {
 				 log.info("收集滚球的篮球信息：");
 				try {
 					collectRollingBasketball();
+					lastUpdateRollBasketBall = new Date();
 				} catch (Throwable e) {
+					lastUpdateRollBasketBall = null;
 					log.error("收集滚球的篮球失败:"+e.getMessage(), e);
 				}
 			}
 		}, 1000, rollDataCollectTime);
 	}
 	
+	public Date getLastUpdateRollBasketBall() {
+		return lastUpdateRollBasketBall;
+	}
+
+	public Date getLastUpdateTodayBasketBall() {
+		return lastUpdateTodayBasketBall;
+	}
+
 	public void restartTimer(){
 		log.info("change collect time:"+rollDataCollectTime);
 		timer2.cancel();

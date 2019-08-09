@@ -11,11 +11,16 @@
 <table class="gridtable">
 <tr>
     <th>滚球赛事</th>
+    <th>滚球更新时间</th>
     <th>今日赛事</th> 
+    <th>今日更新时间</th>
 </tr>
 <tr v-if="betinfoToday != null">
     <td>{{betinfoToday.rollCount}}</td>
+    <td>{{betinfoToday.lastUpdateRollCount}}</td> 
     <td>{{betinfoToday.todayCount}}</td> 
+    <td>{{betinfoToday.LastUpdateTodayCount}}</td>
+    
 </tr>
  
 </table>  

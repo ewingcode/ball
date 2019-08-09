@@ -11,9 +11,34 @@ public class BetInfoTodayDto {
 	 */
 	private Integer rollCount;
 	/**
+	 * 最近更新滚球赛事时间
+	 */
+	private String lastUpdateRollCount;
+	
+	/**
 	 * 今日赛事数量
 	 */
 	private Integer todayCount;
+	/**
+	 * 最近更新今日赛事时间
+	 */
+	private String lastUpdateTodayCount;
+
+	public String getLastUpdateRollCount() {
+		return lastUpdateRollCount;
+	}
+
+	public void setLastUpdateRollCount(String lastUpdateRollCount) {
+		this.lastUpdateRollCount = lastUpdateRollCount;
+	}
+
+	public String getLastUpdateTodayCount() {
+		return lastUpdateTodayCount;
+	}
+
+	public void setLastUpdateTodayCount(String lastUpdateTodayCount) {
+		this.lastUpdateTodayCount = lastUpdateTodayCount;
+	}
 
 	public Integer getRollCount() {
 		return rollCount;

@@ -35,6 +35,7 @@ import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.core.web.base.BaseRest;
 import com.ewing.order.core.web.common.RestResult;
 import com.ewing.order.util.BeanCopy;
+import com.ewing.order.util.DataFormat;
 import com.google.common.collect.Lists;
 
 /**
@@ -56,7 +57,9 @@ public class ReportRest extends BaseRest {
 	@Resource
 	private BwContinueDao bwContinueDao;
 	@Resource
-	private BetLogService betLogService;
+	private BetLogService betLogService; 
+	@Resource
+	private BetCollector betCollector;
 
 	public static void main(String[] args) {
 		String likeType = "ts[^,]*";
@@ -160,6 +163,10 @@ public class ReportRest extends BaseRest {
 	@ResponseBody
 	public RestResult<BetInfoTodayDto> betinfoToday() throws Exception {
 		BetInfoTodayDto betInfoTodayDto =  new BetInfoTodayDto();
+		betInfoTodayDto.setLastUpdateRollCount(betCollector.getLastUpdateRollBasketBall()!=null?
+				DataFormat.DateToString(betCollector.getLastUpdateRollBasketBall(), DataFormat.DATETIME_FORMAT):"无");
+		betInfoTodayDto.setLastUpdateTodayCount(betCollector.getLastUpdateTodayBasketBall()!=null?
+				DataFormat.DateToString(betCollector.getLastUpdateTodayBasketBall(), DataFormat.DATETIME_FORMAT):"无");
 		betInfoTodayDto.setTodayCount(BetCollector.CollectDataPool.getBkTodayList().size());
 		betInfoTodayDto.setRollCount(BetCollector.CollectDataPool.getBkRollList().size()); 
 		return RestResult.successResult(betInfoTodayDto);
