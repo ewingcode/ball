@@ -23,7 +23,7 @@
   <table class="gridtable">
 <tr>
     <th>账号</th> 
-    <th>操作</th>
+    <th>操作</th> 
     <th>状态</th> 
     <th>场数</th>
     <th>已赢</th>
@@ -41,11 +41,14 @@
 <tr  v-for="bill in list">
     <td>{{ bill.account }}【{{ bill.ballAccount }}】</td> 
 	<td><button @click="statusControl(bill.account)"><span style="color: red;" v-if="bill.iseff === '1'">
-      	停止
+      	停止下注
 	</span> 
 	<span style="color: black;" v-else>
-	    启动
-	</span></button></a></td>
+	    启动下注
+	</span></button>
+	<button @click="resetBetContinue(bill.account)"><span style="color: red;" v-if="bill.iseff === '1'">
+      	重置追球</button>
+	</td>
 	  <td> <span style="color: red;" v-if="bill.iseff === '1'">
       	进行
 	</span> 
@@ -111,6 +114,21 @@ table.gridtable td {
             list:[]
         },
         methods:{
+        	
+        	resetBetContinue：function(account){
+        		var accountPwd=prompt("重置追球计划，请输入账号密码：");
+				var url = '/ballauto/resetBetContinue.op?account='+account+'&accountPwd='+accountPwd; 
+				 this.$http.get(url).then(function(res){
+					    var success = res.data.success;
+					    if(!success){
+					    	 alert(res.data.message);
+					    	 return;
+					    } 
+	                    alert("操作成功！成功取消追球计划"); 
+	                },function(){
+	                	alert('操作失败！');
+	                });
+        	},
 			statusControl:function(account){
 				var accountPwd=prompt("请输入账号密码：");
 				var url = '/ballauto/status.op?account='+account+'&accountPwd='+accountPwd; 
@@ -120,9 +138,9 @@ table.gridtable td {
 					    	 alert(res.data.message);
 					    	 return;
 					    } 
-	                    alert("修改成功"); 
+	                    alert("操作成功！已经修改账号状态"); 
 	                },function(){
-	                	alert('请求失败处理');
+	                	alert('操作失败！');
 	                });
 			},
             get:function(){

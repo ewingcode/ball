@@ -31,6 +31,7 @@ import com.ewing.order.busi.ball.dto.TotalBillDto;
 import com.ewing.order.busi.ball.service.BetAutoBuyService;
 import com.ewing.order.busi.ball.service.BetLogService;
 import com.ewing.order.busi.ball.service.BetRuleService;
+import com.ewing.order.busi.ball.service.BwContinueService;
 import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.core.web.base.BaseRest;
 import com.ewing.order.core.web.common.RestResult;

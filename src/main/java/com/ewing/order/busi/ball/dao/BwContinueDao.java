@@ -25,6 +25,12 @@ public class BwContinueDao {
 		baseDao.save(bwContinue);
 	}
 	
+	public int update2Cancel(String account){
+		return baseDao.executeUpdate("update bw_continue set "
+				+ "status=-1" 
+				+ " where account='" + account+"' and status='"+BwContinueStatus.RUNNING+"'" );
+	}
+	
 	public int update2Cancel(Integer id){
 		return baseDao.executeUpdate("update bw_continue set "
 				+ "status=-1" 

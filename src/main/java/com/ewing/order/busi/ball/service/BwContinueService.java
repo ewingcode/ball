@@ -34,6 +34,12 @@ public class BwContinueService {
 	private BetInfoDao betInfoDao;
 	@Resource
 	private BetLogDao betLogDao;
+	
+	@Transactional(rollbackOn={Exception.class})
+	public int update2Cancel(String account){
+		return bwContinueDao.update2Cancel(account);
+	}
+	
 	@Transactional(rollbackOn={Exception.class})
 	public void updateByGameResult(BwContinue bwContinue) {
 		if (!bwContinue.getStatus().equals(BwContinueStatus.RUNNING))

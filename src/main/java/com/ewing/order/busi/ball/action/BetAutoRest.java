@@ -22,6 +22,7 @@ import com.ewing.order.busi.ball.dto.BetAutoBuyDto;
 import com.ewing.order.busi.ball.service.BetAutoBuyService;
 import com.ewing.order.busi.ball.service.BetRulePoolService;
 import com.ewing.order.busi.ball.service.BetRuleService;
+import com.ewing.order.busi.ball.service.BwContinueService;
 import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.common.prop.BallmatchProp;
 import com.ewing.order.core.web.base.BaseRest;
@@ -45,7 +46,9 @@ public class BetAutoRest extends BaseRest {
 	@Resource
 	private BetRulePoolService betRulePoolService;
 	@Resource
-	private BetCollector betCollector;
+	private BetCollector betCollector; 
+	@Resource
+	private BwContinueService bwContinueService;
 	/**
 	 * 更新自動投注賬戶狀態
 	 * 
@@ -85,7 +88,11 @@ public class BetAutoRest extends BaseRest {
 		betAutoBuyService.activeAccount(account,isAllow);
 		return RestResult.successResult(true);
 	}
-	
+	/**
+	 * 更改账号状态
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/ballauto/status.op", method = RequestMethod.GET)
 	@ResponseBody
 	public RestResult<Boolean> changeAccountStatus() throws Exception { 
@@ -101,7 +108,26 @@ public class BetAutoRest extends BaseRest {
 		betAutoBuyService.changeAccountStatus(account,action);
 		return RestResult.successResult(true);
 	}
-	
+	/**
+	 * 重置追球计划
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/ballauto/resetBetContinue.op", method = RequestMethod.GET)
+	@ResponseBody
+	public RestResult<Boolean> cancelBetContinue() throws Exception { 
+		String account = request.getParameter("account"); 
+		String accountPwd = request.getParameter("accountPwd");  
+		checkRequired(account, "account"); 
+		checkRequired(accountPwd, "accountPwd"); 
+		bwContinueService.update2Cancel(account); 
+		return RestResult.successResult(true);
+	}
+	/**
+	 * 设置系统参数
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/ballauto/param.op", method = RequestMethod.GET)
 	@ResponseBody
 	public RestResult<Boolean> changeParam() throws Exception { 
