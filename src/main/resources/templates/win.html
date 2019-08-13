@@ -5,7 +5,7 @@
 <div id="app">
 <div id="box">
 <div>
-    开始时间：<input type="text" v-model="startDate" /></div>
+    开始时间：<input type="text" v-model="startDate" value="${startDate}"/></div>
      <div>  结束时间：<input type="text" v-model="endDate" /></div>
      <div>      账号：<input type="text" id="account" v-model="account" /></div>
 
@@ -23,7 +23,7 @@
   <table class="gridtable">
 <tr>
     <th>账号</th> 
-    <th>操作</th> 
+    <th>操作</th>
     <th>状态</th> 
     <th>场数</th>
     <th>已赢</th>
@@ -45,8 +45,8 @@
 	</span> 
 	<span style="color: black;" v-else>
 	    启动下注
-	</span></button>
-	<button @click="resetBetContinue(bill.account)"> 
+	</span></button> 
+	<button @click="resetBetContinue(bill.account)">
       	重置追球</button>
 	</td>
 	  <td> <span style="color: red;" v-if="bill.iseff === '1'">
@@ -107,15 +107,14 @@ table.gridtable td {
   new Vue({
         el:'#app',
         data:{ 
-        	startDate:null,
+        	startDate:'${startDate}',
         	endDate:null,
         	account:null,
         	totalWin:0,
             list:[]
         },
         methods:{
-        	
-        	resetBetContinue：function(account){
+        	resetBetContinue:function(account){
         		var accountPwd=prompt("重置追球计划，请输入账号密码：");
 				var url = '/ballauto/resetBetContinue.op?account='+account+'&accountPwd='+accountPwd; 
 				 this.$http.get(url).then(function(res){
@@ -138,9 +137,9 @@ table.gridtable td {
 					    	 alert(res.data.message);
 					    	 return;
 					    } 
-	                    alert("操作成功！已经修改账号状态"); 
+	                    alert("修改成功"); 
 	                },function(){
-	                	alert('操作失败！');
+	                	alert('请求失败处理');
 	                });
 			},
             get:function(){

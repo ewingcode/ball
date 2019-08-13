@@ -4,7 +4,7 @@
 <body>
 <div id="app">
 <div id="box">
-    开始时间：<input type="text" v-model="date" />
+    开始时间：<input type="text" v-model="date"  value="${startDate}"/>
 	<input type="button" @click="get()" value="查询账单">
 </div>
   <ol>
@@ -23,7 +23,7 @@
   new Vue({
         el:'#app',
         data:{ 
-        	date:null,
+        	date:'${startDate}',
             list:[]
         },
         methods:{

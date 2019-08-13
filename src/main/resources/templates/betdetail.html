@@ -4,7 +4,7 @@
 <body>
 <div id="app">
 <div id="box">
-    <div>开始时间：<input type="text" id="date" v-model="date" /></div>
+    <div>开始时间：<input type="text" id="date" v-model="date"  value="${startDate}"/></div>
     <div>账号：<input type="text" id="account" v-model="account" /></div>
 	<input type="button" @click="get()" value="查询账单">
 </div>
@@ -118,7 +118,7 @@ table.gridtable td {
   new Vue({
         el:'#app',
         data:{ 
-        	date:null,
+        	date:'${startDate}',
         	account:null,
             list:[],
             betinfoToday:null

@@ -20,7 +20,7 @@ public class BetAutoBuyDao {
 	private BaseDao baseDao;
 
 	public List<BetAutoBuy> findAll() {
-		return baseDao.findAll(BetAutoBuy.class);
+		return baseDao.find("1=1 order by iseff desc,account",BetAutoBuy.class);
 	}
 
 	public BetAutoBuy find(String account) {

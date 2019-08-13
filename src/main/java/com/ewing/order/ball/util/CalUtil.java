@@ -116,6 +116,10 @@ public class CalUtil {
 		}
 	}
 	
+	public static String getShortStartDayOfWeek() {
+		return getStartDayOfWeek().replace("-", ""); 
+	}
+	
 	public static String getStartDayOfWeek() {
 		Calendar cal = Calendar.getInstance();
 		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
