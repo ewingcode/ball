@@ -80,7 +80,12 @@ public class BetCollector {
 	
 	private Date lastUpdateTodayBasketBall;
 	
+	private Boolean isCollectError = true;
 	
+	public Boolean getIsCollectError() {
+		return isCollectError;
+	}
+
 	public static class CollectDataPool {
 		public static List<BetInfoDto> bkRollList = Lists.newArrayList();
 		private static List<BetInfoDto> bkTodayList = Lists.newArrayList();
@@ -190,9 +195,19 @@ public class BetCollector {
 	@Scheduled(cron = "0 */2 * * * * ")
 	public void changeUid() {
 		if (istartCollect.get()) {
-			loginResp = RequestTool.login(user, pwd);
-			this.uid = loginResp.getUid();
-			log.info("change uid for collector:" + this.uid);
+			try {
+				loginResp = RequestTool.login(user, pwd);
+				this.uid = loginResp.getUid();
+				if(this.uid==null){
+					isCollectError = true;
+				}else{
+					isCollectError = false;
+					log.info("change uid for collector:" + this.uid);
+				}
+			} catch (Exception e) {
+				isCollectError = true;
+				log.error("更改收集信息UID失败",e.getMessage());
+			}
 		}
 	}
 

@@ -14,13 +14,14 @@
     <th>滚球更新时间</th>
     <th>今日赛事</th> 
     <th>今日更新时间</th>
+    <th>收集是否正常</th>
 </tr>
 <tr v-if="betinfoToday != null">
     <td>{{betinfoToday.rollCount}}</td>
     <td>{{betinfoToday.lastUpdateRollCount}}</td> 
     <td>{{betinfoToday.todayCount}}</td> 
-    <td>{{betinfoToday.LastUpdateTodayCount}}</td>
-    
+    <td>{{betinfoToday.lastUpdateTodayCount}}</td>
+    <td>{{!betinfoToday.isCollectError}}</td>  
 </tr>
  
 </table>  

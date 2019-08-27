@@ -91,13 +91,30 @@ public class BetFullDetailDto implements java.io.Serializable {
 	private String sc_total;
 	@Column(name = "total")
 	private String total;
+	
+	private String expectTotal;
+	
+	private Float rateEveryMin;
+	
 	@Column(name = "errormsg")
 	private String errormsg;
 	private String wingold;
 	
 	private String orgResult;
 	private String orgNResult;
-	
+	 
+	public String getExpectTotal() {
+		return expectTotal;
+	}
+	public void setExpectTotal(String expectTotal) {
+		this.expectTotal = expectTotal;
+	}
+	public Float getRateEveryMin() {
+		return rateEveryMin;
+	}
+	public void setRateEveryMin(Float rateEveryMin) {
+		this.rateEveryMin = rateEveryMin;
+	}
 	
 	public String getSc_total() {
 		return sc_total;

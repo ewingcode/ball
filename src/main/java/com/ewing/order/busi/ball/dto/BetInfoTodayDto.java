@@ -24,6 +24,20 @@ public class BetInfoTodayDto {
 	 */
 	private String lastUpdateTodayCount;
 
+	/**
+	 * 收集数据是否有错
+	 */
+	private Boolean isCollectError;
+	
+	
+	public Boolean getIsCollectError() {
+		return isCollectError;
+	}
+
+	public void setIsCollectError(Boolean isCollectError) {
+		this.isCollectError = isCollectError;
+	}
+
 	public String getLastUpdateRollCount() {
 		return lastUpdateRollCount;
 	}

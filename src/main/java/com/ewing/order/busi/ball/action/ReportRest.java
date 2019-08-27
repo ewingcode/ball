@@ -169,7 +169,8 @@ public class ReportRest extends BaseRest {
 		betInfoTodayDto.setLastUpdateTodayCount(betCollector.getLastUpdateTodayBasketBall()!=null?
 				DataFormat.DateToString(betCollector.getLastUpdateTodayBasketBall(), DataFormat.DATETIME_FORMAT):"无");
 		betInfoTodayDto.setTodayCount(BetCollector.CollectDataPool.getBkTodayList().size());
-		betInfoTodayDto.setRollCount(BetCollector.CollectDataPool.getBkRollList().size()); 
+		betInfoTodayDto.setRollCount(BetCollector.CollectDataPool.getBkRollList().size());
+		betInfoTodayDto.setIsCollectError(betCollector.getIsCollectError());
 		return RestResult.successResult(betInfoTodayDto);
 	}
 }
