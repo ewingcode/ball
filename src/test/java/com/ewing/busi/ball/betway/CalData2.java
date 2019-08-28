@@ -38,7 +38,6 @@ public class CalData2 {
 	private BetRollInfoService betRollInfoService;
 	@Resource
 	private BetRollInfoDao betRollInfoDao;
-
     //@Test
 	public void testAllGame() {
 		List<BetInfo> entityList = baseDao.find(
