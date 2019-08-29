@@ -90,8 +90,53 @@ public class BetRule implements java.io.Serializable {
 	@Column(name = "continue_plan_money")
 	private String continuePlanMoney;
 	@Column(name = "win_rule")
-	private String winRule;
+	private String winRule; 
+	//固定比例
+	@Column(name = "pool_rate")
+	private Float poolRate;
+	//固定比例下注资金额池
+	@Column(name = "rate_pool_money")
+	private Float ratePoolMoney;
+	//固定比例下注赢多少钱则停止下注
+	@Column(name = "rate_stop_wingold")
+	private Float rateStopWingold;
+	//固定比例下注输多少钱则停止下注
+	@Column(name = "rate_stop_losegold")
+	private Float rateStopLosegold; 
+ 
 	
+	public Float getPoolRate() {
+		return poolRate;
+	}
+
+	public void setPoolRate(Float poolRate) {
+		this.poolRate = poolRate;
+	}
+
+	public Float getRatePoolMoney() {
+		return ratePoolMoney;
+	}
+
+	public void setRatePoolMoney(Float ratePoolMoney) {
+		this.ratePoolMoney = ratePoolMoney;
+	}
+
+	public Float getRateStopWingold() {
+		return rateStopWingold;
+	}
+
+	public void setRateStopWingold(Float rateStopWingold) {
+		this.rateStopWingold = rateStopWingold;
+	}
+
+	public Float getRateStopLosegold() {
+		return rateStopLosegold;
+	}
+
+	public void setRateStopLosegold(Float rateStopLosegold) {
+		this.rateStopLosegold = rateStopLosegold;
+	}
+ 
 	public String getWinRule() {
 		return winRule;
 	}

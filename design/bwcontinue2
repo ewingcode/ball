@@ -1,0 +1,15 @@
+固定比例投注方案：
+1、用户可以设置固定的下注比例，本金大小，止盈金额，止损金额，最大下注场数；
+
+
+数据表变更点
+1、增加固定下注表bw_continue里面增加本金大小，下注比例，
+2、下注资金记录bw_continue_detail表
+
+代码逻辑变更点
+1、定时任务BwContinueService。updateByGameResult逻辑，增加判断如果下注比例不为空的时候的逻辑，
+     增加记录下注明细记录，当超过下注止盈金额，止损金额，则停止
+2、修改计算下注规则BetStrategy.computeBetMoney
+
+
+          

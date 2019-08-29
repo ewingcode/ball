@@ -59,6 +59,62 @@ public class BwContinue implements java.io.Serializable {
 	private Timestamp createTime;
 	@Column(name = "lastUpdate")
 	private Timestamp lastUpdate;
+	//固定比例
+	@Column(name = "pool_rate")
+	private Float poolRate;
+	//固定比例下注资金额池
+	@Column(name = "rate_pool_money")
+	private Float ratePoolMoney;
+	//固定比例最新下注资金额池
+	@Column(name = "rate_cur_pool_money")
+	private Float rateCurPoolMoney;
+	//固定比例下注赢多少钱则停止下注
+	@Column(name = "rate_stop_wingold")
+	private Float rateStopWingold;
+	//固定比例下注输多少钱则停止下注
+	@Column(name = "rate_stop_losegold")
+	private Float rateStopLosegold; 
+	
+	
+	public Float getRateCurPoolMoney() {
+		return rateCurPoolMoney;
+	}
+
+	public void setRateCurPoolMoney(Float rateCurPoolMoney) {
+		this.rateCurPoolMoney = rateCurPoolMoney;
+	}
+
+	public Float getPoolRate() {
+		return poolRate;
+	}
+
+	public void setPoolRate(Float poolRate) {
+		this.poolRate = poolRate;
+	}
+
+	public Float getRatePoolMoney() {
+		return ratePoolMoney;
+	}
+
+	public void setRatePoolMoney(Float ratePoolMoney) {
+		this.ratePoolMoney = ratePoolMoney;
+	}
+
+	public Float getRateStopWingold() {
+		return rateStopWingold;
+	}
+
+	public void setRateStopWingold(Float rateStopWingold) {
+		this.rateStopWingold = rateStopWingold;
+	}
+
+	public Float getRateStopLosegold() {
+		return rateStopLosegold;
+	}
+
+	public void setRateStopLosegold(Float rateStopLosegold) {
+		this.rateStopLosegold = rateStopLosegold;
+	} 
 
 	public String getContinuePlanMoney() {
 		return continuePlanMoney;

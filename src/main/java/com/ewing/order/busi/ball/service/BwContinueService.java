@@ -17,10 +17,12 @@ import com.ewing.order.busi.ball.dao.BetInfoDao;
 import com.ewing.order.busi.ball.dao.BetLogDao;
 import com.ewing.order.busi.ball.dao.BetRuleDao;
 import com.ewing.order.busi.ball.dao.BwContinueDao;
+import com.ewing.order.busi.ball.dao.BwContinueDetailDao;
 import com.ewing.order.busi.ball.ddl.BetInfo;
 import com.ewing.order.busi.ball.ddl.BetLog;
 import com.ewing.order.busi.ball.ddl.BetRule;
 import com.ewing.order.busi.ball.ddl.BwContinue;
+import com.ewing.order.busi.ball.ddl.BwContinueDetail;
 import com.ewing.order.util.GsonUtil;
 import com.google.common.collect.Lists;
 
@@ -34,6 +36,8 @@ public class BwContinueService {
 	private BetInfoDao betInfoDao;
 	@Resource
 	private BetLogDao betLogDao;
+	@Resource
+	private BwContinueDetailDao bwContinueDetailDao;
 	
 	@Transactional(rollbackOn={Exception.class})
 	public int update2Cancel(String account){
@@ -110,6 +114,11 @@ public class BwContinueService {
 			bwContinue.setAccount(account);
 			bwContinue.setAllowBet(BwContinueAllowBet.ALLOW);
 			bwContinue.setBetRuleId(betRuleId);
+			bwContinue.setRatePoolMoney(betRule.getRatePoolMoney());
+			bwContinue.setRateCurPoolMoney(betRule.getRatePoolMoney());
+			bwContinue.setRateStopLosegold(betRule.getRateStopLosegold());
+			bwContinue.setRateStopWingold(betRule.getStopWingold());
+			bwContinue.setPoolRate(betRule.getPoolRate());
 			bwContinue.setContinueMaxMatch(betRule.getContinueMaxMatch());
 			if(loseTotal>0){
 				bwContinue.setContinueMaxMatch(betRule.getContinueMaxMatch()+loseTotal);
@@ -136,6 +145,7 @@ public class BwContinueService {
 	
 	@Transactional(rollbackOn={Exception.class})
 	public int addNewMatch(BwContinue lastBwContinue, Integer betLogId, Float betMoney) {
+		BetLog betLog = betLogDao.findById(betLogId);
 		BwBetDetail bwBetDetail = new BwBetDetail();
 		bwBetDetail.setResult(BwContinueStatus.RUNNING);
 		bwBetDetail.setBetLogId(betLogId);
@@ -148,6 +158,17 @@ public class BwContinueService {
 			bwBetDetailList = new BwBetDetailList();
 			bwBetDetailList.setBwDetail(Lists.newArrayList(bwBetDetail));
 		}
+		BwContinueDetail bwContinueDetail = new BwContinueDetail();
+		bwContinueDetail.setAccount(lastBwContinue.getAccount());
+		bwContinueDetail.setBeforePoolMoney(lastBwContinue.getRateCurPoolMoney()); 
+		bwContinueDetail.setBetLogId(betLogId);
+		bwContinueDetail.setBetMoney(betMoney);
+		bwContinueDetail.setBetRate(Float.valueOf(betLog.getIoratio()));
+		bwContinueDetail.setBwContinueId(lastBwContinue.getId());
+		bwContinueDetail.setPollRate(lastBwContinue.getPoolRate()); 
+		bwContinueDetail.setResult(BwContinueStatus.RUNNING);
+		bwContinueDetail.setSeq(lastBwContinue.getTotalMatch());
+		bwContinueDetailDao.save(bwContinueDetail);
 		return bwContinueDao.addNewMatch(lastBwContinue.getId(),
 				GsonUtil.getGson().toJson(bwBetDetailList), lastBwContinue.getTotalMatch(),
 				betMoney);
