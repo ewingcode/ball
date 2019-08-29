@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.ewing.order.ball.shared.BwContinueAllowBet;
 import com.ewing.order.busi.ball.ddl.BwContinueDetail;
 import com.ewing.order.core.jpa.BaseDao;
 
@@ -25,4 +26,11 @@ public class BwContinueDetailDao {
 		baseDao.update(bwContinueDetail);
 	}
 
+	public int update(Integer bwContinueId, Integer betLogId, Float poolMoney,Float winGold,String status) {
+		return baseDao.executeUpdate("update bw_continue_detail set "
+				+ "pool_money=" + poolMoney
+				+ ",win_gold=" + winGold
+				+ ",status='"+status+"'" 
+				+ " where bw_continue_id=" + bwContinueId+" and bet_log_id="+betLogId);
+	} 
 }

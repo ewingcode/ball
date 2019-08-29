@@ -332,11 +332,16 @@ public abstract class BetStrategy {
 	protected String computeBetMoney(Float betRadio, Float betMoney) {
 		if (this.continueMaxMatch == null || this.continueMaxMatch == 0) {
 			return String.valueOf(betMoney.intValue());
-		}
-		
+		} 
 		
 		Float totalBetMoney = betMoney;
-		if(!StringUtils.isEmpty(this.continuePlanMoney)){
+		//固定比例下注
+		if(bwContinue.getPoolRate()!=null){
+			totalBetMoney = bwContinue.getRateCurPoolMoney() * bwContinue.getPoolRate();
+			return String.valueOf(totalBetMoney.intValue());
+		}
+		//连追计划下注
+		else if(!StringUtils.isEmpty(this.continuePlanMoney)){
 			String[] planMoneyArray = StringUtils.split(this.continuePlanMoney, ",");
 			return planMoneyArray[bwContinue.getTotalMatch()];
 		}else{

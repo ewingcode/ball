@@ -44,6 +44,7 @@ public class BwContinueDao {
 				+ ",status='"+status+"'"
 				+ ",bet_detail='"+betDetail+"'"
 				+ ",allow_bet='"+allowBet+"'"
+				+ ",rate_cur_pool_money=rate_cur_pool_money+"+winGold
 				+ " where id=" + oldBwContinue.getId()+" and bet_detail='"+oldBwContinue.getBetDetail()+"'" );
 	}
 	
