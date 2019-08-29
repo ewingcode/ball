@@ -89,8 +89,8 @@ public class BwContinueService {
 			if (bwContinue.getPoolRate() != null) {
 				//当比赛为结果的时候判断条件是否已经超过，超过则停止下注计划
 				if(!bwBetDetail.getResult().equals(BwContinueStatus.RUNNING)){
-					if( (bwContinue.getRateStopLosegold()!=null && bwContinue.getRateCurPoolMoney()<=bwContinue.getRateStopLosegold() )
-							|| (bwContinue.getRateStopWingold()!=null && bwContinue.getRateCurPoolMoney() >= bwContinue.getRateStopWingold() )
+					if( (bwContinue.getRateStopLosegold()!=null && bwContinue.getRateStopLosegold()<0 && bwContinue.getRateCurPoolMoney()<=bwContinue.getRateStopLosegold() )
+							|| (bwContinue.getRateStopWingold()!=null && bwContinue.getRateStopWingold() >0 && bwContinue.getRateCurPoolMoney() >= bwContinue.getRateStopWingold() )
 							|| (bwContinue.getContinueMaxMatch()!=null && bwContinue.getTotalMatch()>=bwContinue.getContinueMaxMatch())){
 						bwStatus = BwContinueStatus.SUCCESS; 
 					}else{
