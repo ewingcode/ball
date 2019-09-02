@@ -1,10 +1,10 @@
 package com.ewing.order.busi.ball.dao;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Component;
 
-import com.ewing.order.ball.shared.BwContinueAllowBet;
 import com.ewing.order.busi.ball.ddl.BwContinueDetail;
 import com.ewing.order.core.jpa.BaseDao;
 
@@ -16,8 +16,8 @@ import com.ewing.order.core.jpa.BaseDao;
 @Component
 public class BwContinueDetailDao {
 	@Resource
-	private BaseDao baseDao;
-
+	private BaseDao baseDao; 
+	
 	public void save(BwContinueDetail bwContinueDetail) {
 		baseDao.save(bwContinueDetail);
 	}
@@ -30,7 +30,7 @@ public class BwContinueDetailDao {
 		return baseDao.executeUpdate("update bw_continue_detail set "
 				+ "pool_money=" + poolMoney
 				+ ",win_gold=" + winGold
-				+ ",status='"+status+"'" 
+				+ ",result='"+status+"'" 
 				+ " where bw_continue_id=" + bwContinueId+" and bet_log_id="+betLogId);
 	} 
 }
