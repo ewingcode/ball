@@ -96,7 +96,7 @@ public class BwContinueService {
 					}else{
 						allowBet = BwContinueAllowBet.ALLOW;
 					}
-					bwContinue.setRateCurPoolMoney(bwContinue.getPoolRate()+winGold);
+					bwContinue.setRateCurPoolMoney(bwContinue.getRatePoolMoney()+winGold);
 					bwContinueDao.updateStatus(winGold, bwStatus, allowBet, betDetailStr,
 							bwContinue);
 					bwContinueDetailDao.update(bwContinue.getId(), bwBetDetail.getBetLogId(), bwContinue.getRateCurPoolMoney(), winGold, bwBetDetail.getResult());
@@ -143,7 +143,7 @@ public class BwContinueService {
 			bwContinue.setRatePoolMoney(betRule.getRatePoolMoney());
 			bwContinue.setRateCurPoolMoney(betRule.getRatePoolMoney());
 			bwContinue.setRateStopLosegold(betRule.getRateStopLosegold());
-			bwContinue.setRateStopWingold(betRule.getStopWingold());
+			bwContinue.setRateStopWingold(betRule.getRateStopWingold());
 			bwContinue.setPoolRate(betRule.getPoolRate());
 			bwContinue.setContinueMaxMatch(betRule.getContinueMaxMatch());
 			if (loseTotal > 0) {
@@ -161,6 +161,39 @@ public class BwContinueService {
 		return null;
 	}
 
+	@Transactional(rollbackOn = { Exception.class })
+	public void add2() {
+		try {
+			BwContinue bwContinue = new BwContinue();
+			bwContinue.setAccount("1");
+			bwContinue.setTotalMatch(1);
+			bwContinue.setTargetMoney(1f);
+			bwContinue.setTotalBetMoney(1f);
+			bwContinue.setStatus("0");
+			bwContinueDao.save(bwContinue);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			BwContinueDetail bwContinueDetail = new BwContinueDetail();
+			bwContinueDetail.setAccount("1");
+			bwContinueDetail.setBeforePoolMoney(1f);
+			bwContinueDetail.setBetLogId(2);
+			bwContinueDetail.setBetMoney(100f);
+			bwContinueDetail.setBetRate(Float.valueOf("0.8"));
+			bwContinueDetail.setBwContinueId(2);
+			bwContinueDetail.setPollRate(0.3f);
+			bwContinueDetail.setResult(BwContinueStatus.RUNNING);
+			bwContinueDetail.setSeq(1);
+			bwContinueDetailDao.save(bwContinueDetail);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+ 
 	public BwContinue findRunning(String account, Integer betRuleId) {
 		return bwContinueDao.findRunning(account, betRuleId);
 	}
