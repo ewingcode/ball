@@ -75,51 +75,56 @@ public class BwContinueService {
 						status = BwContinueStatus.SUCCESS;
 						winGold += Float.valueOf(betLog.getIoratio())
 								* Float.valueOf(betLog.getGold());
-					} else {
+					}
+					else if( Float
+								.valueOf(betLog.getSpread()).equals(Float.valueOf(betInfo.getSc_total()))) {
+							status = BwContinueStatus.SUCCESS;
+							winGold  = 0f;
+					}
+					else {
 						status = BwContinueStatus.FAIL;
 						winGold -= Float.valueOf(betLog.getGold());
 					}
 					bwBetDetail.setResult(status);
 				}
-			}
+				
+				betDetailStr = GsonUtil.getGson().toJson(bwBetDetailList);
+				
+				if (bwContinue.getPoolRate() != null) {
+					//当比赛为结果的时候判断条件是否已经超过，超过则停止下注计划
+					if(!bwBetDetail.getResult().equals(BwContinueStatus.RUNNING)){
+						if( (bwContinue.getRateStopLosegold()!=null && bwContinue.getRateStopLosegold()<0 && bwContinue.getRateCurPoolMoney()<=bwContinue.getRateStopLosegold() )
+								|| (bwContinue.getRateStopWingold()!=null && bwContinue.getRateStopWingold() >0 && bwContinue.getRateCurPoolMoney() >= bwContinue.getRateStopWingold() )
+								|| (bwContinue.getContinueMaxMatch()!=null && bwContinue.getTotalMatch()>=bwContinue.getContinueMaxMatch())){
+							bwStatus = BwContinueStatus.SUCCESS; 
+						}else{
+							allowBet = BwContinueAllowBet.ALLOW;
+						}
+						bwContinue.setRateCurPoolMoney(bwContinue.getRatePoolMoney()+winGold);
+						bwContinueDao.updateStatus(winGold, bwStatus, allowBet, betDetailStr,
+								bwContinue);
+						bwContinueDetailDao.update(bwContinue.getId(), bwBetDetail.getBetLogId(), bwContinue.getRateCurPoolMoney(), winGold, bwBetDetail.getResult());
+					}
+				} else {
 
-			betDetailStr = GsonUtil.getGson().toJson(bwBetDetailList);
-			BwBetDetail bwBetDetail = bwBetDetailList.getBwDetail()
-					.get(bwBetDetailList.getBwDetail().size() - 1);
-			if (bwContinue.getPoolRate() != null) {
-				//当比赛为结果的时候判断条件是否已经超过，超过则停止下注计划
-				if(!bwBetDetail.getResult().equals(BwContinueStatus.RUNNING)){
-					if( (bwContinue.getRateStopLosegold()!=null && bwContinue.getRateStopLosegold()<0 && bwContinue.getRateCurPoolMoney()<=bwContinue.getRateStopLosegold() )
-							|| (bwContinue.getRateStopWingold()!=null && bwContinue.getRateStopWingold() >0 && bwContinue.getRateCurPoolMoney() >= bwContinue.getRateStopWingold() )
-							|| (bwContinue.getContinueMaxMatch()!=null && bwContinue.getTotalMatch()>=bwContinue.getContinueMaxMatch())){
-						bwStatus = BwContinueStatus.SUCCESS; 
-					}else{
-						allowBet = BwContinueAllowBet.ALLOW;
+					if (bwBetDetail.getResult().equals(BwContinueStatus.SUCCESS)) {
+						bwStatus = BwContinueStatus.SUCCESS;
+						bwContinueDao.updateStatus(winGold, bwStatus, allowBet, betDetailStr,
+								bwContinue);
+					} else if (bwBetDetail.getResult().equals(BwContinueStatus.FAIL)) {
+						if (bwContinue.getTotalMatch() < bwContinue.getContinueMaxMatch()) {
+							allowBet = BwContinueAllowBet.ALLOW;
+						} else {
+							bwStatus = BwContinueStatus.FAIL;
+						}
+						if (bwContinue.getAllowBet() == BwContinueAllowBet.ALLOW) {
+							return;
+						}
+						bwContinueDao.updateStatus(winGold, bwStatus, allowBet, betDetailStr,
+								bwContinue);
 					}
-					bwContinue.setRateCurPoolMoney(bwContinue.getRatePoolMoney()+winGold);
-					bwContinueDao.updateStatus(winGold, bwStatus, allowBet, betDetailStr,
-							bwContinue);
-					bwContinueDetailDao.update(bwContinue.getId(), bwBetDetail.getBetLogId(), bwContinue.getRateCurPoolMoney(), winGold, bwBetDetail.getResult());
 				}
-			} else {
-
-				if (bwBetDetail.getResult().equals(BwContinueStatus.SUCCESS)) {
-					bwStatus = BwContinueStatus.SUCCESS;
-					bwContinueDao.updateStatus(winGold, bwStatus, allowBet, betDetailStr,
-							bwContinue);
-				} else if (bwBetDetail.getResult().equals(BwContinueStatus.FAIL)) {
-					if (bwContinue.getTotalMatch() < bwContinue.getContinueMaxMatch()) {
-						allowBet = BwContinueAllowBet.ALLOW;
-					} else {
-						bwStatus = BwContinueStatus.FAIL;
-					}
-					if (bwContinue.getAllowBet() == BwContinueAllowBet.ALLOW) {
-						return;
-					}
-					bwContinueDao.updateStatus(winGold, bwStatus, allowBet, betDetailStr,
-							bwContinue);
-				}
-			}
+			} 
 		}
 
 	}
