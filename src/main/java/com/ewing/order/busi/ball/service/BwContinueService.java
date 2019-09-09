@@ -100,7 +100,7 @@ public class BwContinueService {
 						}else{
 							allowBet = BwContinueAllowBet.ALLOW;
 						}
-						bwContinue.setRateCurPoolMoney(bwContinue.getRatePoolMoney()+winGold);
+						bwContinue.setRateCurPoolMoney(bwContinue.getRateCurPoolMoney()+winGold);
 						bwContinueDao.updateStatus(winGold, bwStatus, allowBet, betDetailStr,
 								bwContinue);
 						bwContinueDetailDao.update(bwContinue.getId(), bwBetDetail.getBetLogId(), bwContinue.getRateCurPoolMoney(), winGold, bwBetDetail.getResult());
