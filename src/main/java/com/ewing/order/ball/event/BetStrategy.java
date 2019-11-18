@@ -1,5 +1,8 @@
 package com.ewing.order.ball.event;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,15 +44,15 @@ public abstract class BetStrategy {
 	private String money;
 
 	private Integer continueMaxMatch;
-	
+
 	private String continuePlanMoney;
 
 	private Integer isTest;
 
 	private Integer isCover;
-	
+
 	private Integer maxEachday;
-	
+
 	private String winRule;
 
 	private Map<String, String> paramMap;
@@ -161,13 +164,12 @@ public abstract class BetStrategy {
 	}
 
 	public void log(String message) {
-		log.info("strategyName:" + strategyName + ",account:" + betStrategyContext.getAccount()
-				+ "-" + message);
+		log.info("strategyName:" + strategyName + ",account:" + betStrategyContext.getAccount() + "-" + message);
 	}
 
 	public void betlog(String message) {
-		BetLogger.logger.info("strategyName:" + strategyName + ",account:"
-				+ betStrategyContext.getAccount() + "-" + message);
+		BetLogger.logger
+				.info("strategyName:" + strategyName + ",account:" + betStrategyContext.getAccount() + "-" + message);
 	}
 
 	/**
@@ -263,8 +265,7 @@ public abstract class BetStrategy {
 	 * @param side
 	 * @return
 	 */
-	public BkPreOrderViewResp getbkPreOrderView(String uid, String gid, String gtype, String wtype,
-			String side) {
+	public BkPreOrderViewResp getbkPreOrderView(String uid, String gid, String gtype, String wtype, String side) {
 		int retryTime = 0;
 		BkPreOrderViewResp bkPreOrderViewResp = null;
 		while (retryTime < maxRetryBet) {
@@ -273,10 +274,9 @@ public abstract class BetStrategy {
 				bkPreOrderViewResp = RequestTool.getbkPreOrderView(uid, gid, gtype, wtype, side);
 			} catch (Exception e) {
 				log("获取投注信息失败,gid:" + gid);
-				BetLogger.logger.error("获取投注信息失败,gid:" + gid,e);
+				BetLogger.logger.error("获取投注信息失败,gid:" + gid, e);
 			}
-			if (bkPreOrderViewResp != null
-					&& StringUtils.isEmpty(bkPreOrderViewResp.getErrormsg())) {
+			if (bkPreOrderViewResp != null && StringUtils.isEmpty(bkPreOrderViewResp.getErrormsg())) {
 				break;
 			}
 		}
@@ -309,8 +309,8 @@ public abstract class BetStrategy {
 			bwContinue = this.betStrategyContext.getBwContinueService().newBwContinue(account, ruleId, loseTotal);
 		}
 
-		if(StringUtils.isNotEmpty(bwContinue.getContinuePlanMoney())){
-			this.continuePlanMoney= bwContinue.getContinuePlanMoney();
+		if (StringUtils.isNotEmpty(bwContinue.getContinuePlanMoney())) {
+			this.continuePlanMoney = bwContinue.getContinuePlanMoney();
 			this.continueMaxMatch = bwContinue.getContinueMaxMatch();
 		}
 		if (bwContinue == null) {
@@ -325,92 +325,183 @@ public abstract class BetStrategy {
 		if (bwContinue.getTotalMatch() >= this.continueMaxMatch) {
 			return false;
 		}
-		
+
 		return true;
-	} 
-	 
+	}
+
 	protected String computeBetMoney(Float betRadio, Float betMoney) {
 		if (this.continueMaxMatch == null || this.continueMaxMatch == 0) {
 			return String.valueOf(betMoney.intValue());
-		} 
-		
+		}
+
 		Float totalBetMoney = betMoney;
-		//固定比例下注
-		if(bwContinue.getPoolRate()!=null){
+		// 固定比例下注
+		if (bwContinue.getPoolRate() != null) {
+			//支持赢则停的规则
+			Boolean allow = allowBetInByWinRule();
+			if(!allow){
+				return "0";
+			}
 			totalBetMoney = bwContinue.getRateCurPoolMoney() * bwContinue.getPoolRate();
 			return String.valueOf(totalBetMoney.intValue());
 		}
-		//连追计划下注
-		else if(!StringUtils.isEmpty(this.continuePlanMoney)){
+		// 连追计划下注
+		else if (!StringUtils.isEmpty(this.continuePlanMoney)) {
 			String[] planMoneyArray = StringUtils.split(this.continuePlanMoney, ",");
 			return planMoneyArray[bwContinue.getTotalMatch()];
-		}else{
-			//是否覆盖之前输的金额
+		} else {
+			// 是否覆盖之前输的金额
 			if (this.isCover != null && this.isCover == 1) {
 				Float winLossBetMoney = 0f;
-				if (bwContinue != null && bwContinue.getTotalBetMoney() != null
-						&& bwContinue.getTotalBetMoney() > 0 && betRadio > 0) {
+				if (bwContinue != null && bwContinue.getTotalBetMoney() != null && bwContinue.getTotalBetMoney() > 0
+						&& betRadio > 0) {
 					winLossBetMoney = bwContinue.getTotalBetMoney() / betRadio;
 				}
 				totalBetMoney = winLossBetMoney + betMoney;
 				return String.valueOf(totalBetMoney.intValue());
 			} else {
-	
-				if (bwContinue != null
-						&& bwContinue.getTotalMatch() >= bwContinue.getContinueStartLostnum()) {
-					totalBetMoney = (bwContinue.getTotalMatch() + 1
-							- bwContinue.getContinueStartLostnum() + 1) * betMoney;
+
+				if (bwContinue != null && bwContinue.getTotalMatch() >= bwContinue.getContinueStartLostnum()) {
+					totalBetMoney = (bwContinue.getTotalMatch() + 1 - bwContinue.getContinueStartLostnum() + 1)
+							* betMoney;
 				}
 				return String.valueOf(totalBetMoney.intValue());
 			}
 		}
 	}
 
-	public Integer loseTotalAfterWinRule(){
-		if(StringUtils.isEmpty(this.winRule))
+	/**
+	 * 是否不能执行下注
+	 * 
+	 * @return
+	 */
+	public Boolean allowBetInByWinRule() {
+		if (StringUtils.isEmpty(this.winRule))
+			return true;
+		String[] winRuleArray = StringUtils.split(this.winRule, ",");
+		if (winRuleArray == null || winRuleArray.length != 2)
+			return true;
+		Integer planWinTotal = Integer.valueOf(winRuleArray[0]);
+		Integer planLoseTotal = Integer.valueOf(winRuleArray[1]);
+		 
+		// 获取所有
+		List<BetDetailDto> beforeSucLogList = this.betStrategyContext.getBetLogService()
+				.findAllBetDetailBeforeLastestId(betStrategyContext.getAccount(), CalUtil.getStartTimeOfWeek(), null);
+		LinkedList<String> resultList = new LinkedList<>();
+		for (BetDetailDto betDetailDto : beforeSucLogList) {
+			resultList.addLast(betDetailDto.getnResult());
+		}
+		 
+		return allow(planWinTotal, planLoseTotal, resultList); 
+	}
+
+	public static Boolean allow(Integer win, Integer lose, List<String> resultList) {
+		System.out.println(resultList);
+		if (lose == null || lose == 0) {
+			return true;
+		}
+		List<List<String>> allSchemes = new ArrayList<>();
+		for (int i = 0; i < lose; i++) {
+			List<String> scheme = new ArrayList<>();
+			for (int j = 0; j < win; j++) {
+				scheme.add(BetLogResult.WIN);
+			}
+			for (int z = 0; z < i; z++) {
+				scheme.add(BetLogResult.LOST);
+			}
+			allSchemes.add(scheme);
+		}
+		System.out.println(allSchemes);
+		Boolean hitScheme = false;
+		for (List<String> scheme : allSchemes) {
+			if (hitScheme)
+				break;
+			System.out.println("方案："+scheme);
+			if (resultList.size() < scheme.size()) {
+				System.out.println("比赛场数不对称");
+				break;
+			}
+			for (int i = 0; i < scheme.size(); i++) {
+				if(resultList.size()-i-1<0 || scheme.size()-i-1<0)
+					break; 
+				System.out.println("结果," + resultList.get(resultList.size() - i-1) + "," + scheme.get(scheme.size() - i-1));
+				if (!resultList.get(resultList.size()-i-1).equals(scheme.get(scheme.size() - i-1))) {
+					System.out.println("结果不对称");
+					break;
+				}
+
+				if (i == 1) {
+					hitScheme = true;
+				}
+			}
+
+		}
+		// 命中规则则不能下注
+		if (hitScheme) {
+			System.out.println("击中方案");
+			return false;
+		}
+		return true;
+	}
+
+	public static void main(String[] args) {
+		String[] result = { BetLogResult.WIN, BetLogResult.LOST, BetLogResult.WIN, BetLogResult.WIN};
+
+		List<String> resultList = Arrays.asList(result);
+		Boolean isAllow = allow(3, 1, resultList);
+		System.out.println("allow:" + isAllow);
+	}
+
+	public Integer loseTotalAfterWinRule() {
+		if (StringUtils.isEmpty(this.winRule))
 			return 0;
 		String[] winRuleArray = StringUtils.split(this.winRule, ",");
-		if(winRuleArray==null || winRuleArray.length!=2)
+		if (winRuleArray == null || winRuleArray.length != 2)
 			return 0;
 		Integer planWinTotal = Integer.valueOf(winRuleArray[0]);
 		Integer planLoseTotal = Integer.valueOf(winRuleArray[1]);
-		//1.计算最后一条成功下注结果是否赢
-		List<BetDetailDto> sucBetLogList = this.betStrategyContext.getBetLogService().findSucBetDetail(betStrategyContext.getAccount(), CalUtil.getStartTimeOfWeek(), 1);
-		if(CollectionUtils.isEmpty(sucBetLogList))
+		// 1.计算最后一条成功下注结果是否赢
+		List<BetDetailDto> sucBetLogList = this.betStrategyContext.getBetLogService()
+				.findSucBetDetail(betStrategyContext.getAccount(), CalUtil.getStartTimeOfWeek(), 1);
+		if (CollectionUtils.isEmpty(sucBetLogList))
 			return 0;
 		Integer lastestBetLogId = null;
 		BetDetailDto lastBetLog = sucBetLogList.get(0);
-		
-		if(!lastBetLog.getnResult().equals(BetLogResult.WIN)) 
+
+		if (!lastBetLog.getnResult().equals(BetLogResult.WIN))
 			return 0;
 		lastestBetLogId = lastBetLog.getId();
-		//2.计算赢比赛之前的投注结果，如果有连赢的则会累计起来，和计划赢得场数进行比较
+		// 2.计算赢比赛之前的投注结果，如果有连赢的则会累计起来，和计划赢得场数进行比较
 		Integer tempSuc = 1;
-		List<BetDetailDto> beforeSucLogList = this.betStrategyContext.getBetLogService().findAllBetDetailBeforeLastestId(betStrategyContext.getAccount(), CalUtil.getStartTimeOfWeek(), lastestBetLogId);
-		if(CollectionUtils.isNotEmpty(beforeSucLogList)) {
-			for(BetDetailDto betDetailDto : beforeSucLogList){
-				if(!betDetailDto.getnResult().equals(BetLogResult.WIN)){
+		List<BetDetailDto> beforeSucLogList = this.betStrategyContext.getBetLogService()
+				.findAllBetDetailBeforeLastestId(betStrategyContext.getAccount(), CalUtil.getStartTimeOfWeek(),
+						lastestBetLogId);
+		if (CollectionUtils.isNotEmpty(beforeSucLogList)) {
+			for (BetDetailDto betDetailDto : beforeSucLogList) {
+				if (!betDetailDto.getnResult().equals(BetLogResult.WIN)) {
 					break;
 				}
 				tempSuc++;
 			}
 		}
-		if(tempSuc < planWinTotal) {
+		if (tempSuc < planWinTotal) {
 			return 0;
 		}
-		//3.先计算输的场数
-		if(lastestBetLogId!=null ){
-			List<BetDetailDto> testBetLogList = this.betStrategyContext.getBetLogService().findTestBetDetailAfterLastestId(betStrategyContext.getAccount(), CalUtil.getStartTimeOfWeek(), lastestBetLogId);
-			if(CollectionUtils.isNotEmpty(testBetLogList)){
+		// 3.先计算输的场数
+		if (lastestBetLogId != null) {
+			List<BetDetailDto> testBetLogList = this.betStrategyContext.getBetLogService()
+					.findTestBetDetailAfterLastestId(betStrategyContext.getAccount(), CalUtil.getStartTimeOfWeek(),
+							lastestBetLogId);
+			if (CollectionUtils.isNotEmpty(testBetLogList)) {
 				Integer tempLostNum = 0;
-				for(BetDetailDto betDetailDto : testBetLogList){
-					if(!betDetailDto.getnResult().equals(BetLogResult.LOST)){
+				for (BetDetailDto betDetailDto : testBetLogList) {
+					if (!betDetailDto.getnResult().equals(BetLogResult.LOST)) {
 						break;
 					}
-					 
+
 					tempLostNum++;
-					//如果已经输的场数和计划的一样才返回0
-					if(tempLostNum == planLoseTotal){
+					// 如果已经输的场数和计划的一样才返回0
+					if (tempLostNum == planLoseTotal) {
 						return 0;
 					}
 				}
@@ -418,7 +509,7 @@ public abstract class BetStrategy {
 		}
 		return planLoseTotal;
 	}
-	
+
 	protected Boolean isAllowBuy() {
 		return getIsTest() == null || getIsTest() == 0;
 	}
