@@ -11,8 +11,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "bet_log_result")
-public class BetFullDetailDto implements java.io.Serializable {
-
+public class BetFullDetailDto implements java.io.Serializable { 
 	/**
 	 * 
 	 */
@@ -102,7 +101,8 @@ public class BetFullDetailDto implements java.io.Serializable {
 	
 	private String orgResult;
 	private String orgNResult;
-	 
+	//最后时间
+	private String last_t_count;
 	public String getExpectTotal() {
 		return expectTotal;
 	}
@@ -344,5 +344,10 @@ public class BetFullDetailDto implements java.io.Serializable {
 	public void setMatchStatus(String matchStatus) {
 		this.matchStatus = matchStatus;
 	}
-	 
+	public String getLast_t_count() {
+		return last_t_count;
+	}
+	public void setLast_t_count(String last_t_count) {
+		this.last_t_count = last_t_count;
+	}
 }

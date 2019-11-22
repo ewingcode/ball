@@ -172,6 +172,19 @@ public class BetCollector {
 			return  sort(list) ;
 		}
 		
+		public static BetInfoDto getLastBkRollList(String gid){
+			List<BetInfoDto> list = getSortBkRollList();
+			if(CollectionUtils.isEmpty(list)){
+				return null;
+			}
+			for(BetInfoDto betInfoDto : list){
+				if(betInfoDto.getGid().equals(gid)){
+					return betInfoDto;
+				}
+			}
+			return null;
+		}
+		
 		public static List<BetInfoDto> getSortBkTodayList() {
 			List<BetInfoDto> list = Lists.newCopyOnWriteArrayList(bkTodayList);
 			return  sort(list) ;

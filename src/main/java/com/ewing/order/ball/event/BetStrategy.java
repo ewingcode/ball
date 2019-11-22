@@ -2,6 +2,7 @@ package com.ewing.order.ball.event;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -389,14 +390,40 @@ public abstract class BetStrategy {
 				.findAllBetDetailBeforeLastestId(betStrategyContext.getAccount(), CalUtil.getStartTimeOfWeek(), null);
 		LinkedList<String> resultList = new LinkedList<>();
 		for (BetDetailDto betDetailDto : beforeSucLogList) {
-			resultList.addLast(betDetailDto.getnResult());
+			resultList.add(betDetailDto.getnResult());
 		}
-		 
+		System.out.println("before:"+resultList);
+		Collections.reverse(resultList);
 		return allow(planWinTotal, planLoseTotal, resultList); 
+	}
+	
+
+	/**
+	 * 是否不能执行下注
+	 * 
+	 * @return
+	 */
+	public Boolean allowBetInByWinRule(String winRule) {
+		String[] winRuleArray = StringUtils.split(winRule, ",");
+		if (winRuleArray == null || winRuleArray.length != 2)
+			return true;
+		Integer planWinTotal = Integer.valueOf(winRuleArray[0]);
+		Integer planLoseTotal = Integer.valueOf(winRuleArray[1]);
+		 
+		// 获取所有
+		List<BetDetailDto> beforeSucLogList = this.betStrategyContext.getBetLogService()
+				.findAllBetDetailBeforeLastestId(betStrategyContext.getAccount(), CalUtil.getStartTimeOfWeek(), null);
+		LinkedList<String> resultList = new LinkedList<>();
+		for (BetDetailDto betDetailDto : beforeSucLogList) {
+			resultList.add(betDetailDto.getnResult());
+		}
+		System.out.println("before:"+resultList);
+		Collections.reverse(resultList);
+		return allow(planWinTotal, planLoseTotal, resultList);
 	}
 
 	public static Boolean allow(Integer win, Integer lose, List<String> resultList) {
-		System.out.println(resultList);
+		System.out.println("after:"+resultList);
 		if (lose == null || lose == 0) {
 			return true;
 		}
@@ -433,8 +460,7 @@ public abstract class BetStrategy {
 				if (i == 1) {
 					hitScheme = true;
 				}
-			}
-
+			} 
 		}
 		// 命中规则则不能下注
 		if (hitScheme) {

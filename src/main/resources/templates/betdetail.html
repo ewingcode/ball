@@ -35,6 +35,7 @@
     <th>下注</th>
     <th>可赢</th>
     <th>账号</th>
+    <th>当前时间</th>
     <th>方向</th>
     <th>买入位</th>
     <th>即时总分</th> 
@@ -62,6 +63,7 @@
     <td>{{bill.gold}}</td>
     <td>{{bill.wingold}}</td>
     <td>{{ bill.account }}</td>
+    <td>{{ bill.last_t_count }}</td>
     <td> <span v-if="bill.type === 'H'">
       	小
 	</span> 

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.aliyuncs.utils.StringUtils;
 import com.ewing.order.ball.BallMember;
 import com.ewing.order.ball.BetCollector;
+import com.ewing.order.ball.dto.BetInfoDto;
 import com.ewing.order.ball.shared.BetRuleStatus;
 import com.ewing.order.ball.shared.GtypeStatus;
 import com.ewing.order.ball.shared.PtypeStatus;
@@ -31,7 +32,6 @@ import com.ewing.order.busi.ball.dto.TotalBillDto;
 import com.ewing.order.busi.ball.service.BetAutoBuyService;
 import com.ewing.order.busi.ball.service.BetLogService;
 import com.ewing.order.busi.ball.service.BetRuleService;
-import com.ewing.order.busi.ball.service.BwContinueService;
 import com.ewing.order.common.contant.IsEff;
 import com.ewing.order.core.web.base.BaseRest;
 import com.ewing.order.core.web.common.RestResult;
@@ -157,6 +157,10 @@ public class ReportRest extends BaseRest {
 		// checkRequired(account, "account");
 		checkRequired(date, "date");
 		List<BetFullDetailDto> totalList = reportDao.findFullBetDetail(account, date);
+		for(BetFullDetailDto betFullDetailDto : totalList){ 
+			BetInfoDto betInfoDto = BetCollector.CollectDataPool.getLastBkRollList(betFullDetailDto.getGid());
+			betFullDetailDto.setLast_t_count(betInfoDto!=null?betInfoDto.getT_count():"0");
+		}
 		return RestResult.successResult(totalList);
 	}
 	
