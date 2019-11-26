@@ -457,7 +457,7 @@ public abstract class BetStrategy {
 					break;
 				}
 
-				if (i == 1) {
+				if (i == scheme.size()-1) {
 					hitScheme = true;
 				}
 			} 
@@ -471,7 +471,7 @@ public abstract class BetStrategy {
 	}
 
 	public static void main(String[] args) {
-		String[] result = { BetLogResult.WIN, BetLogResult.LOST, BetLogResult.WIN, BetLogResult.WIN};
+		String[] result = { BetLogResult.WIN, BetLogResult.LOST, BetLogResult.WIN, BetLogResult.WIN,BetLogResult.WIN,BetLogResult.LOST};
 
 		List<String> resultList = Arrays.asList(result);
 		Boolean isAllow = allow(3, 1, resultList);
